@@ -1,14 +1,16 @@
 import hashlib
 import io
-import pycdlib
 import tempfile
-import tkinter as tk, tkinter.filedialog
+import tkinter as tk
 import traceback
 import shutil
+from pycdlib.pycdlib import PyCdlib
+from pycdlib.pycdlibexception import PyCdlibInvalidInput
+from tkinter import filedialog
 
 import consts
 
-iso = pycdlib.PyCdlib()
+iso = PyCdlib()
 
 def _md5_check(file):
     print("Confirming MD5")
@@ -27,7 +29,7 @@ def _handle(file_path, tmpdir):
     outfile = io.BytesIO()
     try:
         iso.get_file_from_iso_fp(outfile, iso_path=f'/{consts.IDN};1')
-    except pycdlib.pycdlibexception.PyCdlibInvalidInput:
+    except PyCdlibInvalidInput:
         raise ValueError("Invalid ISO selected or file not found")
 
     for addr, cur, over in consts.NOP_ADDR:
@@ -42,7 +44,7 @@ def _handle(file_path, tmpdir):
     print("Writing result")
     iso.modify_file_in_place(outfile, len(outfile.getvalue()), f'/{consts.IDN};1')
 
-    saveas = tk.filedialog.asksaveasfilename(title="Save ISO file", filetypes=[("ISO file", "*.iso")], defaultextension=".iso")
+    saveas = filedialog.asksaveasfilename(title="Save ISO file", filetypes=[("ISO file", "*.iso")], defaultextension=".iso")
 
     iso.write(saveas)
 
@@ -50,7 +52,7 @@ def main():
 
     root = tk.Tk()
     root.withdraw()
-    file_path = tk.filedialog.askopenfilename(title="Select ISO file", filetypes=[('ISO file', '*.iso')])
+    file_path = filedialog.askopenfilename(title="Select ISO file", filetypes=[('ISO file', '*.iso')])
     if not file_path:
         return
 
