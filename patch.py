@@ -52,7 +52,7 @@ def main():
     root.withdraw()
     file_path = tk.filedialog.askopenfilename(title="Select ISO file", filetypes=[('ISO file', '*.iso')])
     if not file_path:
-    	return
+        return
 
     md5 = _md5_check(file_path)
     if md5 != consts.MD5:
