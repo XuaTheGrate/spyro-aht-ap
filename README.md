@@ -18,3 +18,4 @@ See [this spreadsheet](https://docs.google.com/spreadsheets/d/1p3uPDuDFvcDcdNjSU
 - [ ] Randomize Elder abilities
 - [ ] Randomize Mini game rewards
 - [ ] Modify the boss lairs to accept 10 generic dark gems, opposed to only accepting the 10 realm specific gems.
+- [ ] In game pop ups for received items (Trina)
