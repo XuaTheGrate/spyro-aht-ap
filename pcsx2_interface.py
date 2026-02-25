@@ -99,7 +99,7 @@ class Pine:
         except socket.error:
             self._sock.close()
             self._sock_state = False
-            raise
+            raise ConnectionRefusedError(f"Failed to connect to PCSX2, ensure Pine is enabled and is set to slot {self._slot}")
 
         self._sock_state = True
 
