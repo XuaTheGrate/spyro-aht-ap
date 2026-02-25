@@ -165,14 +165,14 @@ class APClient:
         await self.ready.wait()
         while not self.exit.is_set():
             for loc, addr, orv in consts.LOCATIONS:
-                #if loc in self.checked_locations:
-                    #continue
+                if loc in self.checked_locations:
+                    continue
 
                 data = await self.pine.read_int8(addr)
                 if data | orv == data:
                     print(f"Dispatching item 0x{loc:x} ({addr:x})")
-                    #self.checked_locations.add(loc)
-                    #await self._send_locations()
+                    self.checked_locations.add(loc)
+                    await self._send_locations()
             
             await asyncio.sleep(1)
         self.pine.disconnect()

@@ -1,6 +1,9 @@
 MD5 = '4a8320b24738334127b29de343c534ae'
 IDN = 'SLUS_208.84'
 
+# unsure if it will be useful, but AHT has plenty of spare ram i can use as storage. this address provides a good starting point and leaves approx. 12kb
+ITEM_STORAGE = 0x503280
+
 NOP_ADDR = [
 	(0x96de0, b'\x01\x00\x42\x34', b'\x00\x00\x00\x00') # disable double jump from elder tomas
 ]
