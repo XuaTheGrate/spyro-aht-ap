@@ -8,16 +8,16 @@ if TYPE_CHECKING:
 
 
 ITEM_NAME_TO_ID = {
-    "Double Jump": 0x0,
-    # "Pole Spin": 0x1,
-    # "Wing Shield": 0x2,
-    # "Wall Kick": 0x3,
-    # "Lightning Breath": 0x4,
-    # "Water Breath": 0x5,
-    # "Ice Breath": 0x6,
-    "Dark Gem": 0x7,
-    "Light Gem": 0x8,
-    "Dragon Egg": 0x9
+    "Double Jump": 0x1,
+    # "Pole Spin": 0x2,
+    # "Wing Shield": 0x3,
+    # "Wall Kick": 0x4,
+    # "Lightning Breath": 0x5,
+    # "Water Breath": 0x6,
+    # "Ice Breath": 0x7,
+    "Dark Gem": 0x8,
+    "Light Gem": 0x9,
+    "Dragon Egg": 0xA
 }
 
 DEFAULT_ITEM_CLASSIFICATIONS = {

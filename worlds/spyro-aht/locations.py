@@ -10,23 +10,23 @@ if TYPE_CHECKING:
 
 
 LOCATION_NAME_TO_ID = {
-    "Double Jump from Elder Tomas": 0x0,
-    "Dark Gem next to Elder Tomas": 0x1,
-    "Dark Gem next to Ember": 0x2,
-    "Dragon Egg past Hunter": 0x3,
-    "Light Gem inside Nursery": 0x4,
-    "Dragon Egg in Locked Chest before Ball Gadget": 0x5,
-    "Light Gem in Locked Chest after Double Jump Cliff": 0x6,
-    "Dragon Egg behind Breakable Wall near Sgt. Byrd": 0x7,
-    "Light Gem above Professor Mole": 0x8,
-    "Light Gem after platforming near Sgt. Byrd": 0x9,
-    "Dark Gem after platforming near Sgt. Byrd": 0xA,
-    "Dragon Egg after Dark Gem near Sgt. Byrd": 0xB,
-    #"Dragon Egg from Sgt. Byrd Minigame": 0xC,
-    #"Light Gem from Sgt. Byrd Minigame": 0xD,
-    "Light Gem in Locked Chest before Crocoville Swamp": 0xE,
-    "Dragon Egg in Gnasty's Lair after Flame": 0xF,
-    "Lightning Breath from Gnasty Gnorc": 0x10
+    "Double Jump from Elder Tomas": 0x1,
+    "Dark Gem next to Elder Tomas": 0x2,
+    "Dark Gem next to Ember": 0x3,
+    "Dragon Egg past Hunter": 0x4,
+    "Light Gem inside Nursery": 0x5,
+    "Dragon Egg in Locked Chest before Ball Gadget": 0x6,
+    "Light Gem in Locked Chest after Double Jump Cliff": 0x7,
+    "Dragon Egg behind Breakable Wall near Sgt. Byrd": 0x8,
+    "Light Gem above Professor Mole": 0x9,
+    "Light Gem after platforming near Sgt. Byrd": 0xA,
+    "Dark Gem after platforming near Sgt. Byrd": 0xB,
+    "Dragon Egg after Dark Gem near Sgt. Byrd": 0xC,
+    #"Dragon Egg from Sgt. Byrd Minigame": 0xD,
+    #"Light Gem from Sgt. Byrd Minigame": 0xE,
+    "Light Gem in Locked Chest before Crocoville Swamp": 0xF,
+    "Dragon Egg in Gnasty's Lair after Flame": 0x10,
+    "Lightning Breath from Gnasty Gnorc": 0x11
 }
 
 class SpyroAHTLocation(Location):
