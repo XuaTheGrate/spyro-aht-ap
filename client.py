@@ -4,6 +4,7 @@ import os.path
 import ssl
 from collections import Counter
 from dataclasses import dataclass
+from enum import IntEnum
 from typing import Any, Literal
 
 import websockets
@@ -74,6 +75,14 @@ class WebsocketConnected:
     slot_info: dict[str, Any]
     hint_points: int
     slot_data: dict[str, Any]
+
+
+class ClientStatus(IntEnum):
+    UNKNOWN = 0
+    CONNECTED = 5
+    READY = 10
+    PLAYING = 20
+    GOAL = 30
 
 
 # TODO: compression support
@@ -159,13 +168,22 @@ class APClient:
         await self._send_locations()
         print(f"Synced {len(self.checked_locations)} locations")
         self.ready.set()
+        await self.send_status_update(ClientStatus.PLAYING)
     
     async def _received_item(self, item: NetworkItem) -> None:
         # TODO: add prompt to in game via Trina
         print(f"Received item {item.item:x}")
         match item.item:
             case 0x1: # Double Jump
-                await self.set_double_jump(True)
+                await self.set_store_item(consts.ITEM_STORAGE_DOUBLE_JUMP)
+                await self.set_player_flag(consts.PlayerFlags.DoubleJump, True)
+            case 0x2: # Pole Spin:
+                await self.set_store_item(consts.ITEM_STORAGE_POLE_SPIN)
+                await self.set_player_flag(consts.PlayerFlags.PoleSpin, True)
+            case 0x5: # Lightning Breath
+                await self.set_store_item(consts.ITEM_STORAGE_ELECTRIC_BREATH)
+                await self.set_player_flag(consts.PlayerFlags.LightningBreath, True)
+                await self.force_set_breath(consts.BREATH_ELECTRIC)
             case 0x8: # Dark Gem
                 count = await self.get_item_count(consts.DARK_GEM_COUNT)
                 if count < self.synced_items[0x8]:
@@ -195,7 +213,7 @@ class APClient:
                     ni = NetworkItem(**i)
                     await self._received_item(ni)
             case _ as c:
-                print(f"WARNING: Unhandled packet command '{c}': {payload}")
+                print(f"WARNING: Unhandled packet command '{c}'")
 
     async def _ap_loop(self):
         while not self.exit.is_set():
@@ -211,12 +229,22 @@ class APClient:
                 if loc in self.checked_locations:
                     continue
 
+                if addr == 0x0:
+                    print(f"Dispatching location 0x{loc:x} as address is blank")
+                    self.checked_locations.add(loc)
+                    await self._send_locations()
+                    continue
+
                 data = await self.pine.read_int8(addr)
                 if data | orv == data:
                     print(f"Dispatching item 0x{loc:x} ({addr:x})")
                     self.checked_locations.add(loc)
                     await self.remove_item(item_type)
                     await self._send_locations()
+
+                    if loc == 0x11: # TODO: remove temporary victory condition
+                        print(f"Dispatching victory")
+                        await self.send_status_update(ClientStatus.GOAL)
             
             await asyncio.sleep(1)
         self.pine.disconnect()
@@ -225,25 +253,42 @@ class APClient:
         self.exit.set()
         await asyncio.wait([self._pine_task, self._ap_task]) # type: ignore
     
-    async def set_double_jump(self, to: bool):
+    async def send_status_update(self, status: ClientStatus) -> None:
+        print(f"Sending status: {status!r}")
+        await self._socket.send(encode([{"cmd": "StatusUpdate", "status": int(status)}]))
+    
+    async def set_player_flag(self, flag: consts.PlayerFlags, to: bool):
         flags = consts.PlayerFlags(await self.pine.read_int32(consts.PLAYER_FLAGS))
         if to:
-            await self.pine.write_int32(consts.PLAYER_FLAGS, flags | consts.PlayerFlags.DoubleJump)
+            await self.pine.write_int32(consts.PLAYER_FLAGS, flags | flag)
         else:
-            await self.pine.write_int32(consts.PLAYER_FLAGS, flags & ~consts.PlayerFlags.DoubleJump)
+            await self.pine.write_int32(consts.PLAYER_FLAGS, flags & ~flag)
     
     async def remove_item(self, item: int):
         print(f"Early removing {item:x}")
         match item:
             case 0x1: # Double Jump
                 if not await self.should_have_item(consts.ITEM_STORAGE_DOUBLE_JUMP):
-                    await self.set_double_jump(False)
+                    await self.set_player_flag(consts.PlayerFlags.DoubleJump, False)
+            case 0x2: # Pole Spin
+                if not await self.should_have_item(consts.ITEM_STORAGE_POLE_SPIN):
+                    await self.set_player_flag(consts.PlayerFlags.PoleSpin, False)
+            case 0x5: # Lightning Breath
+                # TODO: add temporary electric breath support for leaving boss dungeons
+                # or alternatively a key combo to tp out
+                if not await self.should_have_item(consts.ITEM_STORAGE_ELECTRIC_BREATH):
+                    await self.set_player_flag(consts.PlayerFlags.LightningBreath, False)
+                    await self.force_set_breath(consts.BREATH_FIRE)
             case 0x8: # Dark Gem
                 await self.add_dark_gem(-1)
             case 0x9: # Light Gem
                 await self.add_light_gem(-1)
             case 0xA: # Dragon Egg
                 await self.add_dragon_egg(-1)
+    
+    async def set_store_item(self, key: tuple[int, int]):
+        flag = await self.pine.read_int8(consts.ITEM_STORAGE + key[0])
+        await self.pine.write_int8(consts.ITEM_STORAGE + key[0], flag | key[1])
     
     async def should_have_item(self, key: tuple[int, int]) -> bool:
         flag = await self.pine.read_int8(consts.ITEM_STORAGE + key[0])
@@ -263,6 +308,9 @@ class APClient:
     async def add_dragon_egg(self, amount: int = 1):
         count = await self.get_item_count(consts.DRAGON_EGG_COUNT)
         await self.pine.write_int8(consts.DRAGON_EGG_COUNT, count + amount)
+    
+    async def force_set_breath(self, breath_id: int):
+        await self.pine.write_int8(consts.ACTIVE_BREATH, breath_id)
 
 
 async def main():
