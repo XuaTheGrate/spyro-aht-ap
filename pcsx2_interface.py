@@ -118,15 +118,15 @@ class Pine:
         request = Pine._create_request(Pine.IPCCommand.READ8, address, 9)
         return Pine.from_bytes((await self._send_request(request))[-1:])
 
-    async def read_int16(self, address) -> int:
+    async def read_int16(self, address: int) -> int:
         request = Pine._create_request(Pine.IPCCommand.READ16, address, 9)
         return Pine.from_bytes((await self._send_request(request))[-2:])
 
-    async def read_int32(self, address) -> int:
+    async def read_int32(self, address: int) -> int:
         request = Pine._create_request(Pine.IPCCommand.READ32, address, 9)
         return Pine.from_bytes((await self._send_request(request))[-4:])
 
-    async def read_int64(self, address) -> int:
+    async def read_int64(self, address: int) -> int:
         request = Pine._create_request(Pine.IPCCommand.READ64, address, 9)
         return Pine.from_bytes((await self._send_request(request))[-8:])
 
