@@ -1,11 +1,11 @@
 # Spyro: A Hero's Tail Archipelago
-An implementation of the Archipelago randomizer for Spyro: A Hero's Tail (PS2)
+An implementation of the Archipelago randomizer for Spyro: A Hero's Tail for Playstation 2 and GameCube.
 
 ## What is randomized?
 Currently, randomization will apply to the 40 Dark Gems, 100 Light Gems and 80 Dragon Eggs, as well as the various abilities you can collect such as Double Jump and Wing Shield.
 
 ## Setup Guide
-TODO, but the patches will only apply to the U.S. release (specifically, ``SLUS-20884``).
+TODO
 
 ## Future Plans / Checklist
 
