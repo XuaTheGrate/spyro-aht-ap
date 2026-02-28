@@ -20,6 +20,10 @@ from enum import IntEnum
 from platform import system
 import socket
 import asyncio
+import logging
+
+logging.basicConfig()
+logger = logging
 
 class Pine:
     """ Exposes PS2 memory within a running instance of the PCSX2 emulator using the Pine IPC Protocol. """
@@ -75,6 +79,7 @@ class Pine:
         # self._init_socket()
     
     async def _init_socket(self) -> None:
+        logger.info("Initialising PCSX2 socket")
         if system() == "Windows":
             socket_family = socket.AF_INET # pyright: ignore[reportAttributeAccessIssue]
             socket_name = ("127.0.0.1", self._slot)
@@ -95,6 +100,7 @@ class Pine:
             self._sock.setblocking(False)
             self._sock.settimeout(5.0)
             await self.loop.sock_connect(self._sock, socket_name)
+            logger.info("PCSX2 connection established")
             # self._sock.connect(socket_name)
         except socket.error:
             self._sock.close()
@@ -110,6 +116,7 @@ class Pine:
     def disconnect(self) -> None:
         if self._sock_state:
             self._sock.close()
+            self._sock_state = False
 
     def is_connected(self) -> bool:
         return self._sock_state

@@ -27,6 +27,10 @@ DRAGON_EGG = 0xA
 
 PLAYER_FLAGS = 0x502028
 
+IN_GAME = 0x50f790
+PAUSE = 0x590764
+LOADING = 0x598690
+
 
 class PlayerFlags(IntFlag):
     DoubleJump = 0x1
