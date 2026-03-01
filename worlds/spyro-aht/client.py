@@ -10,8 +10,8 @@ import Utils
 from CommonClient import ClientCommandProcessor, CommonContext, logger, server_loop, gui_enabled, get_base_parser
 from NetUtils import ClientStatus, NetworkItem
 
-import consts
-from pcsx2_interface import Pine
+from . import consts
+from .pcsx2_interface import Pine
 
 
 class GenericClient:
@@ -81,7 +81,8 @@ class PCSX2Client(GenericClient):
                 continue
 
             if address == 0x0:
-                result.add(location)
+                #result.add(location)
+                continue
             
             data = await self.pine.read_int8(address)
             if data | or_value == data:
