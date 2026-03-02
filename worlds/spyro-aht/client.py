@@ -83,7 +83,21 @@ class PCSX2Client(GenericClient):
             flag = data & (1 << (index % 8))
             if flag:
                 result.add(aploc)
+        
+        for obj, aploc in consts.LOCATIONS_OBJECTIVE.items():
+            if aploc in ctx.checked_locations:
+                continue
+            
+            index = (obj & 0xFFFF) - 1
+            uint = floor(index / 32)
+            bit = index % 32
+            data = await self.pine.read_int32(self.addresses.OBJECTIVES + (uint * 4))
+            flag = data & (1 << bit)
+            if flag:
+                result.add(aploc)
+
         return result        
+    
     async def set_ability_flag(self, flag: int, to: bool):
         flags = await self.pine.read_int32(self.addresses.ABILITY_FLAGS)
         if to:

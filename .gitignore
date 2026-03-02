@@ -239,7 +239,7 @@ MultiServer.py
 NetUtils.py
 OoTAdjuster.py
 OoTClient.py
-Options.py
+./Options.py
 OptionsCreator.py
 rule_builder/
 settings.py
