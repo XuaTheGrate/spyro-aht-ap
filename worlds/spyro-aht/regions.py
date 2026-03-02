@@ -17,10 +17,10 @@ REGIONS: dict[str, list[str]] = {
 }
 
 REGION_LOCATIONS: dict[str, list[str]] = {
-    "Dragon Village": ["Dragon Village: Double Jump/Horn Dive from Elder Tomas"],
+    "Dragon Village": ["Dragon Village: Double Jump from Elder Tomas"],
     "Dragon Village - After Elder Tomas": [
-        "Dragon Village: Dark Gem by Elder Tomas",
         "Dragon Village: Dark Gem by Ember",
+        "Dragon Village: Dark Gem by Elder Tomas",
         "Dragon Village: Dragon Egg after Hunter",
         "Dragon Village: Light Gem in Nursery",
         "Dragon Village: Locked Chest near Ball Gadget",
