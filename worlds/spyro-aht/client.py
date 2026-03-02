@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from collections import Counter
+from math import floor
 
 import kvui
 import dolphin_memory_engine
@@ -25,9 +26,6 @@ class GenericClient:
     async def is_paused(self) -> bool: raise NotImplementedError
     async def is_loading(self) -> bool: raise NotImplementedError
     async def scan_locations(self, ctx: SpyroAHTContext) -> set[int]: raise NotImplementedError
-    async def _remove_item(self, item: int): raise NotImplementedError
-    async def store_item(self, tag: tuple[int, int]): raise NotImplementedError
-    async def should_have_item(self, tag: tuple[int, int]) -> bool: raise NotImplementedError
     async def set_ability_flag(self, flag: int, to: bool): raise NotImplementedError
     async def get_item_count(self, addr: int) -> int: raise NotImplementedError
     async def add_item(self, addr: int, count: int): raise NotImplementedError
@@ -76,50 +74,16 @@ class PCSX2Client(GenericClient):
     
     async def scan_locations(self, ctx: SpyroAHTContext) -> set[int]:
         result: set[int] = set()
-        for location, item_type, address, or_value in self.addresses.LOCATIONS:
-            if location in ctx.checked_locations:
+        for aploc, index in consts.LOCATIONS_BITFIELD.items():
+            if aploc in ctx.checked_locations:
                 continue
 
-            if address == 0x0:
-                #result.add(location)
-                continue
-            
-            data = await self.pine.read_int8(address)
-            if data | or_value == data:
-                result.add(location)
-                # TODO: remove this as the function that adds items should be patched in release
-                await self._remove_item(item_type)
-                if location == 0x11: # obtained lightning breath
-                    if not ctx.finished_game:
-                        await ctx.send_msgs([{"cmd":"StatusUpdate","status":ClientStatus.CLIENT_GOAL}])
-                        ctx.finished_game = True
-        return result
-    
-    async def _remove_item(self, item: int):
-        match item:
-            case 0x1:
-                if not await self.should_have_item(consts.ITEM_STORAGE_DOUBLE_JUMP):
-                    await self.set_ability_flag(consts.PlayerFlags.DoubleJump, False)
-            case 0x2:
-                if not await self.should_have_item(consts.ITEM_STORAGE_POLE_SPIN):
-                    await self.set_ability_flag(consts.PlayerFlags.PoleSpin, False)
-            case 0x5:
-                if not await self.should_have_item(consts.ITEM_STORAGE_ELECTRIC_BREATH):
-                    await self.set_ability_flag(consts.PlayerFlags.LightningBreath, False)
-            case 0x8:
-                await self.add_item(self.addresses.DARK_GEM_COUNT, -1)
-            case 0x9:
-                await self.add_item(self.addresses.LIGHT_GEM_COUNT, -1)
-            case 0xA:
-                await self.add_item(self.addresses.DRAGON_EGG_COUNT, -1)
-    
-    async def store_item(self, tag: tuple[int, int]):
-        flag = await self.pine.read_int8(self.addresses.ITEM_STORAGE + tag[0])
-        await self.pine.write_int8(self.addresses.ITEM_STORAGE + tag[0], flag | tag[1])
-    
-    async def should_have_item(self, tag: tuple[int, int]) -> bool:
-        return await self.pine.read_int8(self.addresses.ITEM_STORAGE + tag[0]) & tag[1] == tag[1]
-    
+            addr = self.addresses.BITFIELD + floor(index / 8)
+            data = await self.pine.read_int8(addr)
+            flag = data & (1 << (index % 8))
+            if flag:
+                result.add(aploc)
+        return result        
     async def set_ability_flag(self, flag: int, to: bool):
         flags = await self.pine.read_int32(self.addresses.ABILITY_FLAGS)
         if to:
@@ -179,31 +143,30 @@ class DolphinClient(GenericClient):
         return await self.is_paused()
     
     async def scan_locations(self, ctx: SpyroAHTContext) -> set[int]:
-        return set()
-    
-    async def _remove_item(self, item: int):
-        match item:
-            case 0x1:
-                # if not await self.should_have_item(consts.ITEM_STORAGE_DOUBLE_JUMP):
-                await self.set_ability_flag(consts.PlayerFlags.DoubleJump, False)
-            case 0x2:
-                # if not await self.should_have_item(consts.ITEM_STORAGE_POLE_SPIN):
-                await self.set_ability_flag(consts.PlayerFlags.PoleSpin, False)
-            case 0x5:
-                # if not await self.should_have_item(consts.ITEM_STORAGE_ELECTRIC_BREATH):
-                await self.set_ability_flag(consts.PlayerFlags.LightningBreath, False)
-            case 0x8:
-                await self.add_item(consts.DARK_GEM, -1)
-            case 0x9:
-                await self.add_item(consts.LIGHT_GEM, -1)
-            case 0xA:
-                await self.add_item(consts.DRAGON_EGG, -1)
-    
-    async def store_item(self, tag: tuple[int, int]):
-        ...
-    
-    async def should_have_item(self, tag: tuple[int, int]) -> bool:
-        return True
+        result: set[int] = set()
+        for aploc, index in consts.LOCATIONS_BITFIELD.items():
+            if aploc in ctx.checked_locations:
+                continue
+            
+            addr = self.addresses.BITFIELD + floor(index / 8)
+            data = dolphin_memory_engine.read_byte(addr)
+            flag = data & (1 << (index % 8))
+            if flag:
+                result.add(aploc)
+        
+        for obj, aploc in consts.LOCATIONS_OBJECTIVE.items():
+            if aploc in ctx.checked_locations:
+                continue
+            
+            index = (obj & 0xFFFF) - 1
+            uint = floor(index / 32)
+            bit = index % 32
+            data = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.OBJECTIVES + (uint * 4), 4), 'big')
+            flag = data & (1 << bit)
+            if flag:
+                result.add(aploc)
+
+        return result
     
     async def set_ability_flag(self, flag: int, to: bool):
         flags = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ABILITY_FLAGS, 4), 'big')
@@ -286,13 +249,10 @@ async def dispatch_items(ctx: SpyroAHTContext):
         ctx.synced_items.add(item)
         match item.item:
             case 0x1: # Double Jump
-                await ctx.emu_client.store_item(consts.ITEM_STORAGE_DOUBLE_JUMP)
                 await ctx.emu_client.set_ability_flag(consts.PlayerFlags.DoubleJump, True)
             case 0x2: # Pole Spin
-                await ctx.emu_client.store_item(consts.ITEM_STORAGE_POLE_SPIN)
                 await ctx.emu_client.set_ability_flag(consts.PlayerFlags.PoleSpin, True)
             case 0x5: # Lightning Breath
-                await ctx.emu_client.store_item(consts.ITEM_STORAGE_ELECTRIC_BREATH)
                 await ctx.emu_client.set_ability_flag(consts.PlayerFlags.LightningBreath, True)
                 await ctx.emu_client.force_set_breath(consts.BREATH_ELECTRIC)
             case 0x8: # Dark Gem
@@ -311,7 +271,6 @@ async def dispatch_items(ctx: SpyroAHTContext):
 
 async def dispatch_locations(ctx: SpyroAHTContext):
     locations = await ctx.emu_client.scan_locations(ctx)
-    locations = locations.difference(ctx.checked_locations)
     if locations:
         await ctx.send_msgs([{"cmd":"LocationChecks","locations":locations}])
 
