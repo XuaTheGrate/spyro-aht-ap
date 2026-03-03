@@ -3,7 +3,7 @@ An implementation of the Archipelago randomizer for Spyro: A Hero's Tail for Pla
 
 ## What is randomized?
 
-This list is non exhaustive, and they may not be implemented in future releases.
+This list is non-exhaustive and may change, and is not indicative of future plans.
 
 - [x] Dark Gems
 - [x] Light Gems
@@ -18,6 +18,15 @@ This list is non exhaustive, and they may not be implemented in future releases.
 - [ ] Shop gem costs
 - [ ] Light Gem door costs
 - [ ] Charge, Swim and Glide
+- [ ] Fireworks
+- [ ] Enemies
+- [ ] Baskets/Vases
+- [ ] Shop Items
+- [ ] Gadget Access
+  - [ ] Invulnerability
+  - [ ] Supercharge
+- [ ] Warp Locations (Professor Mole)
+- [ ] Warp Locations (Moneybags)
 
 ## Setup Guide
 TODO
@@ -26,6 +35,6 @@ TODO
 
 See [this spreadsheet](https://docs.google.com/spreadsheets/d/1p3uPDuDFvcDcdNjSUojGUHYuH9WlPryn5qd2R5Q4KsI/edit?usp=sharing) for current planning/documents.
 
-- [ ] Modify the boss lairs to accept 10 generic dark gems, opposed to only accepting the 10 realm specific gems.
 - [ ] Support for GameCube (``G5SE7D``)
+- [ ] Support for PS2/NTSC (``SLUS-20884``)
 - [ ] Support for PS2/PAL (``SLES-52569``)
