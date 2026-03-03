@@ -29,7 +29,9 @@ This list is non-exhaustive and may change, and is not indicative of future plan
 - [ ] Warp Locations (Moneybags)
 
 ## Setup Guide
+
 TODO
+Mod files can be found on at https://github.com/BrinchEbsen/AHT_Archipelago
 
 ## Checklist
 
