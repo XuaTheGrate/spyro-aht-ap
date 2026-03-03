@@ -28,10 +28,10 @@ ITEM_NAME_TO_ID = {
 }
 
 DEFAULT_ITEMS = [
-    "Double Jump",
-    "Pole Spin",
-    "Wing Shield",
-    "Wall Kick",
+    #"Double Jump",
+    #"Pole Spin",
+    #"Wing Shield",
+    #"Wall Kick",
     "Dark Gem",
     "Light Gem",
     "Dragon Egg"
@@ -79,41 +79,52 @@ def create_all_items(world: SpyroAHTWorld) -> None:
         for _ in range(ITEM_COUNTS.get(item, 1)):
             itempool.append(world.create_item(item))
     
+    world.get_location("Dragon Village: Double Jump from Elder Tomas").place_locked_item(world.create_item("Double Jump"))
+    world.get_location("Crocoville Swamp: Pole Spin from Elder Magnus").place_locked_item(world.create_item("Pole Spin"))
+    world.get_location("Cloudy Domain: Wing Shield from Elder Titan").place_locked_item(world.create_item("Wing Shield"))
+    world.get_location("Ice Citadel: Wall Kick from Elder Astor").place_locked_item(world.create_item("Wall Kick"))
+
+    world.get_location("Dragon Village: Lightning Breath from Gnasty Gnorc").place_locked_item(world.create_item("Lightning Breath"))
+    world.get_location("Coastal Remains: Water Breath from Ineptune").place_locked_item(world.create_item("Water Breath"))
+    world.get_location("Frostbite Village: Ice Breath from Red").place_locked_item(world.create_item("Ice Breath"))
+    
+    
     match world.options.randomize_breath:
-        case 0: # default
+        case _: # default
             l = world.get_location("Dragon Village: Fire Breath")
             l.place_locked_item(world.create_item("Fire Breath"))
-            itempool.extend((world.create_item("Lightning Breath"), world.create_item("Water Breath"), world.create_item("Ice Breath")))
-        case 1: # randomized
-            breaths = ["Fire Breath", "Lightning Breath", "Water Breath", "Ice Breath"]
-            breath = world.random.choice(breaths)
-            breaths.remove(breath)
-            i = world.create_item(breath)
-            l = world.get_location("Dragon Village: Fire Breath")
-            l.place_locked_item(i)
-            itempool.extend(world.create_item(i) for i in breaths)
-        case 2: # none
-            breaths = ["Fire Breath", "Lightning Breath", "Water Breath", "Ice Breath"]
-            itempool.extend(world.create_item(i) for i in breaths)
+            #itempool.extend((world.create_item("Lightning Breath"), world.create_item("Water Breath"), world.create_item("Ice Breath")))
+    #   case 1: # randomized
+    #       breaths = ["Fire Breath", "Lightning Breath", "Water Breath", "Ice Breath"]
+    #       breath = world.random.choice(breaths)
+    #       breaths.remove(breath)
+    #       i = world.create_item(breath)
+    #       l = world.get_location("Dragon Village: Fire Breath")
+    #       l.place_locked_item(i)
+    #       itempool.extend(world.create_item(i) for i in breaths)
+    #   case 2: # none
+    #       breaths = ["Fire Breath", "Lightning Breath", "Water Breath", "Ice Breath"]
+    #       itempool.extend(world.create_item(i) for i in breaths)
     
-    if not world.options.randomize_charge:
-        l = world.get_location("Dragon Village: Charge")
-        l.place_locked_item(world.create_item("Charge"))
-    else:
-        itempool.append(world.create_item("Charge"))
+    #if not world.options.randomize_charge:
+    l = world.get_location("Dragon Village: Charge")
+    l.place_locked_item(world.create_item("Charge"))
+    #else:
+        #itempool.append(world.create_item("Charge"))
 
-    if not world.options.randomize_swim:
-        l = world.get_location("Dragon Village: Swim")
-        l.place_locked_item(world.create_item("Swim"))
-    else:
-        itempool.append(world.create_item("Swim"))
+    #if not world.options.randomize_swim:
+    l = world.get_location("Dragon Village: Swim")
+    l.place_locked_item(world.create_item("Swim"))
+    #else:
+    #itempool.append(world.create_item("Swim"))
 
-    if not world.options.randomize_glide:
-        l = world.get_location("Dragon Village: Glide")
-        l.place_locked_item(world.create_item("Glide"))
-    else:
-        itempool.append(world.create_item("Glide"))
+    #if not world.options.randomize_glide:
+    l = world.get_location("Dragon Village: Glide")
+    l.place_locked_item(world.create_item("Glide"))
+    #else:
+    #itempool.append(world.create_item("Glide"))
     
+
     unfilled = len(world.multiworld.get_unfilled_locations(world.player))
     print(f"Adding {unfilled - len(itempool)} dragon eggs") # should theoretically always be 80 anyway
     #itempool.extend(world.create_filler() for _ in range(unfilled - len(itempool)))

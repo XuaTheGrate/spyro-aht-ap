@@ -244,7 +244,8 @@ class SpyroAHTCommandProcessor(ClientCommandProcessor):
         """
         match client.lower():
             case 'pcsx2':
-                self.ctx.emu_client = PCSX2Client()
+                #self.ctx.emu_client = PCSX2Client()
+                raise NotImplementedError
             case 'dolphin':
                 self.ctx.emu_client = DolphinClient()
             case _:
@@ -330,8 +331,16 @@ async def dispatch_items(ctx: SpyroAHTContext):
                 logger.error(f"Unhandled item {item!r}")
 
 
+starter_checks = {229, 230, 231, 232}
+
+
 async def dispatch_locations(ctx: SpyroAHTContext):
     locations = await ctx.emu_client.scan_locations(ctx)
+
+    for c in starter_checks:
+        if c not in ctx.checked_locations:
+            locations.add(c)
+
     if locations:
         await ctx.send_msgs([{"cmd":"LocationChecks","locations":locations}])
 

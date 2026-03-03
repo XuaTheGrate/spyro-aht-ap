@@ -48,7 +48,7 @@ REGIONS = {r.name: r for r in [
     ], access_rule=_DEFAULT_RULE),
 
     # Implied: Double Jump
-    DataRegion("Dragon Village - After Elder Tomas", ["Dragon Village - Gnasty Gnorcs Lair", "Crocoville Swamp", "Dragonfly Falls", "Coastal Remains", "Frostbite Village", "Stormy Beach"], [
+    DataRegion("Dragon Village - After Elder Tomas", ["Dragon Village - Gnasty Gnorcs Lair", "Crocoville Swamp", "Dragonfly Falls"], [
         DataLocation("Dragon Village: Dark Gem by Ember", 2, _DEFAULT_RULE),
         DataLocation("Dragon Village: Dark Gem by Elder Tomas", 3, _DEFAULT_RULE),
         DataLocation("Dragon Village: Dragon Egg after Hunter", 4, _builder_all(Glide=1)),
@@ -66,7 +66,7 @@ REGIONS = {r.name: r for r in [
     ], access_rule=lambda world: lambda state: state.has("Double Jump", world.player)),
 
     # Implied: Double Jump
-    DataRegion("Dragon Village - Gnasty Gnorcs Lair", [], [
+    DataRegion("Dragon Village - Gnasty Gnorcs Lair", ["Coastal Remains"], [
         DataLocation("Dragon Village: Dragon Egg in Gnastys Lair", 16, _DEFAULT_RULE),
         DataLocation("Dragon Village: Lightning Breath from Gnasty Gnorc", 17, _builder_any(**{"Fire Breath":1,"Charge":1}))
     ], access_rule=lambda world: lambda state: state.has("Dark Gem", world.player, 10)),
@@ -177,7 +177,7 @@ REGIONS = {r.name: r for r in [
     ], access_rule=_builder_all(**{"Pole Spin": 1}, Swim=1)),
 
     # Implied: Double Jump, Charge, 20x Dark Gem
-    DataRegion("Coastal Remains - Ineptunes Lair", [], [
+    DataRegion("Coastal Remains - Ineptunes Lair", ["Frostbite Village"], [
         DataLocation("Coastal Remains: Water Breath from Ineptune", 79, _DEFAULT_RULE)
     ], access_rule=_builder_all(**{"Dark Gem": 20}, Charge=1)),
 
@@ -238,15 +238,18 @@ REGIONS = {r.name: r for r in [
     ], access_rule=_builder_all(**{"Lightning Breath": 1, "Light Gem": 24})),
 
     # Implied: Double Jump
-    DataRegion("Frostbite Village", ["Frostbite Village - After Phils Gate", "Frostbite Village - Before Gloomy Glacier"], [
+    DataRegion("Frostbite Village", ["Frostbite Village - After Phils Gate", "Frostbite Village - Before Gloomy Glacier", "Frostbite Village - Red's Lair"], [
         DataLocation("Frostbite Village: Dark Gem under avalanche", 121, _DEFAULT_RULE),
         DataLocation("Frostbite Village: Dragon Egg from thief after spinning totem", 122, _builder_all(Charge=1)),
         DataLocation("Frostbite Village: Light Gem after spinning totem after thief", 123, _DEFAULT_RULE),
         DataLocation("Frostbite Village: Dragon Egg from Blink", 124, _DEFAULT_RULE),
         DataLocation("Frostbite Village: Light Gem from Blink", 125, _DEFAULT_RULE),
         # a breath is required to kill the dogs
-        DataLocation("Frostbite Village: Ice Breath from Red", 136, lambda world: lambda state: state.has_any(("Fire Breath", "Lightning Breath", "Charge"), world.player) and state.has("Dark Gem", world.player, 30))
     ], access_rule=_DEFAULT_RULE),
+
+    DataRegion("Frostbite Village - Red's Lair", ["Stormy Beach"], [
+        DataLocation("Frostbite Village: Ice Breath from Red", 136, _DEFAULT_RULE)
+    ], access_rule=lambda world: lambda state: state.has_any(("Fire Breath", "Lightning Breath", "Charge"), world.player) and state.has("Dark Gem", world.player, 30)),
 
     # Implied: Double Jump, Lightning Breath
     DataRegion("Frostbite Village - After Phils Gate", [], [
