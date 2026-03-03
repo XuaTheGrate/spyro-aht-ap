@@ -12,7 +12,7 @@ class RandomizeBreath(Choice):
     """
     display_name = "Starting Breath"
     option_default = 0
-    option_random = 1
+    option_randomized = 1
     option_none = 2
     default = 0
 
@@ -44,9 +44,9 @@ class RandomizeShopPrices(Choice):
     display_name = "Shop Prices"
     rich_text_doc = True
     option_default = 0
-    option_random = 1
-    option_random_low = 2
-    option_random_high = 3
+    option_randomized = 1
+    option_randomized_low = 2
+    option_randomized_high = 3
     default = 0
 
 
@@ -70,16 +70,16 @@ class RandomizeLightGemDoorCosts(Choice):
     """Sets the cost of light gem doors.
     
     default: No changes to cost.
-    random: Randomizes the pricostce, defined by the range in **Minimum Light Gem Door Cost** and **Maximum Light Gem Door Cost**.
+    randomized: Randomizes the pricostce, defined by the range in **Minimum Light Gem Door Cost** and **Maximum Light Gem Door Cost**.
     shuffle: Shuffles the existing prices (20, 45, 70 and 95).
-    random_low: Randomizes the cost, with a bias towards a lower cost.
-    random_high: Randomizes the cost, with a bias towards a higher cost."""
-    display_name = "Light Gem Door Cost"
+    randomized_low: Randomizes the cost, with a bias towards a lower cost.
+    randomized_high: Randomizes the cost, with a bias towards a higher cost."""
+    display_name = "Randomize Light Gem Door Cost"
     option_default = 0
-    option_random = 1
+    option_randomized = 1
     option_shuffle = 2
-    option_random_low = 3
-    option_random_high = 4
+    option_randomized_low = 3
+    option_randomized_high = 4
     default = 0
 
 
@@ -108,7 +108,7 @@ class SpyroAHTOptions(PerGameCommonOptions):
     randomize_shop_prices: RandomizeShopPrices
     shop_prices_min: ShopPricesMin
     shop_prices_max: ShopPricesMax
-    light_gem_door_costs: RandomizeLightGemDoorCosts
+    randomize_light_gem_door_costs: RandomizeLightGemDoorCosts
     light_gem_door_cost_min: LightGemDoorCostMin
     light_gem_door_cost_max: LightGemDoorCostMax
 

@@ -40,4 +40,4 @@ class SpyroAHTWorld(World):
         return items.FILLER_ITEM_NAME
     
     def fill_slot_data(self) -> Mapping[str, Any]:
-        return self.options.as_dict("example_toggle")
+        return self.options.as_dict("randomize_breath", "randomize_swim", "randomize_glide", "randomize_charge", "randomize_shop_prices", "shop_prices_min", "shop_prices_max", "randomize_light_gem_door_costs", "light_gem_door_cost_min", "light_gem_door_cost_max")
