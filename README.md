@@ -5,9 +5,12 @@ An implementation of the Archipelago randomizer for Spyro: A Hero's Tail for Pla
 
 This list is non exhaustive, and they may not be implemented in future releases.
 
-- [ ] Dark Gems
-- [ ] Light Gems
-- [ ] Dragon Eggs
+- [x] Dark Gems
+- [x] Light Gems
+- [x] Dragon Eggs
+  - [ ] Egg Thieves
+- [ ] Locked Chests
+  - [ ] Gem locked chests?
 - [ ] Elemental Breaths
   - [ ] + Fire Breath
 - [ ] Elder abilities
