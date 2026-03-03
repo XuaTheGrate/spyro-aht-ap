@@ -8,8 +8,8 @@ This list is non-exhaustive and may change, and is not indicative of future plan
 - [x] Dark Gems
 - [x] Light Gems
 - [x] Dragon Eggs
-  - [ ] Egg Thieves
-- [ ] Locked Chests
+  - [x] Egg Thieves
+- [x] Locked Chests
   - [ ] Gem locked chests?
 - [ ] Elemental Breaths
   - [ ] + Fire Breath
@@ -30,13 +30,19 @@ This list is non-exhaustive and may change, and is not indicative of future plan
 
 ## Setup Guide
 
-TODO
-Mod files can be found on at https://github.com/BrinchEbsen/AHT_Archipelago
+##### Currently does not support PCSX2, but will change in the future.
+
+1. Download the ``AR_Code.txt`` from https://github.com/BrinchEbsen/AHT_Archipelago
+2. Download and install the apworld under the releases on this repo
+3. Toggle ``Enable Cheats`` in Dolphins settings
+4. Launch the game and add the contents of ``AR_Code.txt`` into Dolphins cheats manager
+5. Launch the client via Archipelago, connect to the multiworld, and type ``/client dolphin`` to hook into Dolphin
+6. Enjoy!
 
 ## Checklist
 
 See [this spreadsheet](https://docs.google.com/spreadsheets/d/1p3uPDuDFvcDcdNjSUojGUHYuH9WlPryn5qd2R5Q4KsI/edit?usp=sharing) for current planning/documents.
 
-- [ ] Support for GameCube (``G5SE7D``)
+- [x] Support for GameCube (``G5SE7D``)
 - [ ] Support for PS2/NTSC (``SLUS-20884``)
 - [ ] Support for PS2/PAL (``SLES-52569``)
