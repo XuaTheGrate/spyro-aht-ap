@@ -110,22 +110,17 @@ class G5SE7D(AddressList):
     ABILITY_FLAGS = 0x80465B88
     IN_GAME = 0x8046F344 
     PAUSE = 0x8046F378
-    LOADING = 0x0 # unnecessary
+    LOADING = 0x0
 
 
-class PlayerFlags(IntFlag):
+class AbilityFlags(IntFlag):
     DoubleJump = 0x1
-    #UNUSED = 0x2
     SparxHealthUpgrade = 0x4
-    #UNUSED = 0x8
     PoleSpin = 0x10
     IceBreath = 0x20
     LightningBreath = 0x40
     WaterBreath = 0x80
-    #UNUSED = 0x100
     DoubleGems = 0x200
-    #UNUSED = 0x400
-    #UNUSED = 0x800
     SuperchargeGadget = 0x1000
     InvincibilityGadget = 0x2000
     PurchasedLockpick = 0x4000
@@ -133,4 +128,3 @@ class PlayerFlags(IntFlag):
     WallKick = 0x10000
     Shockwave = 0x20000
     ButterflyJar = 0x40000
-    #UNUSED = 0x80000

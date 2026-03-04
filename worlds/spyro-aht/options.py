@@ -3,6 +3,26 @@ from dataclasses import dataclass
 from Options import PerGameCommonOptions, Toggle, Choice, Range
 
 
+class RandomizeSgtByrdMinigames(Toggle):
+    """Toggle randomizing Sgt. Byrds mini game rewards."""
+    display_name = "Randomize Sgt. Byrd Mini Games"
+
+
+class RandomizeBlinkMinigames(Toggle):
+    """Toggle randomizing Blinks mini game rewards."""
+    display_name = "Randomize Blink Mini Games"
+
+
+class RandomizeTurretMinigames(Toggle):
+    """Toggle randomizing Turret mini game rewards."""
+    display_name = "Randomize Turret Mini Games"
+
+
+class RandomizeSparxMinigames(Toggle):
+    """Toggle randomizing Sparxs mini game rewards."""
+    display_name = "Randomize Sparx Mini Games"
+
+
 class RandomizeBreath(Choice):
     """Determines which starting elemental breath you have.
     
@@ -70,7 +90,7 @@ class RandomizeLightGemDoorCosts(Choice):
     """Sets the cost of light gem doors.
     
     default: No changes to cost.
-    randomized: Randomizes the pricostce, defined by the range in **Minimum Light Gem Door Cost** and **Maximum Light Gem Door Cost**.
+    randomized: Randomizes the cost, defined by the range in **Minimum Light Gem Door Cost** and **Maximum Light Gem Door Cost**.
     shuffle: Shuffles the existing prices (20, 45, 70 and 95).
     randomized_low: Randomizes the cost, with a bias towards a lower cost.
     randomized_high: Randomizes the cost, with a bias towards a higher cost."""
@@ -101,6 +121,10 @@ class LightGemDoorCostMax(Range):
 
 @dataclass
 class SpyroAHTOptions(PerGameCommonOptions):
+    randomize_sgt_byrd_minigames: RandomizeSgtByrdMinigames
+    randomize_blink_minigames: RandomizeBlinkMinigames
+    randomize_turret_minigames: RandomizeTurretMinigames
+    randomize_sparx_minigames: RandomizeSparxMinigames
     randomize_breath: RandomizeBreath
     randomize_swim: RandomizeSwim
     randomize_glide: RandomizeGlide

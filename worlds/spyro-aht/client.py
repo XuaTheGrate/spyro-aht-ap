@@ -45,7 +45,6 @@ class PCSX2Client(GenericClient):
     async def connect(self):
         await self.disconnect()
         await self.pine.connect()
-        #self.ready.set()
         logger.info("PCSX2 connection established")
         game_id = await self.pine.get_game_id()
         # TODO: support for PAL version
@@ -190,28 +189,28 @@ class DolphinClient(GenericClient):
     async def _temp_check_ability_flags(self, ctx: SpyroAHTContext):
         # temporary function for testing, remove on release
         if 1 not in ctx.checked_locations:
-            await self.set_ability_flag(consts.PlayerFlags.DoubleJump, False)
+            await self.set_ability_flag(consts.AbilityFlags.DoubleJump, False)
         if 17 not in ctx.checked_locations:
-            breath = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ACTIVE_BREATH), 'big')
+            breath = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ACTIVE_BREATH, 4), 'big')
             if breath == consts.BREATH_ELECTRIC:
                 await self.force_set_breath(consts.BREATH_FIRE)
-            await self.set_ability_flag(consts.PlayerFlags.LightningBreath, False)
+            await self.set_ability_flag(consts.AbilityFlags.LightningBreath, False)
         if 33 not in ctx.checked_locations:
-            await self.set_ability_flag(consts.PlayerFlags.PoleSpin, False)
+            await self.set_ability_flag(consts.AbilityFlags.PoleSpin, False)
         if 79 not in ctx.checked_locations:
-            breath = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ACTIVE_BREATH), 'big')
+            breath = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ACTIVE_BREATH, 4), 'big')
             if breath == consts.BREATH_WATER:
                 await self.force_set_breath(consts.BREATH_FIRE)
-            await self.set_ability_flag(consts.PlayerFlags.WaterBreath, False)
+            await self.set_ability_flag(consts.AbilityFlags.WaterBreath, False)
         if 83 not in ctx.checked_locations:
-            await self.set_ability_flag(consts.PlayerFlags.WingShield, False)
+            await self.set_ability_flag(consts.AbilityFlags.WingShield, False)
         if 136 not in ctx.checked_locations:
-            breath = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ACTIVE_BREATH), 'big')
+            breath = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ACTIVE_BREATH, 4), 'big')
             if breath == consts.BREATH_ICE:
                 await self.force_set_breath(consts.BREATH_FIRE)
-            await self.set_ability_flag(consts.PlayerFlags.IceBreath, False)
+            await self.set_ability_flag(consts.AbilityFlags.IceBreath, False)
         if 155 not in ctx.checked_locations:
-            await self.set_ability_flag(consts.PlayerFlags.WallKick, False)
+            await self.set_ability_flag(consts.AbilityFlags.WallKick, False)
     
     async def set_ability_flag(self, flag: int, to: bool):
         flags = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ABILITY_FLAGS, 4), 'big')
@@ -237,6 +236,18 @@ class DolphinClient(GenericClient):
 
 class SpyroAHTCommandProcessor(ClientCommandProcessor):
     ctx: SpyroAHTContext
+
+    def _cmd_debug_send(self, location: str) -> bool:
+        """
+        DEBUG COMMAND ONLY USE IF NECESSARY. Manually send a location.
+        """
+        from .locations import LOCATION_NAME_TO_ID
+        id = LOCATION_NAME_TO_ID.get(location, None)
+        if not id:
+            self.output("Invalid location.")
+            return False
+        Utils.async_start(self.ctx.send_msgs([{"cmd":"LocationChecks","locations":[id]}]))
+        return True
 
     def _cmd_client(self, client: str = "") -> bool:
         """
@@ -298,22 +309,22 @@ async def dispatch_items(ctx: SpyroAHTContext):
             # case 0xC: # Glide
             # case 0xD: # Charge
             case 0x1: # Double Jump
-                await ctx.emu_client.set_ability_flag(consts.PlayerFlags.DoubleJump, True)
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.DoubleJump, True)
             case 0x2: # Pole Spin
-                await ctx.emu_client.set_ability_flag(consts.PlayerFlags.PoleSpin, True)
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.PoleSpin, True)
             case 0x3: # Wing Shield
-                await ctx.emu_client.set_ability_flag(consts.PlayerFlags.WingShield, True)
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.WingShield, True)
             case 0x4:
-                await ctx.emu_client.set_ability_flag(consts.PlayerFlags.WallKick, True)
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.WallKick, True)
             # case 0xE: # Fire Breath
             case 0x5: # Lightning Breath
-                await ctx.emu_client.set_ability_flag(consts.PlayerFlags.LightningBreath, True)
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.LightningBreath, True)
                 await ctx.emu_client.force_set_breath(consts.BREATH_ELECTRIC)
             case 0x6: # Water Breath
-                await ctx.emu_client.set_ability_flag(consts.PlayerFlags.WaterBreath, True)
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.WaterBreath, True)
                 await ctx.emu_client.force_set_breath(consts.BREATH_WATER)
             case 0x7: # Ice Breath
-                await ctx.emu_client.set_ability_flag(consts.PlayerFlags.IceBreath, True)
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.IceBreath, True)
                 await ctx.emu_client.force_set_breath(consts.BREATH_ICE)
             case 0x8: # Dark Gem
                 count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.DARK_GEM_COUNT)
@@ -327,8 +338,6 @@ async def dispatch_items(ctx: SpyroAHTContext):
                 count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.DRAGON_EGG_COUNT)
                 if count < ctx.item_counts[0xA]:
                     await ctx.emu_client.add_item(ctx.emu_client.addresses.DRAGON_EGG_COUNT, 1)
-            case _:
-                logger.error(f"Unhandled item {item!r}")
 
 
 starter_checks = {229, 230, 231, 232}
@@ -372,7 +381,6 @@ def main(*args: str):
         ctx.run_cli()
         await asyncio.sleep(1)
 
-        #ctx.emu_loop = asyncio.create_task(emu_loop(ctx), name="EmuLoop")
         await ctx.exit_event.wait()
         ctx.watcher_event.set()
         ctx.server_address = None

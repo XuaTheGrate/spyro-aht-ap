@@ -101,7 +101,6 @@ class Pine:
             self._sock.settimeout(5.0)
             await self.loop.sock_connect(self._sock, socket_name)
             logger.info("PCSX2 connection established")
-            # self._sock.connect(socket_name)
         except socket.error:
             self._sock.close()
             self._sock_state = False
@@ -212,7 +211,6 @@ class Pine:
             await self._init_socket()
 
         try:
-            #self._sock.sendall(request)
             await self.loop.sock_sendall(self._sock, request)
         except socket.error:
             self._sock.close()
@@ -223,7 +221,6 @@ class Pine:
         result: bytes = b''
         while len(result) < end_length:
             try:
-                #response = self._sock.recv(4096)
                 response = await self.loop.sock_recv(self._sock, 4096)
             except TimeoutError:
                 raise TimeoutError("Response timed out. "

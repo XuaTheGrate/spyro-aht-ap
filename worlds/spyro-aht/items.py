@@ -72,13 +72,60 @@ def create_item_with_correct_classification(world: SpyroAHTWorld, name: str) -> 
     return SpyroAHTItem(name, classification, ITEM_NAME_TO_ID[name], world.player)
 
 
+byrd_locations = [[
+    "Dragon Village: Dragon Egg from Sgt. Byrd",
+    "Cloudy Domain: Dragon Egg from Sgt. Byrd",
+    "Ice Citadel: Dragon Egg from Sgt. Byrd",
+    "Molten Mount: Dragon Egg from Sgt. Byrd"
+], [
+    "Cloudy Domain: Light Gem from Sgt. Byrd",
+    "Dragon Village: Light Gem from Sgt. Byrd",
+    "Ice Citadel: Light Gem from Sgt. Byrd",
+    "Molten Mount: Light Gem from Sgt. Byrd"
+]]
+
+blink_locations = [[
+    "Crocoville Swamp: Dragon Egg from Blink",
+    "Coastal Remains: Dragon Egg from Blink",
+    "Frostbite Village: Dragon Egg from Blink",
+    "Dark Mine: Dragon Egg from Blink",
+], [
+    "Crocoville Swamp: Light Gem from Blink",
+    "Coastal Remains: Light Gem from Blink",
+    "Frostbite Village: Light Gem from Blink",
+    "Dark Mine: Light Gem from Blink",
+]]
+
+turret_locations = [[
+    "Crocoville Swamp: Dragon Egg from Fredneck",
+    "Coastal Remains: Dragon Egg from Turtle Mother",
+    "Frostbite Village: Dragon Egg from Peggy",
+    "Stormy Beach: Dragon Egg from Wally",
+], [
+    "Crocoville Swamp: Light Gem from Fredneck",
+    "Coastal Remains: Light Gem from Turtle Mother",
+    "Frostbite Village: Light Gem from Peggy",
+    "Stormy Beach: Light Gem from Wally",
+]]
+
+sparx_locations = [[
+    "Dragonfly Falls: Dragon Egg from Sparx",
+    "Sunken Ruins: Dragon Egg from Sparx",
+    "Gloomy Glacier: Dragon Egg from Sparx",
+    "Magma Falls Bottom: Dragon Egg from Sparx",
+], [
+    "Dragonfly Falls: Light Gem from Sparx",
+    "Sunken Ruins: Light Gem from Sparx",
+    "Gloomy Glacier: Light Gem from Sparx",
+    "Magma Falls Bottom: Light Gem from Sparx",
+]]
+
+
 def create_all_items(world: SpyroAHTWorld) -> None:
+    counts = ITEM_COUNTS.copy()
+
     itempool: list[Item] = []
 
-    for item in DEFAULT_ITEMS:
-        for _ in range(ITEM_COUNTS.get(item, 1)):
-            itempool.append(world.create_item(item))
-    
     world.get_location("Dragon Village: Double Jump from Elder Tomas").place_locked_item(world.create_item("Double Jump"))
     world.get_location("Crocoville Swamp: Pole Spin from Elder Magnus").place_locked_item(world.create_item("Pole Spin"))
     world.get_location("Cloudy Domain: Wing Shield from Elder Titan").place_locked_item(world.create_item("Wing Shield"))
@@ -123,11 +170,52 @@ def create_all_items(world: SpyroAHTWorld) -> None:
     l.place_locked_item(world.create_item("Glide"))
     #else:
     #itempool.append(world.create_item("Glide"))
-    
 
-    unfilled = len(world.multiworld.get_unfilled_locations(world.player))
-    print(f"Adding {unfilled - len(itempool)} dragon eggs") # should theoretically always be 80 anyway
-    #itempool.extend(world.create_filler() for _ in range(unfilled - len(itempool)))
+    if not world.options.randomize_sgt_byrd_minigames:
+        for n in byrd_locations[0]:
+            l = world.get_location(n)
+            l.place_locked_item(world.create_item("Dragon Egg"))
+            counts['Dragon Egg'] -= 1
+        for n in byrd_locations[1]:
+            l = world.get_location(n)
+            l.place_locked_item(world.create_item("Light Gem"))
+            counts['Light Gem'] -= 1
+    
+    if not world.options.randomize_blink_minigames:
+        for n in blink_locations[0]:
+            l = world.get_location(n)
+            l.place_locked_item(world.create_item("Dragon Egg"))
+            counts['Dragon Egg'] -= 1
+        for n in blink_locations[1]:
+            l = world.get_location(n)
+            l.place_locked_item(world.create_item("Light Gem"))
+            counts['Light Gem'] -= 1
+    
+    if not world.options.randomize_turret_minigames:
+        for n in turret_locations[0]:
+            l = world.get_location(n)
+            l.place_locked_item(world.create_item("Dragon Egg"))
+            counts['Dragon Egg'] -= 1
+        for n in turret_locations[1]:
+            l = world.get_location(n)
+            l.place_locked_item(world.create_item("Light Gem"))
+            counts['Light Gem'] -= 1
+    
+    if not world.options.randomize_sparx_minigames:
+        for n in sparx_locations[0]:
+            l = world.get_location(n)
+            l.place_locked_item(world.create_item("Dragon Egg"))
+            counts['Dragon Egg'] -= 1
+        for n in sparx_locations[1]:
+            l = world.get_location(n)
+            l.place_locked_item(world.create_item("Light Gem"))
+            counts['Light Gem'] -= 1
+
+
+    for item in DEFAULT_ITEMS:
+        for _ in range(counts.get(item, 1)):
+            itempool.append(world.create_item(item))
+    
 
     world.multiworld.itempool.extend(itempool)
     
