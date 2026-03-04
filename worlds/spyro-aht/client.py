@@ -9,7 +9,7 @@ import dolphin_memory_engine
 
 import Utils
 from CommonClient import ClientCommandProcessor, CommonContext, logger, server_loop, gui_enabled, get_base_parser
-from NetUtils import NetworkItem
+from NetUtils import ClientStatus, NetworkItem
 
 from . import consts
 from .pcsx2_interface import Pine
@@ -30,6 +30,7 @@ class GenericClient:
     async def get_item_count(self, addr: int) -> int: raise NotImplementedError
     async def add_item(self, addr: int, count: int): raise NotImplementedError
     async def force_set_breath(self, breath_id: int): raise NotImplementedError
+    async def check_goal(self, ctx: SpyroAHTContext): raise NotImplementedError
 
 
 class PCSX2Client(GenericClient):
@@ -122,6 +123,7 @@ class DolphinClient(GenericClient):
     def __init__(self) -> None:
         self.ready = asyncio.Event()
         self.addresses = consts.G5SE7D()
+        self._goal_index = 0 # TODO: alternate goal conditions
     
     async def connect(self):
         if not dolphin_memory_engine.is_hooked():
@@ -232,6 +234,17 @@ class DolphinClient(GenericClient):
     
     async def force_set_breath(self, breath_id: int):
         dolphin_memory_engine.write_bytes(self.addresses.ACTIVE_BREATH, breath_id.to_bytes(4))
+    
+    async def check_goal(self, ctx: SpyroAHTContext):
+        obj = consts.GOALS[self._goal_index]
+
+        index = (obj & 0xFFFF) - 1
+        uint = floor(index / 32)
+        bit = index % 32
+        data = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.OBJECTIVES + (uint * 4), 4), 'big')
+        flag = data & (1 << bit)
+        if flag:
+            await ctx.send_msgs([{"cmd":"StatusUpdate","status":ClientStatus.CLIENT_GOAL}])
 
 
 class SpyroAHTCommandProcessor(ClientCommandProcessor):
@@ -367,6 +380,7 @@ async def emu_loop(ctx: SpyroAHTContext):
         if await ctx.emu_client.is_in_game() and not await ctx.emu_client.is_paused() and not await ctx.emu_client.is_loading():
             await dispatch_items(ctx)
             await dispatch_locations(ctx)
+            await ctx.emu_client.check_goal(ctx)
     await ctx.emu_client.disconnect()
 
 

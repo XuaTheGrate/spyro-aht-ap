@@ -74,6 +74,11 @@ LOCATIONS_OBJECTIVE: dict[int, int] = {
 }
 
 
+GOALS = [
+    0x44000084 # Defeat Red
+]
+
+
 class AddressList:
     BITFIELD: int
     OBJECTIVES: int
