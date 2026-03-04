@@ -14,7 +14,8 @@ This list is non-exhaustive and may change, and is not indicative of future plan
 - [ ] Elemental Breaths
   - [ ] + Fire Breath
 - [ ] Elder abilities
-- [ ] Mini game rewards
+- [x] Mini game rewards
+  - [x] Toggle in YAML
 - [ ] Shop gem costs
 - [ ] Light Gem door costs
 - [ ] Charge, Swim and Glide
