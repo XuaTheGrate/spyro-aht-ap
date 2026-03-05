@@ -125,6 +125,7 @@ class DolphinClient(GenericClient):
         self.ready = asyncio.Event()
         self.addresses = consts.G5SE7D()
         self._goal_index = 0 # TODO: alternate goal conditions
+        self._scouted_locations: set[int] = set()
     
     async def connect(self):
         if not dolphin_memory_engine.is_hooked():
@@ -257,7 +258,10 @@ class DolphinClient(GenericClient):
             flag = data & (1 << bit)
             if flag:
                 locations.update(loc)
+        locations.difference_update(self._scouted_locations)
+        
         if locations:
+            self._scouted_locations.update(locations)
             await ctx.send_msgs([{"cmd":"LocationScouts","locations":locations,"create_as_hint":2}])
 
 
