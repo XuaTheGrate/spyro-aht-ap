@@ -140,7 +140,7 @@ def create_all_items(world: SpyroAHTWorld) -> None:
         case _: # default
             l = world.get_location("Dragon Village: Fire Breath")
             l.place_locked_item(world.create_item("Fire Breath"))
-            #itempool.extend((world.create_item("Lightning Breath"), world.create_item("Water Breath"), world.create_item("Ice Breath")))
+    #       itempool.extend((world.create_item("Lightning Breath"), world.create_item("Water Breath"), world.create_item("Ice Breath")))
     #   case 1: # randomized
     #       breaths = ["Fire Breath", "Lightning Breath", "Water Breath", "Ice Breath"]
     #       breath = world.random.choice(breaths)

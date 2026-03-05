@@ -31,6 +31,7 @@ class GenericClient:
     async def add_item(self, addr: int, count: int): raise NotImplementedError
     async def force_set_breath(self, breath_id: int): raise NotImplementedError
     async def check_goal(self, ctx: SpyroAHTContext): raise NotImplementedError
+    async def scout_location(self, ctx: SpyroAHTContext): raise NotImplementedError
 
 
 class PCSX2Client(GenericClient):
@@ -245,6 +246,19 @@ class DolphinClient(GenericClient):
         flag = data & (1 << bit)
         if flag:
             await ctx.send_msgs([{"cmd":"StatusUpdate","status":ClientStatus.CLIENT_GOAL}])
+    
+    async def scout_location(self, ctx: SpyroAHTContext):
+        locations: set[int] = set()
+        for obj, loc in consts.SCOUT_OBJECTIVES.items():
+            index = (obj & 0xFFFF) - 1
+            uint = floor(index / 32)
+            bit = index % 32
+            data = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.OBJECTIVES + (uint * 4), 4), 'big')
+            flag = data & (1 << bit)
+            if flag:
+                locations.update(loc)
+        if locations:
+            await ctx.send_msgs([{"cmd":"LocationScouts","locations":locations,"create_as_hint":2}])
 
 
 class SpyroAHTCommandProcessor(ClientCommandProcessor):
@@ -379,6 +393,7 @@ async def emu_loop(ctx: SpyroAHTContext):
 
         if await ctx.emu_client.is_in_game() and not await ctx.emu_client.is_paused() and not await ctx.emu_client.is_loading():
             await dispatch_items(ctx)
+            await ctx.emu_client.scout_location(ctx)
             await dispatch_locations(ctx)
             await ctx.emu_client.check_goal(ctx)
     await ctx.emu_client.disconnect()
