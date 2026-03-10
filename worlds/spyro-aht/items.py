@@ -153,45 +153,44 @@ def create_all_items(world: SpyroAHTWorld) -> None:
     world.get_location("Cloudy Domain: Wing Shield from Elder Titan").place_locked_item(world.create_item("Wing Shield"))
     world.get_location("Ice Citadel: Wall Kick from Elder Astor").place_locked_item(world.create_item("Wall Kick"))
 
-    world.get_location("Dragon Village: Lightning Breath from Gnasty Gnorc").place_locked_item(world.create_item("Lightning Breath"))
-    world.get_location("Coastal Remains: Water Breath from Ineptune").place_locked_item(world.create_item("Water Breath"))
-    world.get_location("Frostbite Village: Ice Breath from Red").place_locked_item(world.create_item("Ice Breath"))
-    
+    #world.get_location("Dragon Village: Lightning Breath from Gnasty Gnorc").place_locked_item(world.create_item("Lightning Breath"))
+    #world.get_location("Coastal Remains: Water Breath from Ineptune").place_locked_item(world.create_item("Water Breath"))
+    #world.get_location("Frostbite Village: Ice Breath from Red").place_locked_item(world.create_item("Ice Breath"))
     
     match world.options.randomize_breath:
-        case _: # default
+        case 0: # default
             l = world.get_location("Dragon Village: Fire Breath")
             l.place_locked_item(world.create_item("Fire Breath"))
-    #       itempool.extend((world.create_item("Lightning Breath"), world.create_item("Water Breath"), world.create_item("Ice Breath")))
-    #   case 1: # randomized
-    #       breaths = ["Fire Breath", "Lightning Breath", "Water Breath", "Ice Breath"]
-    #       breath = world.random.choice(breaths)
-    #       breaths.remove(breath)
-    #       i = world.create_item(breath)
-    #       l = world.get_location("Dragon Village: Fire Breath")
-    #       l.place_locked_item(i)
-    #       itempool.extend(world.create_item(i) for i in breaths)
-    #   case 2: # none
-    #       breaths = ["Fire Breath", "Lightning Breath", "Water Breath", "Ice Breath"]
-    #       itempool.extend(world.create_item(i) for i in breaths)
+            itempool.extend((world.create_item("Lightning Breath"), world.create_item("Water Breath"), world.create_item("Ice Breath")))
+        case 1: # randomized
+            breaths = ["Fire Breath", "Lightning Breath", "Water Breath", "Ice Breath"]
+            breath = world.random.choice(breaths)
+            breaths.remove(breath)
+            i = world.create_item(breath)
+            l = world.get_location("Dragon Village: Fire Breath")
+            l.place_locked_item(i)
+            itempool.extend(world.create_item(i) for i in breaths)
+        case 2: # none
+            breaths = ["Fire Breath", "Lightning Breath", "Water Breath", "Ice Breath"]
+            itempool.extend(world.create_item(i) for i in breaths)
     
-    #if not world.options.randomize_charge:
-    l = world.get_location("Dragon Village: Charge")
-    l.place_locked_item(world.create_item("Charge"))
-    #else:
-        #itempool.append(world.create_item("Charge"))
+    if not world.options.randomize_charge:
+        l = world.get_location("Dragon Village: Charge")
+        l.place_locked_item(world.create_item("Charge"))
+    else:
+        itempool.append(world.create_item("Charge"))
 
-    #if not world.options.randomize_swim:
-    l = world.get_location("Dragon Village: Swim")
-    l.place_locked_item(world.create_item("Swim"))
-    #else:
-    #itempool.append(world.create_item("Swim"))
+    if not world.options.randomize_swim:
+        l = world.get_location("Dragon Village: Swim")
+        l.place_locked_item(world.create_item("Swim"))
+    else:
+        itempool.append(world.create_item("Swim"))
 
-    #if not world.options.randomize_glide:
-    l = world.get_location("Dragon Village: Glide")
-    l.place_locked_item(world.create_item("Glide"))
-    #else:
-    #itempool.append(world.create_item("Glide"))
+    if not world.options.randomize_glide:
+        l = world.get_location("Dragon Village: Glide")
+        l.place_locked_item(world.create_item("Glide"))
+    else:
+        itempool.append(world.create_item("Glide"))
 
     if not world.options.randomize_sgt_byrd_minigames:
         for n in byrd_locations[0]:
