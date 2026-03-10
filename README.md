@@ -13,16 +13,16 @@ This list is non-exhaustive and may change, and is not indicative of future plan
   - [x] Gem locked chests?
 - [x] Elemental Breaths
   - [x] + Fire Breath
-- [ ] Elder abilities
+- [x] Elder abilities
 - [x] Mini game rewards
   - [x] Toggle in YAML
+- [x] Charge, Swim and Glide
+- [ ] Shop Items
 - [ ] Shop gem costs
 - [ ] Light Gem door costs
-- [x] Charge, Swim and Glide
 - [ ] Fireworks
 - [ ] Enemies
 - [ ] Baskets/Vases
-- [x] Shop Items
 - [ ] Gadget Access
   - [ ] Invulnerability
   - [ ] Supercharge
