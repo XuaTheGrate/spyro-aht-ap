@@ -156,3 +156,7 @@ class AbilityFlags(IntFlag):
     WallKick = 0x10000
     Shockwave = 0x20000
     ButterflyJar = 0x40000
+    FireBreath = 0x80000
+    Glide = 0x100000
+    Charge = 0x200000
+    Swim = 0x400000

@@ -336,9 +336,12 @@ async def dispatch_items(ctx: SpyroAHTContext):
             continue
         ctx.synced_items.add(item)
         match item.item:
-            # case 0xB: # Swim
-            # case 0xC: # Glide
-            # case 0xD: # Charge
+            case 0xB: # Swim
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.Swim, True)
+            case 0xC: # Glide
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.Glide, True)
+            case 0xD: # Charge
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.Charge, True)
             case 0x1: # Double Jump
                 await ctx.emu_client.set_ability_flag(consts.AbilityFlags.DoubleJump, True)
             case 0x2: # Pole Spin
