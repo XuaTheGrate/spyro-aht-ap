@@ -46,7 +46,7 @@ def create_regular_locations(world: SpyroAHTWorld):
         r = world.get_region(region.name)
         r.add_locations(get_location_names_with_ids([l.name for l in region.locations]))
     
-    if world.options.randomize_shop_items:
+    if False:#world.options.randomize_shop_items:
         r = world.get_region("Dragon Village")
         r.add_locations({l.name: l.id for l in SHOP_ITEMS})
 
