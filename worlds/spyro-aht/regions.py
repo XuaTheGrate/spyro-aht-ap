@@ -459,3 +459,13 @@ def connect_regions(world: SpyroAHTWorld) -> None:
             c = world.get_region(con)
             entrance = region.name.replace(' ', '') + '=>' + con.replace(' ', '')
             r.connect(c, entrance, rule=REGIONS[con].access_rule(world))
+    
+    if world.options.misc_allow_immediate_realm_access:
+        dv = world.get_region("Dragon Village")
+        dv.connect(world.get_region("Coastal Remains"), "DragonVillage=>CoastalRemains")
+        dv.connect(world.get_region("Frostbite Village"), "DragonVillage=>FrostbiteVillage")
+        dv.connect(world.get_region("Stormy Beach"), "DragonVillage=>StormyBeach")
+    else:
+        world.get_region("Dragon Village - Gnasty Gnorcs Lair").connect(world.get_region("Coastal Remains"), "DragonVillage-GnastyGnorcsLair=>CoastalRemains")
+        world.get_region("Coastal Remains - Ineptunes Lair").connect(world.get_region("Frostbite Village"), "CoastalRemains-IneptunesLair=>FrostbiteVillage")
+        world.get_region("Frostbite Village - Reds Lair").connect(world.get_region("Stormy Beach"), "FrostbiteVillage-RedsLair=>StormyBeach")

@@ -119,6 +119,24 @@ class LightGemDoorCostMax(Range):
     default = 50
 
 
+class MiscSkipCutscenes(Toggle):
+    """Enable a patch that skips realm intro cutscenes. USE WITH CAUTION, maybe have glitchy side-effects."""
+    display_name = "Auto Skip Cutscenes"
+    default = 0
+
+
+class MiscAllowHubTeleport(Toggle):
+    """Enable a patch to add a button to the pause menu to teleport you back to the hub area of that realm."""
+    display_name = "Allow Hub Teleportation"
+    default = 1
+
+
+class MiscAllowImmediateRealmAccess(Toggle):
+    """Enable a patch to access all realms at any time, instead of having to beat the previous realms boss first."""
+    display_name = "Allow Immediate Realm Access"
+    default = 1
+
+
 @dataclass
 class SpyroAHTOptions(PerGameCommonOptions):
     randomize_sgt_byrd_minigames: RandomizeSgtByrdMinigames
@@ -135,4 +153,8 @@ class SpyroAHTOptions(PerGameCommonOptions):
     randomize_light_gem_door_costs: RandomizeLightGemDoorCosts
     light_gem_door_cost_min: LightGemDoorCostMin
     light_gem_door_cost_max: LightGemDoorCostMax
+
+    misc_skip_cutscenes: MiscSkipCutscenes
+    misc_allow_hub_teleport: MiscAllowHubTeleport
+    misc_allow_immediate_realm_access: MiscAllowImmediateRealmAccess
 
