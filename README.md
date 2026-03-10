@@ -10,19 +10,19 @@ This list is non-exhaustive and may change, and is not indicative of future plan
 - [x] Dragon Eggs
   - [x] Egg Thieves
 - [x] Locked Chests
-  - [ ] Gem locked chests?
-- [ ] Elemental Breaths
-  - [ ] + Fire Breath
+  - [x] Gem locked chests?
+- [x] Elemental Breaths
+  - [x] + Fire Breath
 - [ ] Elder abilities
 - [x] Mini game rewards
   - [x] Toggle in YAML
 - [ ] Shop gem costs
 - [ ] Light Gem door costs
-- [ ] Charge, Swim and Glide
+- [x] Charge, Swim and Glide
 - [ ] Fireworks
 - [ ] Enemies
 - [ ] Baskets/Vases
-- [ ] Shop Items
+- [x] Shop Items
 - [ ] Gadget Access
   - [ ] Invulnerability
   - [ ] Supercharge
