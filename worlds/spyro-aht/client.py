@@ -350,7 +350,8 @@ async def dispatch_items(ctx: SpyroAHTContext):
                 await ctx.emu_client.set_ability_flag(consts.AbilityFlags.WingShield, True)
             case 0x4:
                 await ctx.emu_client.set_ability_flag(consts.AbilityFlags.WallKick, True)
-            # case 0xE: # Fire Breath
+            case 0xE: # Fire Breath
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.FireBreath, True)
             case 0x5: # Lightning Breath
                 await ctx.emu_client.set_ability_flag(consts.AbilityFlags.LightningBreath, True)
                 await ctx.emu_client.force_set_breath(consts.BREATH_ELECTRIC)
