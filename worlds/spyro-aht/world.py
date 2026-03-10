@@ -37,7 +37,7 @@ class SpyroAHTWorld(World):
         return items.create_item_with_correct_classification(self, name)
 
     def get_filler_item_name(self) -> str:
-        return items.FILLER_ITEM_NAME
+        return "Gem Pack"
     
     def fill_slot_data(self) -> Mapping[str, Any]:
         return self.options.as_dict("randomize_breath", "randomize_swim", "randomize_glide", "randomize_charge", "randomize_shop_prices", "shop_prices_min", "shop_prices_max", "randomize_light_gem_door_costs", "light_gem_door_cost_min", "light_gem_door_cost_max")

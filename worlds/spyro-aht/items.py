@@ -25,6 +25,16 @@ ITEM_NAME_TO_ID = {
     "Swim": 0xB,
     "Glide": 0xC,
     "Charge": 0xD,
+
+    "Lockpick": 0x1C,
+    "Extra Health Unit": 0xF,
+
+    "Keychain": 0x18,
+    "Butterfly Jar": 0x19,
+    "Double Gems": 0x1A,
+    "Shockwave": 0x1B,
+
+    "Gem Pack": 0x1D
 }
 
 DEFAULT_ITEMS = [
@@ -42,25 +52,37 @@ DEFAULT_ITEM_CLASSIFICATIONS = {
     "Pole Spin": ItemClassification.progression,
     "Wing Shield": ItemClassification.progression,
     "Wall Kick": ItemClassification.progression,
+
     "Fire Breath": ItemClassification.progression,
     "Lightning Breath": ItemClassification.progression,
     "Water Breath": ItemClassification.progression,
     "Ice Breath": ItemClassification.progression,
+
     "Swim": ItemClassification.progression,
     "Glide": ItemClassification.progression,
     "Charge": ItemClassification.progression,
+
     "Dark Gem": ItemClassification.progression,
     "Light Gem": ItemClassification.progression | ItemClassification.filler,
-    "Dragon Egg": ItemClassification.filler
+    "Dragon Egg": ItemClassification.filler,
+
+    "Lockpick": ItemClassification.progression,
+    "Extra Health Unit": ItemClassification.useful,
+    
+    "Keychain": ItemClassification.filler,
+    "Butterfly Jar": ItemClassification.useful,
+    "Double Gems": ItemClassification.useful,
+    "Shockwave": ItemClassification.useful,
+
+    "Gem Pack": ItemClassification.filler
 }
+
 
 ITEM_COUNTS = {
     "Dark Gem": 40,
     "Light Gem": 100,
-    "Dragon Egg": 80  
+    "Dragon Egg": 80
 }
-
-FILLER_ITEM_NAME = "Dragon Egg"
 
 
 class SpyroAHTItem(Item):
@@ -210,12 +232,18 @@ def create_all_items(world: SpyroAHTWorld) -> None:
             l = world.get_location(n)
             l.place_locked_item(world.create_item("Light Gem"))
             counts['Light Gem'] -= 1
+    
+    if world.options.randomize_shop_items:
+        itempool.extend(world.create_item(i) for i in ("Extra Health Unit", "Keychain", "Butterfly Jar", "Double Gems", "Shockwave"))
+        itempool.extend(world.create_item("Lockpick") for _ in range(52))
 
 
     for item in DEFAULT_ITEMS:
         for _ in range(counts.get(item, 1)):
             itempool.append(world.create_item(item))
     
+    unfilled = len(world.multiworld.get_unfilled_locations()) - len(itempool)
+    for i in range(unfilled):
+        itempool.append(world.create_filler())
 
     world.multiworld.itempool.extend(itempool)
-    

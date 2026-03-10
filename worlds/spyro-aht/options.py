@@ -6,21 +6,25 @@ from Options import PerGameCommonOptions, Toggle, Choice, Range
 class RandomizeSgtByrdMinigames(Toggle):
     """Toggle randomizing Sgt. Byrds mini game rewards."""
     display_name = "Randomize Sgt. Byrd Mini Games"
+    default = 1
 
 
 class RandomizeBlinkMinigames(Toggle):
     """Toggle randomizing Blinks mini game rewards."""
     display_name = "Randomize Blink Mini Games"
+    default = 0
 
 
 class RandomizeTurretMinigames(Toggle):
     """Toggle randomizing Turret mini game rewards."""
     display_name = "Randomize Turret Mini Games"
+    default = 1
 
 
 class RandomizeSparxMinigames(Toggle):
     """Toggle randomizing Sparxs mini game rewards."""
     display_name = "Randomize Sparx Mini Games"
+    default = 1
 
 
 class RandomizeBreath(Choice):
@@ -40,22 +44,31 @@ class RandomizeBreath(Choice):
 class RandomizeSwim(Toggle):
     """Toggle randomizing Spyro's ability to Swim."""
     display_name = "Randomize Swim"
+    default = 0
 
 
 class RandomizeGlide(Toggle):
     """Toggle randomizing Spyro's ability to Glide."""
     display_name = "Randomize Glide"
+    default = 0
 
 
 class RandomizeCharge(Toggle):
     """Toggle randomizing Spyro's ability to Charge."""
     display_name = "Randomize Charge"
+    default = 0
+
+
+class RandomizeShopItems(Toggle):
+    """Randomize Moneybags shop items."""
+    display_name = "Randomize Shop Items"
+    default = 0
 
 
 class RandomizeShopPrices(Choice):
     """Sets Moneybags shop prices.
     
-    default: No changes to price.
+    default: No changes to price. If ``Randomize Shop Items`` is enabled, this setting will automatically change to ``random``.
     random: Randomizes the price, defined by the range in **Minimum Shop Price** and **Maximum Shop Price**.
     random_low: Randomizes the price, with a bias towards a lower price.
     random_high: Randomizes the price, with a bias towards a higher price.
@@ -143,13 +156,17 @@ class SpyroAHTOptions(PerGameCommonOptions):
     randomize_blink_minigames: RandomizeBlinkMinigames
     randomize_turret_minigames: RandomizeTurretMinigames
     randomize_sparx_minigames: RandomizeSparxMinigames
+
     randomize_breath: RandomizeBreath
     randomize_swim: RandomizeSwim
     randomize_glide: RandomizeGlide
     randomize_charge: RandomizeCharge
+
+    randomize_shop_items: RandomizeShopItems
     randomize_shop_prices: RandomizeShopPrices
     shop_prices_min: ShopPricesMin
     shop_prices_max: ShopPricesMax
+
     randomize_light_gem_door_costs: RandomizeLightGemDoorCosts
     light_gem_door_cost_min: LightGemDoorCostMin
     light_gem_door_cost_max: LightGemDoorCostMax
