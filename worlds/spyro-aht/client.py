@@ -18,7 +18,6 @@ from .pcsx2_interface import Pine
 class GenericClient:
     addresses: consts.AddressList
     ready: asyncio.Event
-    goal_index: int
 
     @property
     def is_connected(self) -> bool: raise NotImplementedError
@@ -41,7 +40,6 @@ class PCSX2Client(GenericClient):
         self.pine: Pine = pine or Pine(loop or asyncio.get_running_loop(), slot=slot)
         self._slot = slot
         self.ready = asyncio.Event()
-        self.goal_index = 3
     
     @property
     def is_connected(self) -> bool:
@@ -127,7 +125,6 @@ class DolphinClient(GenericClient):
     def __init__(self) -> None:
         self.ready = asyncio.Event()
         self.addresses = consts.G5SE7D()
-        self.goal_index = 3 # TODO: alternate goal conditions
         self._scouted_locations: set[int] = set()
     
     async def connect(self):
@@ -241,7 +238,7 @@ class DolphinClient(GenericClient):
         dolphin_memory_engine.write_bytes(self.addresses.ACTIVE_BREATH, breath_id.to_bytes(4))
     
     async def check_goal(self, ctx: SpyroAHTContext):
-        obj = consts.GOALS[self.goal_index]
+        obj = consts.GOALS[ctx.goal_index]
 
         index = (obj & 0xFFFF) - 1
         uint = floor(index / 32)
@@ -315,6 +312,7 @@ class SpyroAHTContext(CommonContext):
         self.synced_items: set[NetworkItem] = set()
         self.auth_ready = asyncio.Event()
         self.item_counts = Counter()
+        self.goal_index = -1
 
     def make_gui(self) -> type[kvui.GameManager]:
         ui = super().make_gui()
@@ -331,10 +329,11 @@ class SpyroAHTContext(CommonContext):
         await super().send_connect(**kwargs)
     
     def on_package(self, cmd: str, args: dict):
-        if cmd == 'Connected':
-            slot_data = args['slot_data']
-            self.emu_client.goal_index = slot_data['misc_goal']
-            self.auth_ready.set()
+        match cmd:
+            case 'Connected':
+                slot_data = args['slot_data']
+                self.goal_index = slot_data['misc_goal']
+                self.auth_ready.set()
 
 
 async def dispatch_items(ctx: SpyroAHTContext):
