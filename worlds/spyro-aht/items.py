@@ -38,10 +38,10 @@ ITEM_NAME_TO_ID = {
 }
 
 DEFAULT_ITEMS = [
-    #"Double Jump",
-    #"Pole Spin",
-    #"Wing Shield",
-    #"Wall Kick",
+    "Double Jump",
+    "Pole Spin",
+    "Wing Shield",
+    "Wall Kick",
     "Dark Gem",
     "Light Gem",
     "Dragon Egg"
@@ -147,15 +147,6 @@ def create_all_items(world: SpyroAHTWorld) -> None:
     counts = ITEM_COUNTS.copy()
 
     itempool: list[Item] = []
-
-    world.get_location("Dragon Village: Double Jump from Elder Tomas").place_locked_item(world.create_item("Double Jump"))
-    world.get_location("Crocoville Swamp: Pole Spin from Elder Magnus").place_locked_item(world.create_item("Pole Spin"))
-    world.get_location("Cloudy Domain: Wing Shield from Elder Titan").place_locked_item(world.create_item("Wing Shield"))
-    world.get_location("Ice Citadel: Wall Kick from Elder Astor").place_locked_item(world.create_item("Wall Kick"))
-
-    #world.get_location("Dragon Village: Lightning Breath from Gnasty Gnorc").place_locked_item(world.create_item("Lightning Breath"))
-    #world.get_location("Coastal Remains: Water Breath from Ineptune").place_locked_item(world.create_item("Water Breath"))
-    #world.get_location("Frostbite Village: Ice Breath from Red").place_locked_item(world.create_item("Ice Breath"))
     
     match world.options.randomize_breath:
         case 0: # default
