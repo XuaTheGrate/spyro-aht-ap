@@ -60,13 +60,13 @@ class RandomizeCharge(Toggle):
 
 
 class RandomizeShopItems(Toggle):
-    """Randomize Moneybags shop items."""
+    """Randomize Moneybags shop items. <CURRENTLY DOES NOTHING>"""
     display_name = "Randomize Shop Items"
     default = 0
 
 
 class RandomizeShopPrices(Choice):
-    """Sets Moneybags shop prices.
+    """Sets Moneybags shop prices. <CURRENTLY DOES NOTHING>
     
     default: No changes to price. If ``Randomize Shop Items`` is enabled, this setting will automatically change to ``random``.
     random: Randomizes the price, defined by the range in **Minimum Shop Price** and **Maximum Shop Price**.
@@ -84,7 +84,7 @@ class RandomizeShopPrices(Choice):
 
 
 class ShopPricesMin(Range):
-    """The minimum price for items in the shop."""
+    """The minimum price for items in the shop. <CURRENTLY DOES NOTHING>"""
     display_name = "Minimum Shop Price"
     range_start = 1
     range_end = 10000
@@ -92,7 +92,7 @@ class ShopPricesMin(Range):
 
 
 class ShopPricesMax(Range):
-    """The maximum price for items in the shop."""
+    """The maximum price for items in the shop. <CURRENTLY DOES NOTHING>"""
     display_name = "Maximum Shop Price"
     range_start = 1
     range_end = 10000
@@ -100,7 +100,7 @@ class ShopPricesMax(Range):
 
 
 class RandomizeLightGemDoorCosts(Choice):
-    """Sets the cost of light gem doors.
+    """Sets the cost of light gem doors. <CURRENTLY DOES NOTHING>
     
     default: No changes to cost.
     randomized: Randomizes the cost, defined by the range in **Minimum Light Gem Door Cost** and **Maximum Light Gem Door Cost**.
@@ -117,7 +117,7 @@ class RandomizeLightGemDoorCosts(Choice):
 
 
 class LightGemDoorCostMin(Range):
-    """Sets the minimum cost for light gem doors."""
+    """Sets the minimum cost for light gem doors. <CURRENTLY DOES NOTHING>"""
     display_name = "Minimum Light Gem Door Cost"
     range_start = 1
     range_end = 100
@@ -125,7 +125,7 @@ class LightGemDoorCostMin(Range):
 
 
 class LightGemDoorCostMax(Range):
-    """Sets the maximum cost for light gem doors"""
+    """Sets the maximum cost for light gem doors. <CURRENTLY DOES NOTHING>"""
     display_name = "Maximum Light Gem Door Cost"
     range_start = 1
     range_end = 100
@@ -182,7 +182,7 @@ class SpyroAHTOptions(PerGameCommonOptions):
     light_gem_door_cost_max: LightGemDoorCostMax
 
     misc_goal: MiscGoal
-    
+
     misc_skip_cutscenes: MiscSkipCutscenes
     misc_allow_hub_teleport: MiscAllowHubTeleport
     misc_allow_immediate_realm_access: MiscAllowImmediateRealmAccess
