@@ -132,6 +132,16 @@ class LightGemDoorCostMax(Range):
     default = 50
 
 
+class MiscGoal(Choice):
+    """Set the goal condition."""
+    display_name = "Goal"
+    option_gnorc = 0
+    option_ineptune = 1
+    option_red = 2
+    option_mechared = 3
+    default = 3
+
+
 class MiscSkipCutscenes(Toggle):
     """Enable a patch that skips realm intro cutscenes. USE WITH CAUTION, maybe have glitchy side-effects."""
     display_name = "Auto Skip Cutscenes"
@@ -171,6 +181,8 @@ class SpyroAHTOptions(PerGameCommonOptions):
     light_gem_door_cost_min: LightGemDoorCostMin
     light_gem_door_cost_max: LightGemDoorCostMax
 
+    misc_goal: MiscGoal
+    
     misc_skip_cutscenes: MiscSkipCutscenes
     misc_allow_hub_teleport: MiscAllowHubTeleport
     misc_allow_immediate_realm_access: MiscAllowImmediateRealmAccess

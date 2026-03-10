@@ -18,6 +18,8 @@ from .pcsx2_interface import Pine
 class GenericClient:
     addresses: consts.AddressList
     ready: asyncio.Event
+    goal_index: int
+
     @property
     def is_connected(self) -> bool: raise NotImplementedError
     async def connect(self): raise NotImplementedError
@@ -39,6 +41,7 @@ class PCSX2Client(GenericClient):
         self.pine: Pine = pine or Pine(loop or asyncio.get_running_loop(), slot=slot)
         self._slot = slot
         self.ready = asyncio.Event()
+        self.goal_index = 3
     
     @property
     def is_connected(self) -> bool:
@@ -124,7 +127,7 @@ class DolphinClient(GenericClient):
     def __init__(self) -> None:
         self.ready = asyncio.Event()
         self.addresses = consts.G5SE7D()
-        self._goal_index = 0 # TODO: alternate goal conditions
+        self.goal_index = 3 # TODO: alternate goal conditions
         self._scouted_locations: set[int] = set()
     
     async def connect(self):
@@ -238,7 +241,7 @@ class DolphinClient(GenericClient):
         dolphin_memory_engine.write_bytes(self.addresses.ACTIVE_BREATH, breath_id.to_bytes(4))
     
     async def check_goal(self, ctx: SpyroAHTContext):
-        obj = consts.GOALS[self._goal_index]
+        obj = consts.GOALS[self.goal_index]
 
         index = (obj & 0xFFFF) - 1
         uint = floor(index / 32)
@@ -323,10 +326,15 @@ class SpyroAHTContext(CommonContext):
             await super().server_auth(password_requested)
         await self.get_username()
         await self.send_connect(game=self.game)
-        self.auth_ready.set()
     
     async def send_connect(self, **kwargs) -> None:
         await super().send_connect(**kwargs)
+    
+    def on_package(self, cmd: str, args: dict):
+        if cmd == 'Connected':
+            slot_data = args['slot_data']
+            self.emu_client.goal_index = slot_data['misc_goal']
+            self.auth_ready.set()
 
 
 async def dispatch_items(ctx: SpyroAHTContext):

@@ -40,4 +40,4 @@ class SpyroAHTWorld(World):
         return "Gem Pack"
     
     def fill_slot_data(self) -> Mapping[str, Any]:
-        return self.options.as_dict("randomize_breath", "randomize_swim", "randomize_glide", "randomize_charge", "randomize_shop_prices", "shop_prices_min", "shop_prices_max", "randomize_light_gem_door_costs", "light_gem_door_cost_min", "light_gem_door_cost_max")
+        return self.options.as_dict("misc_goal")

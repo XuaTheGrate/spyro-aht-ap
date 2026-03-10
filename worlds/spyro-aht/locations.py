@@ -52,6 +52,23 @@ def create_regular_locations(world: SpyroAHTWorld):
 
 
 def create_events(world: SpyroAHTWorld) -> None:
-    reds_lab = world.get_region("Red's Laboratory")
-    reds_lab.add_event("Red's Laboratory: Defeat Mecha-Red", "Victory", location_type=SpyroAHTLocation,item_type=items.SpyroAHTItem,rule=lambda state: state.has("Dark Gem", world.player, 40))
+    match world.options.misc_goal:
+        case 0: # Gnasty Gnorc
+            world.get_region("Dragon Village - Gnasty Gnorcs Lair").add_event(
+                "Dragon Village: Defeat Gnasty Gnorc (Goal)", "Victory", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,
+                rule=lambda state: state.has_any(("Fire Breath", "Charge"), world.player)
+            )
+        case 1: # Ineptune
+            world.get_region("Coastal Remains - Ineptunes Lair").add_event(
+                "Coastal Remains: Defeat Ineptune (Goal)", "Victory", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,
+                rule=lambda _: True
+            )
+        case 2: # Red
+            world.get_region("Frostbite Village - Reds Lair").add_event(
+                "Frostbite Village - Defeat Red (Goal)", "Victory", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,
+                rule=lambda _: True
+            )
+        case 3: # Mecha-Red
+            reds_lab = world.get_region("Red's Laboratory")
+            reds_lab.add_event("Red's Laboratory: Defeat Mecha-Red", "Victory", location_type=SpyroAHTLocation,item_type=items.SpyroAHTItem,rule=lambda state: state.has("Dark Gem", world.player, 40))
     world.multiworld.completion_condition[world.player] = lambda state: state.has("Victory", world.player)

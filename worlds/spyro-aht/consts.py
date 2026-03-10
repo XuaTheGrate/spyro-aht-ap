@@ -98,7 +98,10 @@ SCOUT_OBJECTIVES: dict[int, tuple[int, int]] = {
 
 
 GOALS = [
-    0x44000084 # Defeat Mecha-Red
+    0x44000081, # Defeat Gnasty Gnorc
+    0x44000082, # Defeat Ineptune
+    0x44000083, # Defeat Red
+    0x44000084  # Defeat Mecha-Red
 ]
 
 class GameState:
