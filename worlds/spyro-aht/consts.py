@@ -9,10 +9,6 @@ DARK_GEM = 0x8
 LIGHT_GEM = 0x9
 DRAGON_EGG = 0xA
 
-ITEM_STORAGE_DOUBLE_JUMP = (0x0, 0x1)
-ITEM_STORAGE_POLE_SPIN = (0x0, 0x2)
-ITEM_STORAGE_ELECTRIC_BREATH = (0x0, 0x4)
-
 # https://discord.com/channels/619694339777495056/692182418429575260/1477821351879507998
 
 # (AP location ID, bitfield offset)
@@ -105,9 +101,32 @@ GOALS = [
     0x44000084 # Defeat Mecha-Red
 ]
 
+class GameState:
+    location_bitfield = (0x0, 0x30)
+    starting_breath = (0x30, 4)
+    starting_abilities = (0x34, 4)
+    skip_realm_intro_cutscene = (0x38, 1)
+    skip_cutscene_button = (0x39, 1)
+    allow_teleport_to_hub = (0x3A, 1)
+    allow_immediate_realm_access = (0x3B, 1)
+
+    init = (0x3C, 4)
+
+    xls_shop_sheetcount_ALWAYS_1 = (0x40, 4)
+    xls_shop_sheet_offset_ALWAYS_4 = (0x44, 4)
+    xls_shop_rowcount = (0x48, 4)
+
+    def __init__(self, base: int):
+        self.base = base
+    
+    def get(self, offset: int, _: int = 0) -> int:
+        return self.base + offset
+
 
 class AddressList:
-    BITFIELD: int
+    game_state: GameState
+    patch_state: GameState
+
     OBJECTIVES: int
     DARK_GEM_COUNT: int
     LIGHT_GEM_COUNT: int
@@ -120,7 +139,9 @@ class AddressList:
 
 
 class SLUS_20884(AddressList):
-    BITFIELD = 0x503280
+    game_state = NotImplemented
+    patch_state = NotImplemented
+
     OBJECTIVES = NotImplemented
     DARK_GEM_COUNT = 0x502057
     LIGHT_GEM_COUNT = 0x502056
@@ -132,8 +153,25 @@ class SLUS_20884(AddressList):
     LOADING = 0x598690
 
 
+class SLES_52569(AddressList):
+    game_state = NotImplemented
+    patch_state = NotImplemented
+
+    OBJECTIVES = NotImplemented
+    DARK_GEM_COUNT = NotImplemented
+    LIGHT_GEM_COUNT = NotImplemented
+    DRAGON_EGG_COUNT = NotImplemented
+    ACTIVE_BREATH = NotImplemented
+    ABILITY_FLAGS = NotImplemented
+    IN_GAME = NotImplemented
+    PAUSE = NotImplemented
+    LOADING = NotImplemented
+
+
 class G5SE7D(AddressList):
-    BITFIELD = 0x80467CE4
+    game_state = GameState(0x80467CE4)
+    patch_state = GameState(0x803D8FA8)
+
     OBJECTIVES = 0x80465C88
     DARK_GEM_COUNT = 0x80465BB7
     LIGHT_GEM_COUNT = 0x80465BB6

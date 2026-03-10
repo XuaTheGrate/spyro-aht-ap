@@ -79,7 +79,7 @@ class PCSX2Client(GenericClient):
             if aploc in ctx.checked_locations:
                 continue
 
-            addr = self.addresses.BITFIELD + floor(index / 8)
+            addr = self.addresses.game_state.get(*self.addresses.game_state.location_bitfield) + floor(index / 8)
             data = await self.pine.read_int8(addr)
             flag = data & (1 << (index % 8))
             if flag:
@@ -168,7 +168,7 @@ class DolphinClient(GenericClient):
             if aploc in ctx.checked_locations:
                 continue
             
-            addr = self.addresses.BITFIELD + floor(index / 8)
+            addr = self.addresses.game_state.get(*self.addresses.game_state.location_bitfield) + floor(index / 8)
             data = dolphin_memory_engine.read_byte(addr)
             flag = data & (1 << (index % 8))
             if flag:
