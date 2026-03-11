@@ -148,11 +148,6 @@ class MiscSkipCutscenes(Toggle):
     default = 0
 
 
-class MiscAllowHubTeleport(Toggle):
-    """Enable a patch to add a button to the pause menu to teleport you back to the hub area of that realm."""
-    display_name = "Allow Hub Teleportation"
-    default = 1
-
 
 class MiscAllowImmediateRealmAccess(Toggle):
     """Enable a patch to access all realms at any time, instead of having to beat the previous realms boss first."""
@@ -184,6 +179,5 @@ class SpyroAHTOptions(PerGameCommonOptions):
     misc_goal: MiscGoal
 
     misc_skip_cutscenes: MiscSkipCutscenes
-    misc_allow_hub_teleport: MiscAllowHubTeleport
     misc_allow_immediate_realm_access: MiscAllowImmediateRealmAccess
 

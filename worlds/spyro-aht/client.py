@@ -33,6 +33,9 @@ class GenericClient:
     async def force_set_breath(self, breath_id: int): raise NotImplementedError
     async def check_goal(self, ctx: SpyroAHTContext): raise NotImplementedError
     async def scout_location(self, ctx: SpyroAHTContext): raise NotImplementedError
+    async def has_any_breath(self) -> bool: raise NotImplementedError
+    async def add_gem_pack(self): raise NotImplementedError
+    async def apply_patch(self, ctx: SpyroAHTContext): raise NotImplementedError
 
 
 class PCSX2Client(GenericClient):
@@ -80,7 +83,7 @@ class PCSX2Client(GenericClient):
             if aploc in ctx.checked_locations:
                 continue
 
-            addr = self.addresses.game_state.get(*self.addresses.game_state.location_bitfield) + floor(index / 8)
+            addr = self.addresses.g_LOCATION_BITFIELD + floor(index / 8)
             data = await self.pine.read_int8(addr)
             flag = data & (1 << (index % 8))
             if flag:
@@ -168,7 +171,7 @@ class DolphinClient(GenericClient):
             if aploc in ctx.checked_locations:
                 continue
             
-            addr = self.addresses.game_state.get(*self.addresses.game_state.location_bitfield) + floor(index / 8)
+            addr = self.addresses.g_LOCATION_BITFIELD + floor(index / 8)
             data = dolphin_memory_engine.read_byte(addr)
             flag = data & (1 << (index % 8))
             if flag:
@@ -234,6 +237,13 @@ class DolphinClient(GenericClient):
             return
         dolphin_memory_engine.write_byte(addr, c + count)
     
+    async def add_item_4(self, addr: int, count: int):
+        c = await self.get_item_count(addr)
+        if c == 0 and count < 0:
+            logger.warning(f"Attempted to set negative value for 0x{addr:x}")
+            return
+        dolphin_memory_engine.write_bytes(addr, (c + count).to_bytes(4))
+    
     async def force_set_breath(self, breath_id: int):
         dolphin_memory_engine.write_bytes(self.addresses.ACTIVE_BREATH, breath_id.to_bytes(4))
     
@@ -263,6 +273,26 @@ class DolphinClient(GenericClient):
         if locations:
             self._scouted_locations.update(locations)
             await ctx.send_msgs([{"cmd":"LocationScouts","locations":locations,"create_as_hint":2}])
+    
+    async def has_any_breath(self) -> bool:
+        b = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ABILITY_FLAGS, 4), 'big')
+        return b & 0x800e0 > 0
+
+    async def add_gem_pack(self):
+        await self.add_item(self.addresses.g_NUM_GEM_PACKS_RECEIVED, 1)
+        await self.add_item_4(self.addresses.GEMS, 500)
+        await self.add_item_4(self.addresses.TOTAL_GEMS, 500)
+    
+    async def apply_patch(self, ctx: SpyroAHTContext):
+        dolphin_memory_engine.write_byte(self.addresses.p_SKIP_CUTSCENE_BUTTON, ctx.skip_cutscenes)
+        dolphin_memory_engine.write_byte(self.addresses.p_ALLOW_TELEPORT_TO_HUB, 1)
+        dolphin_memory_engine.write_byte(self.addresses.p_ALLOW_IMMEDIATE_REALM_ACCESS, ctx.immediate_realm_access)
+
+        dolphin_memory_engine.write_bytes(self.addresses.p_MW_SEED, (int(ctx._seed) & 0xffffffff).to_bytes(4, 'big'))
+
+        # TODO: write shop info here
+
+        dolphin_memory_engine.write_byte(self.addresses.p_PATCH_BEEN_WRITTEN_TO, 1)
 
 
 class SpyroAHTCommandProcessor(ClientCommandProcessor):
@@ -312,7 +342,11 @@ class SpyroAHTContext(CommonContext):
         self.synced_items: set[NetworkItem] = set()
         self.auth_ready = asyncio.Event()
         self.item_counts = Counter()
+
         self.goal_index = -1
+        self.skip_cutscenes = False
+        self.immediate_realm_access = False
+        self._seed = ""
 
     def make_gui(self) -> type[kvui.GameManager]:
         ui = super().make_gui()
@@ -333,7 +367,11 @@ class SpyroAHTContext(CommonContext):
             case 'Connected':
                 slot_data = args['slot_data']
                 self.goal_index = slot_data['misc_goal']
+                self.skip_cutscenes = slot_data['misc_skip_cutscenes']
+                self.immediate_realm_access = slot_data['misc_allow_immediate_realm_access']
                 self.auth_ready.set()
+            case 'RoomInfo':
+                self._seed = args['seed_name']
 
 
 async def dispatch_items(ctx: SpyroAHTContext):
@@ -342,6 +380,7 @@ async def dispatch_items(ctx: SpyroAHTContext):
         if item in ctx.synced_items:
             continue
         ctx.synced_items.add(item)
+
         match item.item:
             case 0xB: # Swim
                 await ctx.emu_client.set_ability_flag(consts.AbilityFlags.Swim, True)
@@ -358,16 +397,21 @@ async def dispatch_items(ctx: SpyroAHTContext):
             case 0x4:
                 await ctx.emu_client.set_ability_flag(consts.AbilityFlags.WallKick, True)
             case 0xE: # Fire Breath
+                if not await ctx.emu_client.has_any_breath():
+                    await ctx.emu_client.force_set_breath(consts.BREATH_FIRE)
                 await ctx.emu_client.set_ability_flag(consts.AbilityFlags.FireBreath, True)
             case 0x5: # Lightning Breath
+                if not await ctx.emu_client.has_any_breath():
+                    await ctx.emu_client.force_set_breath(consts.BREATH_ELECTRIC)
                 await ctx.emu_client.set_ability_flag(consts.AbilityFlags.LightningBreath, True)
-                await ctx.emu_client.force_set_breath(consts.BREATH_ELECTRIC)
             case 0x6: # Water Breath
+                if not await ctx.emu_client.has_any_breath():
+                    await ctx.emu_client.force_set_breath(consts.BREATH_WATER)
                 await ctx.emu_client.set_ability_flag(consts.AbilityFlags.WaterBreath, True)
-                await ctx.emu_client.force_set_breath(consts.BREATH_WATER)
             case 0x7: # Ice Breath
+                if not await ctx.emu_client.has_any_breath():
+                    await ctx.emu_client.force_set_breath(consts.BREATH_ICE)
                 await ctx.emu_client.set_ability_flag(consts.AbilityFlags.IceBreath, True)
-                await ctx.emu_client.force_set_breath(consts.BREATH_ICE)
             case 0x8: # Dark Gem
                 count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.DARK_GEM_COUNT)
                 if count < ctx.item_counts[0x8]:
@@ -380,6 +424,22 @@ async def dispatch_items(ctx: SpyroAHTContext):
                 count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.DRAGON_EGG_COUNT)
                 if count < ctx.item_counts[0xA]:
                     await ctx.emu_client.add_item(ctx.emu_client.addresses.DRAGON_EGG_COUNT, 1)
+            case 0x1C: # Lockpick
+                pass
+            case 0xF: # Extra Health Unit
+                pass
+            case 0x18: # Keychain
+                pass
+            case 0x19: # Butterfly Jar
+                pass
+            case 0x1A: # Double Gems
+                pass
+            case 0x1B: # Shockwave
+                pass
+            case 0x1D: # Gem Pack
+                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_NUM_GEM_PACKS_RECEIVED)
+                if count < ctx.item_counts[0x1D]:
+                    await ctx.emu_client.add_gem_pack()
 
 
 starter_checks = {229, 230, 231, 232}
@@ -397,21 +457,30 @@ async def dispatch_locations(ctx: SpyroAHTContext):
 
 
 async def emu_loop(ctx: SpyroAHTContext):
-    await ctx.emu_client.ready.wait()
-    await ctx.auth_ready.wait()
-    while not ctx.exit_event.is_set():
-        try:
-            await asyncio.wait_for(ctx.watcher_event.wait(), 1.0)
-        except asyncio.TimeoutError:
-            pass
-        ctx.watcher_event.clear()
+    try:
+        await ctx.emu_client.ready.wait()
+        await ctx.auth_ready.wait()
 
-        if await ctx.emu_client.is_in_game() and not await ctx.emu_client.is_paused() and not await ctx.emu_client.is_loading():
-            await dispatch_items(ctx)
-            await ctx.emu_client.scout_location(ctx)
-            await dispatch_locations(ctx)
-            await ctx.emu_client.check_goal(ctx)
-    await ctx.emu_client.disconnect()
+        await ctx.emu_client.apply_patch(ctx)
+
+        while not ctx.exit_event.is_set():
+            try:
+                await asyncio.wait_for(ctx.watcher_event.wait(), 1.0)
+            except asyncio.TimeoutError:
+                pass
+            ctx.watcher_event.clear()
+
+            if await ctx.emu_client.is_in_game() and not await ctx.emu_client.is_paused() and not await ctx.emu_client.is_loading():
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.PurchasedLockpick, True)
+
+                await dispatch_items(ctx)
+                await ctx.emu_client.scout_location(ctx)
+                await dispatch_locations(ctx)
+                await ctx.emu_client.check_goal(ctx)
+    except Exception:
+        logger.error("ERROR IN EMULATOR LOOP, PLEASE REPORT IN THREAD", exc_info=True)
+    finally:
+        await ctx.emu_client.disconnect()
 
 
 def main(*args: str):

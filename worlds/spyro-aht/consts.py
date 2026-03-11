@@ -104,36 +104,64 @@ GOALS = [
     0x44000084  # Defeat Mecha-Red
 ]
 
-class GameState:
-    location_bitfield = (0x0, 0x30)
-    starting_breath = (0x30, 4)
-    starting_abilities = (0x34, 4)
-    skip_realm_intro_cutscene = (0x38, 1)
-    skip_cutscene_button = (0x39, 1)
-    allow_teleport_to_hub = (0x3A, 1)
-    allow_immediate_realm_access = (0x3B, 1)
-
-    init = (0x3C, 4)
-
-    xls_shop_sheetcount_ALWAYS_1 = (0x40, 4)
-    xls_shop_sheet_offset_ALWAYS_4 = (0x44, 4)
-    xls_shop_rowcount = (0x48, 4)
-
-    def __init__(self, base: int):
-        self.base = base
-    
-    def get(self, offset: int, _: int = 0) -> int:
-        return self.base + offset
+#class GameState:
+#    location_bitfield = 0x0
+#    starting_breath = 0x30
+#    starting_abilities = 0x34
+#    skip_realm_intro_cutscene = 0x38
+#    skip_cutscene_button = 0x39
+#    allow_teleport_to_hub = 0x3A
+#    allow_immediate_realm_access = 0x3B
+#
+#    init = 0x3C
+#
+#    xls_shop_sheetcount_ALWAYS_1 = 0x40
+#    xls_shop_sheet_offset_ALWAYS_4 = 0x44
+#    xls_shop_rowcount = 0x48
 
 
 class AddressList:
-    game_state: GameState
-    patch_state: GameState
+    p_LOCATION_BITFIELD: int
+    p_NUM_GEM_PACKS_RECEIVED: int
+    p_SKIP_CUTSCENE_BUTTON: int
+    p_ALLOW_TELEPORT_TO_HUB: int
+    p_ALLOW_IMMEDIATE_REALM_ACCESS: int
+    p_PATCH_BEEN_WRITTEN_TO: int
+    p_MW_SEED: int
+    p_INIT: int
+    p_XLS_SHOP_SHEETCOUNT_ALWAYS_1: int
+    p_XLS_SHOP_SHEET_OFFSET_ALWAYS_4: int
+    p_XLS_SHOP_ROWCOUNT: int
+    p_XLS_SHOP_ITEMS: int
+    p_XLS_SHOP_TEXT: int
+
+    g_LOCATION_BITFIELD: int
+    g_NUM_GEM_PACKS_RECEIVED: int
+    g_SKIP_CUTSCENE_BUTTON: int
+    g_ALLOW_TELEPORT_TO_HUB: int
+    g_ALLOW_IMMEDIATE_REALM_ACCESS: int
+    g_PATCH_BEEN_WRITTEN_TO: int
+    g_MW_SEED: int
+    g_INIT: int
+    g_XLS_SHOP_SHEETCOUNT_ALWAYS_1: int
+    g_XLS_SHOP_SHEET_OFFSET_ALWAYS_4: int
+    g_XLS_SHOP_ROWCOUNT: int
+    g_XLS_SHOP_ITEMS: int
+    g_XLS_SHOP_TEXT: int
+
+    n_AP_NOTIFICATION_COLOR: int
+    n_AP_NOTIFICATION_TIMER: int
+    n_AP_NOTIFICATION_TEXT_BUFFER: int
 
     OBJECTIVES: int
     DARK_GEM_COUNT: int
     LIGHT_GEM_COUNT: int
     DRAGON_EGG_COUNT: int
+
+    GEM_PACK_COUNT: int
+    GEMS: int
+    TOTAL_GEMS: int
+
     ACTIVE_BREATH: int
     ABILITY_FLAGS: int
     IN_GAME: int
@@ -142,6 +170,38 @@ class AddressList:
 
 
 class SLUS_20884(AddressList):
+    p_LOCATION_BITFIELD = NotImplemented
+    p_NUM_GEM_PACKS_RECEIVED = NotImplemented
+    p_SKIP_CUTSCENE_BUTTON = NotImplemented
+    p_ALLOW_TELEPORT_TO_HUB = NotImplemented
+    p_ALLOW_IMMEDIATE_REALM_ACCESS = NotImplemented
+    p_PATCH_BEEN_WRITTEN_TO = NotImplemented
+    p_MW_SEED = NotImplemented
+    p_INIT = NotImplemented
+    p_XLS_SHOP_SHEETCOUNT_ALWAYS_1 = NotImplemented
+    p_XLS_SHOP_SHEET_OFFSET_ALWAYS_4 = NotImplemented
+    p_XLS_SHOP_ROWCOUNT = NotImplemented
+    p_XLS_SHOP_ITEMS = NotImplemented
+    p_XLS_SHOP_TEXT = NotImplemented
+
+    g_LOCATION_BITFIELD = NotImplemented
+    g_NUM_GEM_PACKS_RECEIVED = NotImplemented
+    g_SKIP_CUTSCENE_BUTTON = NotImplemented
+    g_ALLOW_TELEPORT_TO_HUB = NotImplemented
+    g_ALLOW_IMMEDIATE_REALM_ACCESS = NotImplemented
+    g_PATCH_BEEN_WRITTEN_TO = NotImplemented
+    g_MW_SEED = NotImplemented
+    g_INIT = NotImplemented
+    g_XLS_SHOP_SHEETCOUNT_ALWAYS_1 = NotImplemented
+    g_XLS_SHOP_SHEET_OFFSET_ALWAYS_4 = NotImplemented
+    g_XLS_SHOP_ROWCOUNT = NotImplemented
+    g_XLS_SHOP_ITEMS = NotImplemented
+    g_XLS_SHOP_TEXT = NotImplemented
+
+    n_AP_NOTIFICATION_COLOR = NotImplemented
+    n_AP_NOTIFICATION_TIMER = NotImplemented
+    n_AP_NOTIFICATION_TEXT_BUFFER = NotImplemented
+
     game_state = NotImplemented
     patch_state = NotImplemented
 
@@ -149,6 +209,7 @@ class SLUS_20884(AddressList):
     DARK_GEM_COUNT = 0x502057
     LIGHT_GEM_COUNT = 0x502056
     DRAGON_EGG_COUNT = 0x502058
+
     ACTIVE_BREATH = 0x502000
     ABILITY_FLAGS = 0x502028
     IN_GAME = 0x50f790
@@ -157,6 +218,38 @@ class SLUS_20884(AddressList):
 
 
 class SLES_52569(AddressList):
+    p_LOCATION_BITFIELD = NotImplemented
+    p_NUM_GEM_PACKS_RECEIVED = NotImplemented
+    p_SKIP_CUTSCENE_BUTTON = NotImplemented
+    p_ALLOW_TELEPORT_TO_HUB = NotImplemented
+    p_ALLOW_IMMEDIATE_REALM_ACCESS = NotImplemented
+    p_PATCH_BEEN_WRITTEN_TO = NotImplemented
+    p_MW_SEED = NotImplemented
+    p_INIT = NotImplemented
+    p_XLS_SHOP_SHEETCOUNT_ALWAYS_1 = NotImplemented
+    p_XLS_SHOP_SHEET_OFFSET_ALWAYS_4 = NotImplemented
+    p_XLS_SHOP_ROWCOUNT = NotImplemented
+    p_XLS_SHOP_ITEMS = NotImplemented
+    p_XLS_SHOP_TEXT = NotImplemented
+
+    g_LOCATION_BITFIELD = NotImplemented
+    g_NUM_GEM_PACKS_RECEIVED = NotImplemented
+    g_SKIP_CUTSCENE_BUTTON = NotImplemented
+    g_ALLOW_TELEPORT_TO_HUB = NotImplemented
+    g_ALLOW_IMMEDIATE_REALM_ACCESS = NotImplemented
+    g_PATCH_BEEN_WRITTEN_TO = NotImplemented
+    g_MW_SEED = NotImplemented
+    g_INIT = NotImplemented
+    g_XLS_SHOP_SHEETCOUNT_ALWAYS_1 = NotImplemented
+    g_XLS_SHOP_SHEET_OFFSET_ALWAYS_4 = NotImplemented
+    g_XLS_SHOP_ROWCOUNT = NotImplemented
+    g_XLS_SHOP_ITEMS = NotImplemented
+    g_XLS_SHOP_TEXT = NotImplemented
+
+    n_AP_NOTIFICATION_COLOR = NotImplemented
+    n_AP_NOTIFICATION_TIMER = NotImplemented
+    n_AP_NOTIFICATION_TEXT_BUFFER = NotImplemented
+
     game_state = NotImplemented
     patch_state = NotImplemented
 
@@ -164,6 +257,7 @@ class SLES_52569(AddressList):
     DARK_GEM_COUNT = NotImplemented
     LIGHT_GEM_COUNT = NotImplemented
     DRAGON_EGG_COUNT = NotImplemented
+
     ACTIVE_BREATH = NotImplemented
     ABILITY_FLAGS = NotImplemented
     IN_GAME = NotImplemented
@@ -172,13 +266,49 @@ class SLES_52569(AddressList):
 
 
 class G5SE7D(AddressList):
-    game_state = GameState(0x80467CE4)
-    patch_state = GameState(0x803D8FA8)
+    p_LOCATION_BITFIELD = 0x803d8fa8
+    p_NUM_GEM_PACKS_RECEIVED = 0x803d8fd8
+    p_SKIP_CUTSCENE_BUTTON = 0x803d8fd9
+    p_ALLOW_TELEPORT_TO_HUB = 0x803d8fda
+    p_ALLOW_IMMEDIATE_REALM_ACCESS = 0x803d8fdb
+    p_PATCH_BEEN_WRITTEN_TO = 0x803d8fdc
+    p_MW_SEED = 0x803d8fe0
+    p_INIT = 0x803d8fe4
+    p_XLS_SHOP_SHEETCOUNT_ALWAYS_1 = 0x803d8fe8
+    p_XLS_SHOP_SHEET_OFFSET_ALWAYS_4 = 0x803d8fec
+    p_XLS_SHOP_ROWCOUNT = 0x803d8ff0
+    p_XLS_SHOP_ITEMS = 0x803d8ff4
+    p_XLS_SHOP_TEXT = 0x803d99f4
+
+    g_LOCATION_BITFIELD = 0x80467ce4
+    g_NUM_GEM_PACKS_RECEIVED = 0x80467d14
+    g_SKIP_CUTSCENE_BUTTON = 0x80467d15
+    g_ALLOW_TELEPORT_TO_HUB = 0x80467d16
+    g_ALLOW_IMMEDIATE_REALM_ACCESS = 0x80467d17
+    g_PATCH_BEEN_WRITTEN_TO = 0x80467d18
+    g_MW_SEED = 0x80467d1c
+    g_INIT = 0x80467d20
+    g_XLS_SHOP_SHEETCOUNT_ALWAYS_1 = 0x80467d24
+    g_XLS_SHOP_SHEET_OFFSET_ALWAYS_4 = 0x80467d28
+    g_XLS_SHOP_ROWCOUNT = 0x80467d2c
+    g_XLS_SHOP_ITEMS = 0x80467d30
+    g_XLS_SHOP_TEXT = 0x80468730
+
+    n_AP_NOTIFICATION_COLOR = 0x80299bc0
+    n_AP_NOTIFICATION_TIMER = 0x80299bc4
+    n_AP_NOTIFICATION_TEXT_BUFFER = 0x80299bc8
+
+    game_state = NotImplemented
+    patch_state = NotImplemented
 
     OBJECTIVES = 0x80465C88
     DARK_GEM_COUNT = 0x80465BB7
     LIGHT_GEM_COUNT = 0x80465BB6
     DRAGON_EGG_COUNT = 0x80465BB8
+
+    GEMS = 0x80465B68
+    TOTAL_GEMS = 0x80465B6C
+
     ACTIVE_BREATH = 0x80465B60
     ABILITY_FLAGS = 0x80465B88
     IN_GAME = 0x8046F344 
