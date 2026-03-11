@@ -163,7 +163,6 @@ class DolphinClient(GenericClient):
         return await self.is_paused()
     
     async def scan_locations(self, ctx: SpyroAHTContext) -> set[int]:
-        await self._temp_check_ability_flags(ctx)
         result: set[int] = set()
         for aploc, index in consts.LOCATIONS_BITFIELD.items():
             await asyncio.sleep(0)  # a 0 second sleep is used to yield back to the event loop, bandaid fix for blocking
@@ -192,32 +191,6 @@ class DolphinClient(GenericClient):
                 result.add(aploc)
 
         return result
-
-    async def _temp_check_ability_flags(self, ctx: SpyroAHTContext):
-        # temporary function for testing, remove on release
-        if 1 not in ctx.checked_locations:
-            await self.set_ability_flag(consts.AbilityFlags.DoubleJump, False)
-        if 17 not in ctx.checked_locations:
-            breath = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ACTIVE_BREATH, 4), 'big')
-            if breath == consts.BREATH_ELECTRIC:
-                await self.force_set_breath(consts.BREATH_FIRE)
-            await self.set_ability_flag(consts.AbilityFlags.LightningBreath, False)
-        if 33 not in ctx.checked_locations:
-            await self.set_ability_flag(consts.AbilityFlags.PoleSpin, False)
-        if 79 not in ctx.checked_locations:
-            breath = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ACTIVE_BREATH, 4), 'big')
-            if breath == consts.BREATH_WATER:
-                await self.force_set_breath(consts.BREATH_FIRE)
-            await self.set_ability_flag(consts.AbilityFlags.WaterBreath, False)
-        if 83 not in ctx.checked_locations:
-            await self.set_ability_flag(consts.AbilityFlags.WingShield, False)
-        if 136 not in ctx.checked_locations:
-            breath = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ACTIVE_BREATH, 4), 'big')
-            if breath == consts.BREATH_ICE:
-                await self.force_set_breath(consts.BREATH_FIRE)
-            await self.set_ability_flag(consts.AbilityFlags.IceBreath, False)
-        if 155 not in ctx.checked_locations:
-            await self.set_ability_flag(consts.AbilityFlags.WallKick, False)
     
     async def set_ability_flag(self, flag: int, to: bool):
         flags = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ABILITY_FLAGS, 4), 'big')
