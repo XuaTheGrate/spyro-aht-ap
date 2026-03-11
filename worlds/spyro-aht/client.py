@@ -211,7 +211,7 @@ class DolphinClient(GenericClient):
         dolphin_memory_engine.write_byte(addr, c + count)
     
     async def add_item_4(self, addr: int, count: int):
-        c = await self.get_item_count(addr)
+        c = int.from_bytes(dolphin_memory_engine.read_bytes(addr, 4), 'big')
         if c == 0 and count < 0:
             logger.warning(f"Attempted to set negative value for 0x{addr:x}")
             return
