@@ -99,6 +99,16 @@ class ShopPricesMax(Range):
     default = 500
 
 
+class RandomizeBossLairDoorCosts(Choice):
+    """Sets the Dark Gem requirement of the Boss Lairs. <CURRENTLY DOES NOTHING>
+    Note: The door to your goal boss will always be the most expensive of the 4.
+
+    default: No changes to cost.
+    randomized: Randomizes the cost, between 1 and 40.
+    shuffle: Shuffles the existing costs (10, 20, 30, 40)
+    """
+
+
 class RandomizeLightGemDoorCosts(Choice):
     """Sets the cost of light gem doors. <CURRENTLY DOES NOTHING>
     
@@ -175,6 +185,8 @@ class SpyroAHTOptions(PerGameCommonOptions):
     randomize_light_gem_door_costs: RandomizeLightGemDoorCosts
     light_gem_door_cost_min: LightGemDoorCostMin
     light_gem_door_cost_max: LightGemDoorCostMax
+
+    randomize_boss_lair_doors: RandomizeBossLairDoorCosts
 
     misc_goal: MiscGoal
 
