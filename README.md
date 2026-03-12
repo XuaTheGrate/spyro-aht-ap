@@ -28,6 +28,10 @@ This list is non-exhaustive and may change, and is not indicative of future plan
   - [ ] Supercharge
 - [ ] Warp Locations (Professor Mole)
 - [ ] Warp Locations (Moneybags)
+- [ ] Mini game abilities
+  - [ ] Sparx Powerups
+  - [ ] Blink laser gun
+  - [ ] Sgt. Byrd missiles & bombs
 
 ## Setup Guide
 
