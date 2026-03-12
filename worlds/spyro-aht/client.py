@@ -350,10 +350,6 @@ class SpyroAHTContext(CommonContext):
 async def dispatch_items(ctx: SpyroAHTContext):
     ctx.item_counts = Counter(i.item for i in ctx.items_received)
     for item in ctx.items_received:
-        if item in ctx.synced_items:
-            continue
-        ctx.synced_items.add(item)
-
         match item.item:
             case 0xB: # Swim
                 await ctx.emu_client.set_ability_flag(consts.AbilityFlags.Swim, True)
