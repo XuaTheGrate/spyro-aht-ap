@@ -18,4 +18,4 @@ def set_all_location_rules(world: SpyroAHTWorld) -> None:
     for r in REGIONS.values():
         for location in r.locations:
             l = world.get_location(location.name)
-            set_rule(l, location.access_rule(world))
+            world.set_rule(l, location.access_rule)
