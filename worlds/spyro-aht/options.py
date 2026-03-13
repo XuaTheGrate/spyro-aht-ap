@@ -107,6 +107,11 @@ class RandomizeBossLairDoorCosts(Choice):
     randomized: Randomizes the cost, between 1 and 40.
     shuffle: Shuffles the existing costs (10, 20, 30, 40)
     """
+    display_name = "Randomize Boss Lair Requirements"
+    option_default = 0
+    option_randomized = 1
+    option_shuffle = 2
+    default = 0
 
 
 class RandomizeLightGemDoorCosts(Choice):
