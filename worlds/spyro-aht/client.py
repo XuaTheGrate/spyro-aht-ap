@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import asyncio
+import random
+from abc import ABC, abstractmethod
 from collections import Counter
 from math import floor
 
@@ -15,27 +17,45 @@ from . import consts
 from .pcsx2_interface import Pine
 
 
-class GenericClient:
+class GenericClient(ABC):
     addresses: consts.AddressList
     ready: asyncio.Event
 
     @property
+    @abstractmethod
     def is_connected(self) -> bool: raise NotImplementedError
+    @abstractmethod
     async def connect(self): raise NotImplementedError
+    @abstractmethod
     async def disconnect(self): raise NotImplementedError
+    @abstractmethod
     async def is_in_game(self) -> bool: raise NotImplementedError
+    @abstractmethod
     async def is_paused(self) -> bool: raise NotImplementedError
+    @abstractmethod
     async def is_loading(self) -> bool: raise NotImplementedError
+    @abstractmethod
     async def scan_locations(self, ctx: SpyroAHTContext) -> set[int]: raise NotImplementedError
+    @abstractmethod
     async def set_ability_flag(self, flag: int, to: bool): raise NotImplementedError
+    @abstractmethod
     async def get_item_count(self, addr: int) -> int: raise NotImplementedError
+    @abstractmethod
     async def add_item(self, addr: int, count: int): raise NotImplementedError
+    @abstractmethod
     async def force_set_breath(self, breath_id: int): raise NotImplementedError
+    @abstractmethod
     async def check_goal(self, ctx: SpyroAHTContext): raise NotImplementedError
+    @abstractmethod
     async def scout_location(self, ctx: SpyroAHTContext): raise NotImplementedError
+    @abstractmethod
     async def has_any_breath(self) -> bool: raise NotImplementedError
+    @abstractmethod
     async def add_gem_pack(self): raise NotImplementedError
+    @abstractmethod
     async def apply_patch(self, ctx: SpyroAHTContext): raise NotImplementedError
+    @abstractmethod
+    async def prepare_shop_items(self, ctx: SpyroAHTContext, *locations): raise NotImplementedError
 
 
 class PCSX2Client(GenericClient):
@@ -189,6 +209,14 @@ class DolphinClient(GenericClient):
             flag = data & (1 << bit)
             if flag:
                 result.add(aploc)
+        
+        if ctx._slot_data['randomize_shop_items'] == 1:
+            for i in range(57):
+                await asyncio.sleep(0)
+
+                purchase_flag = dolphin_memory_engine.read_byte(self.addresses.g_XLS_SHOP_TEXT + (0x32 * i))
+                if purchase_flag:
+                    result.add(1001 + i)
 
         return result
     
@@ -221,7 +249,7 @@ class DolphinClient(GenericClient):
         dolphin_memory_engine.write_bytes(self.addresses.ACTIVE_BREATH, breath_id.to_bytes(4))
     
     async def check_goal(self, ctx: SpyroAHTContext):
-        obj = consts.GOALS[ctx.goal_index]
+        obj = consts.GOALS[ctx._slot_data['misc_goal']]
 
         index = (obj & 0xFFFF) - 1
         uint = floor(index / 32)
@@ -257,15 +285,76 @@ class DolphinClient(GenericClient):
         await self.add_item_4(self.addresses.TOTAL_GEMS, 500)
     
     async def apply_patch(self, ctx: SpyroAHTContext):
-        dolphin_memory_engine.write_byte(self.addresses.p_SKIP_CUTSCENE_BUTTON, ctx.skip_cutscenes)
+        dolphin_memory_engine.write_byte(self.addresses.p_SKIP_CUTSCENE_BUTTON, ctx._slot_data['misc_skip_cutscenes'])
         dolphin_memory_engine.write_byte(self.addresses.p_ALLOW_TELEPORT_TO_HUB, 1)
-        dolphin_memory_engine.write_byte(self.addresses.p_ALLOW_IMMEDIATE_REALM_ACCESS, ctx.immediate_realm_access)
+        dolphin_memory_engine.write_byte(self.addresses.p_ALLOW_IMMEDIATE_REALM_ACCESS, ctx._slot_data['misc_allow_immediate_realm_access'])
 
         dolphin_memory_engine.write_bytes(self.addresses.p_MW_SEED, (int(ctx._seed) & 0xffffffff).to_bytes(4, 'big'))
 
-        # TODO: write shop info here
+        if ctx._slot_data['randomize_shop_items']:
+            await ctx.send_msgs([{"cmd":"LocationScouts","locations":list(range(1001, 1058)),"create_as_hint":0}])
+            await ctx._shop_items_received.wait()
+            await self.prepare_shop_items(ctx, *ctx._shop_items)
 
         dolphin_memory_engine.write_byte(self.addresses.p_PATCH_BEEN_WRITTEN_TO, 1)
+    
+    async def prepare_shop_items(self, ctx: SpyroAHTContext, *items: NetworkItem):
+        dolphin_memory_engine.write_bytes(self.addresses.p_XLS_SHOP_ROWCOUNT, (57).to_bytes(4, 'big'))
+
+        for idx, item in enumerate(items):
+            player = ctx.player_names[item.player]
+            name = ctx.item_names.lookup_in_slot(item.item, item.player)
+
+            n = ctx._slot_data['shop_prices_min']
+            x = ctx._slot_data['shop_prices_max']
+            rng = ctx._slot_data['randomize_shop_prices']
+            match rng:
+                case 0 | 1: # normal dist
+                    price = random.randint(n, x)
+                case 2: # lower bound dist
+                    s = list(range(n, x+1))
+                    w = list(range(x, n+1, -1))
+                    price = random.choices(s, w, k=1)[0]
+                case 3: # upper bound dist
+                    s = list(range(n, x+1))
+                    price = random.choices(s, s, k=1)[0]
+                case _:
+                    raise RuntimeError
+            
+            model = consts.ShopItemModel.Lockpick
+
+            if item.player == ctx.slot: # self
+                match item.item:
+                    case 0x1 | 0x1A | 0x1D: # double jump | double gems | gem pack
+                        price = 1
+                    case 0xE | 0x5 | 0x6 | 0x7 | 0xD: # breaths or charge
+                        price = min(price, random.randint(400, 500))
+                
+                match item.item:
+                    case 0xE:
+                        model = consts.ShopItemModel.FireBomb
+                    case 0x5:
+                        model = consts.ShopItemModel.ElectricBomb
+                    case 0x6:
+                        model = consts.ShopItemModel.WaterBomb
+                    case 0x7:
+                        model = consts.ShopItemModel.IceBomb
+                    case 0xF:
+                        model = consts.ShopItemModel.HealthUpgrade
+                    case 0x18:
+                        model = consts.ShopItemModel.Keychain
+                    case 0x19:
+                        model = consts.ShopItemModel.ButterflyJar
+                    case 0x1B:
+                        model = consts.ShopItemModel.Shockwave
+            
+            i = consts.XLSShoppingItem(model, consts.TextEntry(idx, f"{player}'s {name}"), (price, floor(price + (price * 0.25))))
+
+            offset = 0x20 * (idx + 1)
+            dolphin_memory_engine.write_bytes(self.addresses.p_XLS_SHOP_ITEMS + offset, i.to_bytes('big'))
+            dolphin_memory_engine.write_bytes(self.addresses.p_XLS_SHOP_TEXT + (0x32 * idx), i.text.to_bytes('big'))
+
+            await asyncio.sleep(0)
 
 
 class SpyroAHTCommandProcessor(ClientCommandProcessor):
@@ -316,10 +405,9 @@ class SpyroAHTContext(CommonContext):
         self.auth_ready = asyncio.Event()
         self.item_counts = Counter()
 
-        self.goal_index = -1
-        self.skip_cutscenes = False
-        self.immediate_realm_access = False
         self._seed = ""
+        self._shop_items_received = asyncio.Event()
+        self._shop_items: list[NetworkItem] = []
 
     def make_gui(self) -> type[kvui.GameManager]:
         ui = super().make_gui()
@@ -338,13 +426,13 @@ class SpyroAHTContext(CommonContext):
     def on_package(self, cmd: str, args: dict):
         match cmd:
             case 'Connected':
-                slot_data = args['slot_data']
-                self.goal_index = slot_data['misc_goal']
-                self.skip_cutscenes = slot_data['misc_skip_cutscenes']
-                self.immediate_realm_access = slot_data['misc_allow_immediate_realm_access']
+                self._slot_data = args['slot_data']
                 self.auth_ready.set()
             case 'RoomInfo':
                 self._seed = args['seed_name']
+            case 'LocationInfo':
+                self._shop_items = [NetworkItem(*item) for item in args['locations']]
+                self._shop_items_received.set()
 
 
 async def dispatch_items(ctx: SpyroAHTContext):

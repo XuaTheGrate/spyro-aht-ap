@@ -1,4 +1,7 @@
-from enum import IntFlag
+import struct
+from dataclasses import dataclass
+from enum import IntEnum, IntFlag
+from typing import Literal
 
 BREATH_FIRE = 0x1
 BREATH_WATER = 0x2
@@ -335,3 +338,62 @@ class AbilityFlags(IntFlag):
     Glide = 0x100000
     Charge = 0x200000
     Swim = 0x400000
+
+
+class ShopItemModel(IntEnum):
+    Lockpick = 0x0200014c
+    HealthUpgrade = 0x0200014b
+    FireBomb = 0x02000077
+    ElectricBomb = 0x020000a7
+    WaterBomb = 0x02000114
+    IceBomb = 0x020000a1
+    FireMag = 0x0200023f
+    ElectricMag = 0x0200023e
+    WaterMag = 0x02000241
+    IceMag = 0x02000240
+    Keychain = 0x02000242
+    ButterflyJar = 0x020001b1
+    DoubleGems = 0x0200023a
+    Shockwave = 0x0200023b
+    TeleportTicket = 0x0200023c
+    TeleportTicketMain = 0x0200023d
+
+
+class TextEntry:
+    base = 0x28010000
+
+    def __init__(self, index: int, text: str):
+        self.index = index
+        self._text = text
+        self.been_bought = False
+    
+    @property
+    def address(self):
+        return self.base + self.index
+
+    @property
+    def text(self):
+        if len(self._text) >= 48:
+            return self._text[:44] + "..."
+        return self._text
+    
+    def to_bytes(self, byteorder: Literal['big', 'little'] = 'big'):
+        return struct.pack(('<' if byteorder == 'little' else '>') + '?B48s', self.been_bought, 0, self.text.encode('ascii'))
+
+
+@dataclass
+class XLSShoppingItem:
+    entity: ShopItemModel
+    text: TextEntry
+    cost: tuple[int, int] # [u16, u16] (base, remote)
+
+    @property
+    def structure(self) -> str:
+        return "IIIIHHhhII"
+
+    def to_bytes(self, byteorder: Literal['big', 'little'] = 'big'):
+        return struct.pack(('<' if byteorder == 'little' else '>') + self.structure, 
+                           self.entity, 0x01000028, self.text.address, self.text.address,
+                           self.cost[0], self.cost[1], 1, 0, 0, 0)
+
+

@@ -223,10 +223,9 @@ def create_all_items(world: SpyroAHTWorld) -> None:
             l.place_locked_item(world.create_item("Light Gem"))
             counts['Light Gem'] -= 1
     
-    if False: #world.options.randomize_shop_items:
+    if world.options.randomize_shop_items:
         itempool.extend(world.create_item(i) for i in ("Extra Health Unit", "Keychain", "Butterfly Jar", "Double Gems", "Shockwave"))
         itempool.extend(world.create_item("Lockpick") for _ in range(52))
-
 
     for item in DEFAULT_ITEMS:
         for _ in range(counts.get(item, 1)):

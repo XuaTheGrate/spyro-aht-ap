@@ -60,14 +60,15 @@ class RandomizeCharge(Toggle):
 
 
 class RandomizeShopItems(Toggle):
-    """Randomize Moneybags shop items. <CURRENTLY DOES NOTHING>"""
+    """Randomize Moneybags shop items. """
     display_name = "Randomize Shop Items"
     default = 0
 
 
 class RandomizeShopPrices(Choice):
-    """Sets Moneybags shop prices. <CURRENTLY DOES NOTHING>
-    
+    """Sets Moneybags shop prices.
+    NOTE: ``default`` currently does nothing.
+
     default: No changes to price. If ``Randomize Shop Items`` is enabled, this setting will automatically change to ``random``.
     random: Randomizes the price, defined by the range in **Minimum Shop Price** and **Maximum Shop Price**.
     random_low: Randomizes the price, with a bias towards a lower price.
@@ -84,7 +85,7 @@ class RandomizeShopPrices(Choice):
 
 
 class ShopPricesMin(Range):
-    """The minimum price for items in the shop. <CURRENTLY DOES NOTHING>"""
+    """The minimum price for items in the shop."""
     display_name = "Minimum Shop Price"
     range_start = 1
     range_end = 10000
@@ -92,7 +93,7 @@ class ShopPricesMin(Range):
 
 
 class ShopPricesMax(Range):
-    """The maximum price for items in the shop. <CURRENTLY DOES NOTHING>"""
+    """The maximum price for items in the shop."""
     display_name = "Maximum Shop Price"
     range_start = 1
     range_end = 10000

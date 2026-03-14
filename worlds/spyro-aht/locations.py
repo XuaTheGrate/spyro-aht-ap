@@ -12,12 +12,6 @@ if TYPE_CHECKING:
 
 LOCATION_NAME_TO_ID: dict[str, int] = {}
 
-for region in REGIONS.values():
-    for location in region.locations:
-        assert location.id not in LOCATION_NAME_TO_ID.values()
-        LOCATION_NAME_TO_ID[location.name] = location.id
-
-
 SHOP_ITEMS = [
     DataLocation("Moneybags: Shop item 1", 1001, True_()), # Extra Health Unit
     DataLocation("Moneybags: Shop Item 2", 1002, True_()), # Keychain
@@ -26,7 +20,17 @@ SHOP_ITEMS = [
     DataLocation("Moneybags: Shop Item 5", 1005, True_()), # Shockwave
 ]
 
-SHOP_ITEMS.extend(DataLocation(f"Moneybags: Shop Item {6+i}", 1006+i, True_()) for i in range(54))
+SHOP_ITEMS.extend(DataLocation(f"Moneybags: Shop Item {6+i}", 1006+i, True_()) for i in range(52))
+
+
+for region in REGIONS.values():
+    for location in region.locations:
+        assert location.id not in LOCATION_NAME_TO_ID.values()
+        LOCATION_NAME_TO_ID[location.name] = location.id
+
+
+for s in SHOP_ITEMS:
+    LOCATION_NAME_TO_ID[s.name] = s.id
 
 
 class SpyroAHTLocation(Location):
@@ -47,7 +51,7 @@ def create_regular_locations(world: SpyroAHTWorld):
         r = world.get_region(region.name)
         r.add_locations(get_location_names_with_ids([l.name for l in region.locations]))
     
-    if False:#world.options.randomize_shop_items:
+    if world.options.randomize_shop_items:
         r = world.get_region("Dragon Village")
         r.add_locations({l.name: l.id for l in SHOP_ITEMS})
 

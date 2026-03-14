@@ -1,6 +1,5 @@
 from collections.abc import Mapping
 from typing import Any
-
 from worlds.AutoWorld import World
 
 from . import items, locations, options as ahtoptions, regions, rules, web_world
@@ -40,4 +39,4 @@ class SpyroAHTWorld(World):
         return "Gem Pack"
     
     def fill_slot_data(self) -> Mapping[str, Any]:
-        return self.options.as_dict("misc_goal", "misc_skip_cutscenes", "misc_allow_immediate_realm_access")
+        return self.options.as_dict("misc_goal", "misc_skip_cutscenes", "misc_allow_immediate_realm_access", "randomize_shop_items", "randomize_shop_prices", "shop_prices_min", "shop_prices_max")
