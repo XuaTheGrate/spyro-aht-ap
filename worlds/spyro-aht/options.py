@@ -177,6 +177,12 @@ class MiscAllowImmediateRealmAccess(Toggle):
     default = 1
 
 
+class MiscDeathLink(Toggle):
+    """Enable Death Linking."""
+    display_name = "Death Link"
+    default = 0
+
+
 @dataclass
 class SpyroAHTOptions(PerGameCommonOptions):
     randomize_sgt_byrd_minigames: RandomizeSgtByrdMinigames
@@ -204,4 +210,6 @@ class SpyroAHTOptions(PerGameCommonOptions):
     misc_hint_minigame_rewards: MiscHintMinigameRewards
     misc_skip_cutscenes: MiscSkipCutscenes
     misc_allow_immediate_realm_access: MiscAllowImmediateRealmAccess
+
+    death_link: MiscDeathLink
 

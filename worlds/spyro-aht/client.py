@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 from collections import Counter
 from math import floor
 import struct
+from typing import Any
 
 import kvui
 import dolphin_memory_engine
@@ -62,6 +63,10 @@ class GenericClient(ABC):
     async def enable_butterfly_jar(self): raise NotImplementedError
     @abstractmethod
     async def notification_task(self): raise NotImplementedError
+    @abstractmethod
+    async def import_deathlink(self, ctx: SpyroAHTContext): raise NotImplementedError
+    @abstractmethod
+    async def export_deathlink(self, ctx: SpyroAHTContext) -> bool: raise NotImplementedError
 
 
 class PCSX2Client(GenericClient):
@@ -390,6 +395,17 @@ class DolphinClient(GenericClient):
                     dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TEXT_BUFFER, (message + "\0").encode('ascii'))
         except Exception:
             logger.error("ERROR IN NOTIFICATION_TASK", exc_info=True)
+    
+    async def import_deathlink(self, ctx: SpyroAHTContext):
+        dolphin_memory_engine.write_byte(self.addresses.g_DEATHLINK_RECV, 1)
+        ctx._deathlink.clear()
+    
+    async def export_deathlink(self, ctx: SpyroAHTContext) -> bool:
+        b = dolphin_memory_engine.read_byte(self.addresses.g_DEATHLINK_SEND)
+        if b:
+            dolphin_memory_engine.write_byte(self.addresses.g_DEATHLINK_SEND, 0)
+            return True
+        return False
 
 
 class SpyroAHTCommandProcessor(ClientCommandProcessor):
@@ -444,6 +460,8 @@ class SpyroAHTContext(CommonContext):
         self._shop_items_received = asyncio.Event()
         self._shop_items: list[NetworkItem] = []
 
+        self._deathlink = asyncio.Event()
+
     def make_gui(self) -> type[kvui.GameManager]:
         ui = super().make_gui()
         ui.base_title = "Spyro: A Hero's Tail Archipelago Client"
@@ -468,6 +486,10 @@ class SpyroAHTContext(CommonContext):
             case 'LocationInfo':
                 self._shop_items = [NetworkItem(*item) for item in args['locations']]
                 self._shop_items_received.set()
+    
+    def on_deathlink(self, data: dict[str, Any]) -> None:
+        self.emu_client.msg_queue.put_nowait(data.get('cause', '') or f"{data['source']} died.")
+        self._deathlink.set()
 
 
 async def dispatch_items(ctx: SpyroAHTContext):
@@ -549,10 +571,35 @@ async def dispatch_locations(ctx: SpyroAHTContext):
         await ctx.send_msgs([{"cmd":"LocationChecks","locations":locations}])
 
 
-async def emu_loop(ctx: SpyroAHTContext):
+async def deathlink_importer(ctx: SpyroAHTContext):
     try:
-        await ctx.emu_client.ready.wait()
+        while True:
+            await ctx._deathlink.wait()
+            await ctx.emu_client.import_deathlink(ctx)
+    except Exception:
+        logger.error("ERROR IN DEATHLINK IMPORTER", exc_info=True)
+
+async def deathlink_exporter(ctx: SpyroAHTContext):
+    try:
+        while True:
+            await asyncio.sleep(1)
+            if await ctx.emu_client.export_deathlink(ctx):
+                await ctx.send_death()
+    except Exception:
+        logger.error("ERROR IN DEATHLINK EXPORTER", exc_info=True)
+
+
+async def emu_loop(ctx: SpyroAHTContext):
+    t1: asyncio.Task | None = None
+    t2: asyncio.Task | None = None
+    try:
         await ctx.auth_ready.wait()
+        await ctx.emu_client.ready.wait()
+
+        if ctx._slot_data['death_link']:
+            await ctx.update_death_link(True)        
+            t1 = asyncio.create_task(deathlink_importer(ctx))
+            t2 = asyncio.create_task(deathlink_exporter(ctx))
 
         await ctx.emu_client.apply_patch(ctx)
 
@@ -573,6 +620,10 @@ async def emu_loop(ctx: SpyroAHTContext):
     except Exception:
         logger.error("ERROR IN EMULATOR LOOP, PLEASE REPORT IN THREAD", exc_info=True)
     finally:
+        if t1:
+            t1.cancel()
+        if t2:
+            t2.cancel()
         await ctx.emu_client.disconnect()
 
 

@@ -144,6 +144,8 @@ class AddressList:
     g_NUM_GEM_PACKS_RECEIVED: int
     g_NUM_LOCKPICKS: int
     g_BUTTERFLY_JAR: int
+    g_DEATHLINK_RECV: int
+    g_DEATHLINK_SEND: int
     g_SKIP_CUTSCENE_BUTTON: int
     g_ALLOW_TELEPORT_TO_HUB: int
     g_ALLOW_IMMEDIATE_REALM_ACCESS: int
