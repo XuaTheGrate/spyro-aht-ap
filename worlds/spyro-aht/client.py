@@ -58,6 +58,8 @@ class GenericClient(ABC):
     async def prepare_shop_items(self, ctx: SpyroAHTContext, *locations): raise NotImplementedError
     @abstractmethod
     async def enable_butterfly_jar(self): raise NotImplementedError
+    @abstractmethod
+    async def notification_task(self): raise NotImplementedError
 
 
 class PCSX2Client(GenericClient):
@@ -366,6 +368,23 @@ class DolphinClient(GenericClient):
             dolphin_memory_engine.write_bytes(self.addresses.p_XLS_SHOP_TEXT + (0x32 * idx), i.text.to_bytes('big'))
 
             await asyncio.sleep(0)
+    
+    async def notification_task(self):
+        try:
+            while True:
+                await asyncio.sleep(3.5)
+                if await self.is_in_game() and not await self.is_paused() and not await self.is_loading():
+                    message = await self.msg_queue.get()
+
+                    if len(message) > 255:
+                        message = message[:255]
+
+                    colour = struct.pack(">BBBB", 0x80, 0x80, 0x80, 0x80)
+                    dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_COLOR, colour)
+                    dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TIMER, (3*60).to_bytes(4))
+                    dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TEXT_BUFFER, (message + "\0").encode('ascii'))
+        except Exception:
+            logger.error("ERROR IN NOTIFICATION_TASK", exc_info=True)
 
 
 class SpyroAHTCommandProcessor(ClientCommandProcessor):
