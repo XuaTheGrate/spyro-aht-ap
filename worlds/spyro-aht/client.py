@@ -170,6 +170,7 @@ class DolphinClient(GenericClient):
         self.ready.set()
     
     async def disconnect(self):
+        self._notification_task.cancel()
         if dolphin_memory_engine.is_hooked():
             dolphin_memory_engine.un_hook()
     

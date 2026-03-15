@@ -115,24 +115,24 @@ byrd_locations = [[
 ]]
 
 blink_locations = [[
-    "Crocoville Swamp: Dragon Egg from Blink",
+    "Crocovile Swamp: Dragon Egg from Blink",
     "Coastal Remains: Dragon Egg from Blink",
     "Frostbite Village: Dragon Egg from Blink",
     "Dark Mine: Dragon Egg from Blink",
 ], [
-    "Crocoville Swamp: Light Gem from Blink",
+    "Crocovile Swamp: Light Gem from Blink",
     "Coastal Remains: Light Gem from Blink",
     "Frostbite Village: Light Gem from Blink",
     "Dark Mine: Light Gem from Blink",
 ]]
 
 turret_locations = [[
-    "Crocoville Swamp: Dragon Egg from Fredneck",
+    "Crocovile Swamp: Dragon Egg from Fredneck",
     "Coastal Remains: Dragon Egg from Turtle Mother",
     "Frostbite Village: Dragon Egg from Peggy",
     "Stormy Beach: Dragon Egg from Wally",
 ], [
-    "Crocoville Swamp: Light Gem from Fredneck",
+    "Crocovile Swamp: Light Gem from Fredneck",
     "Coastal Remains: Light Gem from Turtle Mother",
     "Frostbite Village: Light Gem from Peggy",
     "Stormy Beach: Light Gem from Wally",

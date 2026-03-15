@@ -68,7 +68,7 @@ LOCATIONS_BITFIELD: dict[int, int] = {
 LOCATIONS_OBJECTIVE: dict[int, int] = {
     0x44000001: 1,   # Dragon Village: Double Jump from Elder Tomas
     0x44000081: 17,  # Dragon Village: Lightning Breath from Gnasty Gnorc
-    0x44000003: 33,  # Crocoville Swamp: Pole Spin from Elder Magnus
+    0x44000003: 33,  # Crocovile Swamp: Pole Spin from Elder Magnus
     0x44000082: 79,  # Coastal Remains: Water Breath from Ineptune
     0x4400009d: 83,  # Cloudy Domain: Wing Shield from Elder Titan
     0x44000083: 136, # Frostbite Village: Ice Breath from Red
