@@ -27,7 +27,7 @@ ITEM_NAME_TO_ID = {
     "Charge": 0xD,
 
     "Lockpick": 0x1C,
-    "Extra Health Unit": 0xF,
+    "Health Unit+": 0xF,
 
     "Butterfly Jar": 0x19,
     "Double Gems": 0x1A,
@@ -75,7 +75,7 @@ DEFAULT_ITEM_CLASSIFICATIONS = {
     
     "Butterfly Jar": ItemClassification.useful,
     "Double Gems": ItemClassification.useful,
-    "Horn Dive+": ItemClassification.useful,
+    "Shockwave": ItemClassification.useful,
 
     "Gem Pack": ItemClassification.filler,
 
