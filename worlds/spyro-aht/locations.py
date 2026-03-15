@@ -75,5 +75,5 @@ def create_events(world: SpyroAHTWorld) -> None:
             )
         case 3: # Mecha-Red
             reds_lab = world.get_region("Red's Laboratory")
-            reds_lab.add_event("Red's Laboratory: Defeat Mecha-Red", "Victory", location_type=SpyroAHTLocation,item_type=items.SpyroAHTItem,rule=Has("Dark Gem", 40) & HasAll("Lightning Breath", "Fire Breath"))
+            reds_lab.add_event("Red's Laboratory: Defeat Mecha-Red", "Victory", location_type=SpyroAHTLocation,item_type=items.SpyroAHTItem,rule=Has("Dark Gem", 40) & HasAll("Electric Breath", "Fire Breath"))
     world.multiworld.completion_condition[world.player] = lambda state: state.has("Victory", world.player)

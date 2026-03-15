@@ -35,7 +35,7 @@ REGIONS = {r.name: r for r in [
         DataLocation("Dragon Village: Double Jump from Elder Tomas", 1, True_())
     ], access_rule=True_()),
 
-    DataRegion("Dragon Village - After Elder Tomas", ["Dragon Village - Gnasty Gnorcs Lair", "Crocoville Swamp", "Dragonfly Falls"], [
+    DataRegion("Dragon Village - After Elder Tomas", ["Dragon Village - Gnasty Gnorcs Lair", "Crocovile Swamp", "Dragonfly Falls"], [
         DataLocation("Dragon Village: Dark Gem by Ember", 2, True_()),
         DataLocation("Dragon Village: Dark Gem by Elder Tomas", 3, True_()),
         DataLocation("Dragon Village: Dragon Egg after Hunter", 4, Has("Glide")),
@@ -49,44 +49,44 @@ REGIONS = {r.name: r for r in [
         DataLocation("Dragon Village: Dragon Egg behind Dark Gem by Sgt. Byrd", 12, Has("Charge")),
         DataLocation("Dragon Village: Dragon Egg from Sgt. Byrd", 13, True_()),
         DataLocation("Dragon Village: Light Gem from Sgt. Byrd", 14, True_()),
-        DataLocation("Dragon Village: Locked Chest before Crocoville Swamp", 15, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
+        DataLocation("Dragon Village: Locked Chest before Crocovile Swamp", 15, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
     ], access_rule=Has("Double Jump")),
 
     # Double Jump (via Dragon Village - After Elder Tomas)
     DataRegion("Dragon Village - Gnasty Gnorcs Lair", [], [
         DataLocation("Dragon Village: Dragon Egg in Gnastys Lair", 16, True_()),
-        DataLocation("Dragon Village: Lightning Breath from Gnasty Gnorc", 17, HasAny("Fire Breath", "Charge"))
+        DataLocation("Dragon Village: Electric Breath from Gnasty Gnorc", 17, HasAny("Fire Breath", "Charge"))
     ], access_rule=Has("Dark Gem", 10)),
 
     # Double Jump (via Dragon Village - After Elder Tomas)
-    DataRegion("Crocoville Swamp", ["Crocoville Swamp - After Elder Magnus"], [
-        DataLocation("Crocoville Swamp: Dark Gem by Moneybags Pad", 18, True_()),
-        DataLocation("Crocoville Swamp: Locked Chest behind breakable wall", 19, Has("Charge") & Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
-        DataLocation("Crocoville Swamp: Dragon Egg across platforms in mud", 20, True_()),
-        DataLocation("Crocoville Swamp: Light Gem behind reinforced door", 21, Has("Charge") & Has("Light Gem", 40)),
-        DataLocation("Crocoville Swamp: Light Gem on top of pyramid", 22, Has("Glide")),
-        DataLocation("Crocoville Swamp: Locked Chest before Dogs", 23, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
-        DataLocation("Crocoville Swamp: Locked Chest in Temple", 24, HasAny("Fire Breath", "Lightning Breath", "Charge") & Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
-        DataLocation("Crocoville Swamp: Light Gem in Temple", 25, True_()),
-        DataLocation("Crocoville Swamp: Light Gem in secret room", 26, Has("Charge")),
-        DataLocation("Crocoville Swamp: Dragon Egg from thief in temple", 27, HasAll("Charge", "Lightning Breath")),
-        DataLocation("Crocoville Swamp: Light Gem after platforming", 28, HasAny("Fire Breath", "Lightning Breath") | HasAll("Ice Breath", "Charge")), # fuck the piranha plant
-        DataLocation("Crocoville Swamp: Dragon Egg after pole spin left", 29, HasAll("Charge", "Pole Spin")),
-        DataLocation("Crocoville Swamp: Dragon Egg from Blink", 30, True_()),
-        DataLocation("Crocoville Swamp: Light Gem from Blink", 31, True_()),
-        DataLocation("Crocoville Swamp: Dark Gem before Elder Magnus", 32, True_()),
-        DataLocation("Crocoville Swamp: Pole Spin from Elder Magnus", 33, True_())
+    DataRegion("Crocovile Swamp", ["Crocovile Swamp - After Elder Magnus"], [
+        DataLocation("Crocovile Swamp: Dark Gem by Moneybags Pad", 18, True_()),
+        DataLocation("Crocovile Swamp: Locked Chest behind breakable wall", 19, Has("Charge") & Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
+        DataLocation("Crocovile Swamp: Dragon Egg across platforms in mud", 20, True_()),
+        DataLocation("Crocovile Swamp: Light Gem behind reinforced door", 21, Has("Charge") & Has("Light Gem", 40)),
+        DataLocation("Crocovile Swamp: Light Gem on top of pyramid", 22, Has("Glide")),
+        DataLocation("Crocovile Swamp: Locked Chest before Dogs", 23, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
+        DataLocation("Crocovile Swamp: Locked Chest in Temple", 24, HasAny("Fire Breath", "Electric Breath", "Charge") & Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
+        DataLocation("Crocovile Swamp: Light Gem in Temple", 25, True_()),
+        DataLocation("Crocovile Swamp: Light Gem in secret room", 26, Has("Charge")),
+        DataLocation("Crocovile Swamp: Dragon Egg from thief in temple", 27, HasAll("Charge", "Electric Breath")),
+        DataLocation("Crocovile Swamp: Light Gem after platforming", 28, HasAny("Fire Breath", "Electric Breath") | HasAll("Ice Breath", "Charge")), # fuck the piranha plant
+        DataLocation("Crocovile Swamp: Dragon Egg after pole spin left", 29, HasAll("Charge", "Pole Spin")),
+        DataLocation("Crocovile Swamp: Dragon Egg from Blink", 30, True_()),
+        DataLocation("Crocovile Swamp: Light Gem from Blink", 31, True_()),
+        DataLocation("Crocovile Swamp: Dark Gem before Elder Magnus", 32, True_()),
+        DataLocation("Crocovile Swamp: Pole Spin from Elder Magnus", 33, True_())
     ], access_rule=True_()),
 
     # Double Jump (via Dragon Village - After Elder Tomas)
-    DataRegion("Crocoville Swamp - After Elder Magnus", [], [
-        DataLocation("Crocoville Swamp: Dragon Egg in Elder Magnus House", 34, HasAll("Charge", "Glide")), # can be glided to
-        DataLocation("Crocoville Swamp: Light Gem in Elder Magnus House", 35, True_()),
-        DataLocation("Crocoville Swamp: Dark Gem above Blink", 36, True_()),
-        DataLocation("Crocoville Swamp: Dragon Egg from Fredneck", 37, True_()),
-        DataLocation("Crocoville Swamp: Light Gem from Fredneck", 38, True_()),
+    DataRegion("Crocovile Swamp - After Elder Magnus", [], [
+        DataLocation("Crocovile Swamp: Dragon Egg in Elder Magnus House", 34, HasAll("Charge", "Glide")), # can be glided to
+        DataLocation("Crocovile Swamp: Light Gem in Elder Magnus House", 35, True_()),
+        DataLocation("Crocovile Swamp: Dark Gem above Blink", 36, True_()),
+        DataLocation("Crocovile Swamp: Dragon Egg from Fredneck", 37, True_()),
+        DataLocation("Crocovile Swamp: Light Gem from Fredneck", 38, True_()),
         # Achieveable without Glide
-        DataLocation("Crocoville Swamp: Light Gem across the lilypads", 39, Has("Glide"))
+        DataLocation("Crocovile Swamp: Light Gem across the lilypads", 39, Has("Glide"))
     ], access_rule=Has("Pole Spin")),
 
     # Double Jump (via Dragon Village - After Elder Tomas)
@@ -137,7 +137,7 @@ REGIONS = {r.name: r for r in [
 
     DataRegion("Coastal Remains - Cloudy Domain Entrance", ["Cloudy Domain"], [
         DataLocation("Coastal Remains: Light Gem after Windmills", 59, Has("Pole Spin")),
-        DataLocation("Coastal Remains: Light Gem beyond moving platform", 60, Has("Lightning Breath")),
+        DataLocation("Coastal Remains: Light Gem beyond moving platform", 60, Has("Electric Breath")),
     ], access_rule=HasAll("Glide", "Double Jump")),
 
     DataRegion("Coastal Remains - 20 Light Gem Door", [], [
@@ -157,7 +157,7 @@ REGIONS = {r.name: r for r in [
         DataLocation("Coastal Remains: Dragon Egg from Blink", 72, True_()),
         DataLocation("Coastal Remains: Light Gem from Blink", 73, True_()),
         DataLocation("Coastal Remains: Dark Gem near Blink", 74, True_()),
-        DataLocation("Coastal Remains: Dragon Egg after Crossbow Gnorcs", 75, Has("Lightning Breath")),
+        DataLocation("Coastal Remains: Dragon Egg after Crossbow Gnorcs", 75, Has("Electric Breath")),
         DataLocation("Coastal Remains: Dark Gem before Sunken Ruins", 76, True_()),
         DataLocation("Coastal Remains: Light Gem before Sunken Ruins", 77, True_()),
     ], access_rule=HasAll("Pole Spin", "Double Jump")),
@@ -225,7 +225,7 @@ REGIONS = {r.name: r for r in [
         DataLocation("Sunken Ruins: Dark Gem under Acid Pool", 113, True_()),
         DataLocation("Sunken Ruins: Locked Chest near Acid Pool Dark Gem", 114, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
         DataLocation("Sunken Ruins: Locked Chest after Acid Pool Dark Gem", 115, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)])))
-    ], access_rule=HasAll("Lightning Breath", "Glide") & Has("Light Gem", 24)),
+    ], access_rule=HasAll("Electric Breath", "Glide") & Has("Light Gem", 24)),
 
     DataRegion("Frostbite Village", ["Frostbite Village - After Phils Gate", "Frostbite Village - After Horn Dive Switch", "Frostbite Village - Reds Lair"], [
     ], access_rule=(
@@ -244,7 +244,7 @@ REGIONS = {r.name: r for r in [
     DataRegion("Frostbite Village - Reds Lair", [], [
         DataLocation("Frostbite Village: Ice Breath from Red", 136, True_())
         # a breath is required to kill the dogs
-    ], access_rule=HasAny("Fire Breath", "Lightning Breath", "Charge") & Has("Dark Gem", 30)),
+    ], access_rule=HasAny("Fire Breath", "Electric Breath", "Charge") & Has("Dark Gem", 30)),
 
     DataRegion("Frostbite Village - After Phils Gate", [], [
         DataLocation("Frostbite Village: Light Gem after Phils Gate", 116, HasAll("Water Breath", "Double Jump", "Glide")),
@@ -253,7 +253,7 @@ REGIONS = {r.name: r for r in [
         DataLocation("Frostbite Village: Dark Gem near Peggy", 119, Has("Double Jump")),
         DataLocation("Frostbite Village: Dragon Egg after Dark Gem near Peggy", 120, Has("Double Jump")),
         DataLocation("Frostbite Village: Locked Chest by Dragon Egg", 238, Has("Double Jump") & Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)])))
-    ], access_rule=HasAll("Lightning Breath", "Charge")),
+    ], access_rule=HasAll("Electric Breath", "Charge")),
 
     # Double Jump (via Frostbite Village - After Horn Dive Switch)
     DataRegion("Frostbite Village - Before Gloomy Glacier", ["Gloomy Glacier", "Frostbite Village - Wall Kick"], [
@@ -309,12 +309,12 @@ REGIONS = {r.name: r for r in [
     DataRegion("Ice Citadel - Above Elder Astor", ["Ice Citadel - After Elder Astor"], [
         DataLocation("Ice Citadel: Dark Gem above Elder Astor", 154, True_()),
         DataLocation("Ice Citadel: Wall Kick from Elder Astor", 155, True_())
-    ], access_rule=HasAny("Fire Breath", "Lightning Breath", "Ice Breath") & Has("Charge")),
+    ], access_rule=HasAny("Fire Breath", "Electric Breath", "Ice Breath") & Has("Charge")),
 
     # Double Jump (via Frostbite Village - After Horn Dive Switch)
     # Glide (via Frostbite Village - Before Gloomy Glacier)
     # Water Breath (via Ice Citadel - Inner)
-    # (Fire Breath | Lightning Breath | Ice Breath) & Charge via (Ice Citadel - Above Elder Astor)
+    # (Fire Breath | Electric Breath | Ice Breath) & Charge via (Ice Citadel - Above Elder Astor)
     DataRegion("Ice Citadel - After Elder Astor", ["Frostbite Village - Reinforced Door"], [
         DataLocation("Ice Citadel: Locked Chest after Elder Astor", 156, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
         DataLocation("Ice Citadel: Dark Gem after sewer sprint", 157, Has("Light Gem", 40)),
@@ -328,7 +328,7 @@ REGIONS = {r.name: r for r in [
         DataLocation("Ice Citadel: Locked Chest by Ice Princess", 243, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
         DataLocation("Ice Citadel: Dark Gem after Ice Princess", 163, True_()),
         DataLocation("Ice Citadel: Dragon Egg after pole spin after Yetis", 164, Has("Pole Spin")),
-        DataLocation("Ice Citadel: Dark Gem after Yetis", 165, HasAll("Lightning Breath", "Pole Spin")),
+        DataLocation("Ice Citadel: Dark Gem after Yetis", 165, HasAll("Electric Breath", "Pole Spin")),
         DataLocation("Ice Citadel: Dragon Egg beind cannon reinforced wall", 166, True_()),
         DataLocation("Ice Citadel: Light Gem beind cannon reinforced wall", 167, True_()),
         DataLocation("Ice Citadel: Reward for lighting 5 boilers", 168, Has("Fire Breath")),
@@ -340,7 +340,7 @@ REGIONS = {r.name: r for r in [
     # Double Jump (via Frostbite Village - After Horn Dive Switch)
     # Glide (via Frostbite Village - Before Gloomy Glacier)
     # Water Breath (via Ice Citadel - Inner)
-    # (Fire Breath | Lightning Breath | Ice Breath) & Charge via (Ice Citadel - Above Elder Astor)
+    # (Fire Breath | Electric Breath | Ice Breath) & Charge via (Ice Citadel - Above Elder Astor)
     # Wall Kick (via Ice Citadel - After Elder Astor)
     DataRegion("Frostbite Village - Reinforced Door", ["Frostbite Village - 95 Light Gem Door"], [
         DataLocation("Frostbite Village: Light Gem through reinforced door to Frostbite Village", 172, True_()),
@@ -354,7 +354,7 @@ REGIONS = {r.name: r for r in [
     # Double Jump (via Frostbite Village - After Horn Dive Switch)
     # Glide (via Frostbite Village - Before Gloomy Glacier)
     # Water Breath (via Ice Citadel - Inner)
-    # (Fire Breath | Lightning Breath | Ice Breath) & Charge via (Ice Citadel - Above Elder Astor)
+    # (Fire Breath | Electric Breath | Ice Breath) & Charge via (Ice Citadel - Above Elder Astor)
     # Wall Kick (via Ice Citadel - After Elder Astor)
     # Light Gem x40 (via Frostbite Village - Reinforced Door)
     DataRegion("Frostbite Village - 95 Light Gem Door", [], [
@@ -442,12 +442,12 @@ REGIONS = {r.name: r for r in [
         DataLocation("Dark Mine: Dragon Egg from Blink", 210, True_()),
         DataLocation("Dark Mine: Light Gem from Blink", 211, True_()),
         DataLocation("Dark Mine: Dragon Egg below shield Robo-Gnorc", 212, True_())
-    ], access_rule=HasAll("Ice Breath", "Charge") | Has("Lightning Breath")),
+    ], access_rule=HasAll("Ice Breath", "Charge") | Has("Electric Breath")),
 
     # Double Jump & Glide & (Water Breath | Ice Breath) via (Molten Mount)
     # Pole Spin (via Molten Mount - Pole Spin)
     # Wall Kick (via Magma Falls Top)
-    # (Ice Breath & Charge) | Lightning Breath (via Dark Mine)
+    # (Ice Breath & Charge) | Electric Breath (via Dark Mine)
     DataRegion("Dark Mine - 45 Light Gem Door", [], [
         DataLocation("Dark Mine: Light Gem in Acid Pool beyond 45 Light Gem Door", 204, True_()),
         DataLocation("Dark Mine: Dragon Egg in Acid Pool beyond 45 Light Gem Door", 205, True_())
@@ -456,7 +456,7 @@ REGIONS = {r.name: r for r in [
     # Double Jump & Glide & (Water Breath | Ice Breath) via (Molten Mount)
     # Pole Spin (via Molten Mount - Pole Spin)
     # Wall Kick (via Magma Falls Top)
-    # (Ice Breath & Charge) | Lightning Breath (via Dark Mine)
+    # (Ice Breath & Charge) | Electric Breath (via Dark Mine)
     DataRegion("Dark Mine - Steam Vents", ["Red's Laboratory"], [
         DataLocation("Dark Mine: Light Gem in temporary platform room", 213, True_()),
         DataLocation("Dark Mine: Dragon Egg next to Moneybags", 214, True_()),
@@ -467,7 +467,7 @@ REGIONS = {r.name: r for r in [
     # Double Jump & Glide & (Water Breath?) via (Molten Mount)
     # Pole Spin (via Molten Mount - Pole Spin)
     # Wall Kick (via Magma Falls Top)
-    # Charge | Lightning Breath (via Dark Mine)
+    # Charge | Electric Breath (via Dark Mine)
     # Ice Breath via (Dark Mine - Steam Vents)
     DataRegion("Red's Laboratory", [], [
         DataLocation("Red's Laboratory: Locked Chest after pole spin", 253, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),

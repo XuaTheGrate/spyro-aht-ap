@@ -56,6 +56,8 @@ class GenericClient(ABC):
     async def apply_patch(self, ctx: SpyroAHTContext): raise NotImplementedError
     @abstractmethod
     async def prepare_shop_items(self, ctx: SpyroAHTContext, *locations): raise NotImplementedError
+    @abstractmethod
+    async def enable_butterfly_jar(self): raise NotImplementedError
 
 
 class PCSX2Client(GenericClient):
@@ -260,6 +262,9 @@ class DolphinClient(GenericClient):
             await ctx.send_msgs([{"cmd":"StatusUpdate","status":ClientStatus.CLIENT_GOAL}])
     
     async def scout_location(self, ctx: SpyroAHTContext):
+        if not ctx._slot_data['misc_hint_minigame_rewards']:
+            return
+        
         locations: set[int] = set()
         for obj, loc in consts.SCOUT_OBJECTIVES.items():
             index = (obj & 0xFFFF) - 1
@@ -283,6 +288,12 @@ class DolphinClient(GenericClient):
         await self.add_item(self.addresses.g_NUM_GEM_PACKS_RECEIVED, 1)
         await self.add_item_4(self.addresses.GEMS, 500)
         await self.add_item_4(self.addresses.TOTAL_GEMS, 500)
+    
+    async def enable_butterfly_jar(self):
+        flag = dolphin_memory_engine.read_byte(self.addresses.g_BUTTERFLY_JAR)
+        if not flag:
+            dolphin_memory_engine.write_byte(self.addresses.g_BUTTERFLY_JAR, 1)
+            await self.set_ability_flag(consts.AbilityFlags.ButterflyJar, True)
     
     async def apply_patch(self, ctx: SpyroAHTContext):
         dolphin_memory_engine.write_byte(self.addresses.p_SKIP_CUTSCENE_BUTTON, ctx._slot_data['misc_skip_cutscenes'])
@@ -325,9 +336,9 @@ class DolphinClient(GenericClient):
 
             if item.player == ctx.slot: # self
                 match item.item:
-                    case 0x1 | 0x1A | 0x1D: # double jump | double gems | gem pack
+                    case 0x1A | 0x1D: # double gems or gem pack
                         price = 1
-                    case 0xE | 0x5 | 0x6 | 0x7 | 0xD: # breaths or charge
+                    case 0x1 | 0xE | 0x5 | 0x6 | 0x7 | 0xD: # double jump or breaths or charge
                         price = min(price, random.randint(400, 500))
                 
                 match item.item:
@@ -473,26 +484,27 @@ async def dispatch_items(ctx: SpyroAHTContext):
                 count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.DARK_GEM_COUNT)
                 if count < ctx.item_counts[0x8]:
                     await ctx.emu_client.add_item(ctx.emu_client.addresses.DARK_GEM_COUNT, 1)
-            case 0x9:
+            case 0x9: # Light Gem
                 count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.LIGHT_GEM_COUNT)
                 if count < ctx.item_counts[0x9]:
                     await ctx.emu_client.add_item(ctx.emu_client.addresses.LIGHT_GEM_COUNT, 1)
-            case 0xA:
+            case 0xA: # Dragon Egg
                 count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.DRAGON_EGG_COUNT)
                 if count < ctx.item_counts[0xA]:
                     await ctx.emu_client.add_item(ctx.emu_client.addresses.DRAGON_EGG_COUNT, 1)
             case 0x1C: # Lockpick
-                pass
+                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_NUM_LOCKPICKS)
+                if count < ctx.item_counts[0x1C]:
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_NUM_LOCKPICKS, 1)
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.LOCKPICKS, 1)
             case 0xF: # Extra Health Unit
-                pass
-            case 0x18: # Keychain
-                pass
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.SparxHealthUpgrade, True)
             case 0x19: # Butterfly Jar
-                pass
+                await ctx.emu_client.enable_butterfly_jar()
             case 0x1A: # Double Gems
-                pass
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.DoubleGems, True)
             case 0x1B: # Shockwave
-                pass
+                await ctx.emu_client.set_ability_flag(consts.AbilityFlags.Shockwave, True)
             case 0x1D: # Gem Pack
                 count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_NUM_GEM_PACKS_RECEIVED)
                 if count < ctx.item_counts[0x1D]:

@@ -18,7 +18,7 @@ ITEM_NAME_TO_ID = {
     "Dragon Egg": 0xA,
 
     "Fire Breath": 0xE,
-    "Lightning Breath": 0x5,
+    "Electric Breath": 0x5,
     "Water Breath": 0x6,
     "Ice Breath": 0x7,
 
@@ -29,12 +29,16 @@ ITEM_NAME_TO_ID = {
     "Lockpick": 0x1C,
     "Extra Health Unit": 0xF,
 
-    "Keychain": 0x18,
     "Butterfly Jar": 0x19,
     "Double Gems": 0x1A,
     "Shockwave": 0x1B,
 
-    "Gem Pack": 0x1D
+    "Gem Pack": 0x1D,
+
+    "Fire Bomb": 0x1E,
+    "Electric Bomb": 0x1F,
+    "Water Bomb": 0x20,
+    "Ice Bomb": 0x21
 }
 
 DEFAULT_ITEMS = [
@@ -54,7 +58,7 @@ DEFAULT_ITEM_CLASSIFICATIONS = {
     "Wall Kick": ItemClassification.progression,
 
     "Fire Breath": ItemClassification.progression,
-    "Lightning Breath": ItemClassification.progression,
+    "Electric Breath": ItemClassification.progression,
     "Water Breath": ItemClassification.progression,
     "Ice Breath": ItemClassification.progression,
 
@@ -67,14 +71,18 @@ DEFAULT_ITEM_CLASSIFICATIONS = {
     "Dragon Egg": ItemClassification.filler,
 
     "Lockpick": ItemClassification.progression,
-    "Extra Health Unit": ItemClassification.useful,
+    "Health Unit+": ItemClassification.useful,
     
-    "Keychain": ItemClassification.filler,
     "Butterfly Jar": ItemClassification.useful,
     "Double Gems": ItemClassification.useful,
-    "Shockwave": ItemClassification.useful,
+    "Horn Dive+": ItemClassification.useful,
 
-    "Gem Pack": ItemClassification.filler
+    "Gem Pack": ItemClassification.filler,
+
+    "Fire Bomb": ItemClassification.filler,
+    "Electric Bomb": ItemClassification.filler,
+    "Water Bomb": ItemClassification.filler,
+    "Ice Bomb": ItemClassification.filler
 }
 
 
@@ -152,9 +160,9 @@ def create_all_items(world: SpyroAHTWorld) -> None:
         case 0: # default
             l = world.get_location("Dragon Village: Fire Breath")
             l.place_locked_item(world.create_item("Fire Breath"))
-            itempool.extend((world.create_item("Lightning Breath"), world.create_item("Water Breath"), world.create_item("Ice Breath")))
+            itempool.extend((world.create_item("Electric Breath"), world.create_item("Water Breath"), world.create_item("Ice Breath")))
         case 1: # randomized
-            breaths = ["Fire Breath", "Lightning Breath", "Water Breath", "Ice Breath"]
+            breaths = ["Fire Breath", "Electric Breath", "Water Breath", "Ice Breath"]
             breath = world.random.choice(breaths)
             breaths.remove(breath)
             i = world.create_item(breath)
@@ -162,7 +170,7 @@ def create_all_items(world: SpyroAHTWorld) -> None:
             l.place_locked_item(i)
             itempool.extend(world.create_item(i) for i in breaths)
         case 2: # none
-            breaths = ["Fire Breath", "Lightning Breath", "Water Breath", "Ice Breath"]
+            breaths = ["Fire Breath", "Electric Breath", "Water Breath", "Ice Breath"]
             itempool.extend(world.create_item(i) for i in breaths)
     
     if not world.options.randomize_charge:
@@ -224,8 +232,10 @@ def create_all_items(world: SpyroAHTWorld) -> None:
             counts['Light Gem'] -= 1
     
     if world.options.randomize_shop_items:
-        itempool.extend(world.create_item(i) for i in ("Extra Health Unit", "Keychain", "Butterfly Jar", "Double Gems", "Shockwave"))
+        itempool.extend(world.create_item(i) for i in ("Health Unit+", "Butterfly Jar", "Double Gems", "Horn Dive+"))
         itempool.extend(world.create_item("Lockpick") for _ in range(52))
+
+        itempool.extend(world.create_item(i) for i in ('Fire Bomb', 'Water Bomb', 'Electric Bomb', 'Ice Bomb') for _ in range(3))
 
     for item in DEFAULT_ITEMS:
         for _ in range(counts.get(item, 1)):

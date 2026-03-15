@@ -126,6 +126,8 @@ GOALS = [
 class AddressList:
     p_LOCATION_BITFIELD: int
     p_NUM_GEM_PACKS_RECEIVED: int
+    p_NUM_LOCKPICKS: int
+    p_BUTTERFLY_JAR: int
     p_SKIP_CUTSCENE_BUTTON: int
     p_ALLOW_TELEPORT_TO_HUB: int
     p_ALLOW_IMMEDIATE_REALM_ACCESS: int
@@ -140,6 +142,8 @@ class AddressList:
 
     g_LOCATION_BITFIELD: int
     g_NUM_GEM_PACKS_RECEIVED: int
+    g_NUM_LOCKPICKS: int
+    g_BUTTERFLY_JAR: int
     g_SKIP_CUTSCENE_BUTTON: int
     g_ALLOW_TELEPORT_TO_HUB: int
     g_ALLOW_IMMEDIATE_REALM_ACCESS: int
@@ -161,9 +165,10 @@ class AddressList:
     LIGHT_GEM_COUNT: int
     DRAGON_EGG_COUNT: int
 
-    GEM_PACK_COUNT: int
     GEMS: int
     TOTAL_GEMS: int
+
+    LOCKPICKS: int
 
     ACTIVE_BREATH: int
     ABILITY_FLAGS: int
@@ -173,108 +178,22 @@ class AddressList:
 
 
 class SLUS_20884(AddressList):
-    p_LOCATION_BITFIELD = NotImplemented
-    p_NUM_GEM_PACKS_RECEIVED = NotImplemented
-    p_SKIP_CUTSCENE_BUTTON = NotImplemented
-    p_ALLOW_TELEPORT_TO_HUB = NotImplemented
-    p_ALLOW_IMMEDIATE_REALM_ACCESS = NotImplemented
-    p_PATCH_BEEN_WRITTEN_TO = NotImplemented
-    p_MW_SEED = NotImplemented
-    p_INIT = NotImplemented
-    p_XLS_SHOP_SHEETCOUNT_ALWAYS_1 = NotImplemented
-    p_XLS_SHOP_SHEET_OFFSET_ALWAYS_4 = NotImplemented
-    p_XLS_SHOP_ROWCOUNT = NotImplemented
-    p_XLS_SHOP_ITEMS = NotImplemented
-    p_XLS_SHOP_TEXT = NotImplemented
-
-    g_LOCATION_BITFIELD = NotImplemented
-    g_NUM_GEM_PACKS_RECEIVED = NotImplemented
-    g_SKIP_CUTSCENE_BUTTON = NotImplemented
-    g_ALLOW_TELEPORT_TO_HUB = NotImplemented
-    g_ALLOW_IMMEDIATE_REALM_ACCESS = NotImplemented
-    g_PATCH_BEEN_WRITTEN_TO = NotImplemented
-    g_MW_SEED = NotImplemented
-    g_INIT = NotImplemented
-    g_XLS_SHOP_SHEETCOUNT_ALWAYS_1 = NotImplemented
-    g_XLS_SHOP_SHEET_OFFSET_ALWAYS_4 = NotImplemented
-    g_XLS_SHOP_ROWCOUNT = NotImplemented
-    g_XLS_SHOP_ITEMS = NotImplemented
-    g_XLS_SHOP_TEXT = NotImplemented
-
-    n_AP_NOTIFICATION_COLOR = NotImplemented
-    n_AP_NOTIFICATION_TIMER = NotImplemented
-    n_AP_NOTIFICATION_TEXT_BUFFER = NotImplemented
-
-    game_state = NotImplemented
-    patch_state = NotImplemented
-
-    OBJECTIVES = NotImplemented
-    DARK_GEM_COUNT = 0x502057
-    LIGHT_GEM_COUNT = 0x502056
-    DRAGON_EGG_COUNT = 0x502058
-
-    ACTIVE_BREATH = 0x502000
-    ABILITY_FLAGS = 0x502028
-    IN_GAME = 0x50f790
-    PAUSE = 0x590764
-    LOADING = 0x598690
+    pass
 
 
 class SLES_52569(AddressList):
-    p_LOCATION_BITFIELD = NotImplemented
-    p_NUM_GEM_PACKS_RECEIVED = NotImplemented
-    p_SKIP_CUTSCENE_BUTTON = NotImplemented
-    p_ALLOW_TELEPORT_TO_HUB = NotImplemented
-    p_ALLOW_IMMEDIATE_REALM_ACCESS = NotImplemented
-    p_PATCH_BEEN_WRITTEN_TO = NotImplemented
-    p_MW_SEED = NotImplemented
-    p_INIT = NotImplemented
-    p_XLS_SHOP_SHEETCOUNT_ALWAYS_1 = NotImplemented
-    p_XLS_SHOP_SHEET_OFFSET_ALWAYS_4 = NotImplemented
-    p_XLS_SHOP_ROWCOUNT = NotImplemented
-    p_XLS_SHOP_ITEMS = NotImplemented
-    p_XLS_SHOP_TEXT = NotImplemented
-
-    g_LOCATION_BITFIELD = NotImplemented
-    g_NUM_GEM_PACKS_RECEIVED = NotImplemented
-    g_SKIP_CUTSCENE_BUTTON = NotImplemented
-    g_ALLOW_TELEPORT_TO_HUB = NotImplemented
-    g_ALLOW_IMMEDIATE_REALM_ACCESS = NotImplemented
-    g_PATCH_BEEN_WRITTEN_TO = NotImplemented
-    g_MW_SEED = NotImplemented
-    g_INIT = NotImplemented
-    g_XLS_SHOP_SHEETCOUNT_ALWAYS_1 = NotImplemented
-    g_XLS_SHOP_SHEET_OFFSET_ALWAYS_4 = NotImplemented
-    g_XLS_SHOP_ROWCOUNT = NotImplemented
-    g_XLS_SHOP_ITEMS = NotImplemented
-    g_XLS_SHOP_TEXT = NotImplemented
-
-    n_AP_NOTIFICATION_COLOR = NotImplemented
-    n_AP_NOTIFICATION_TIMER = NotImplemented
-    n_AP_NOTIFICATION_TEXT_BUFFER = NotImplemented
-
-    game_state = NotImplemented
-    patch_state = NotImplemented
-
-    OBJECTIVES = NotImplemented
-    DARK_GEM_COUNT = NotImplemented
-    LIGHT_GEM_COUNT = NotImplemented
-    DRAGON_EGG_COUNT = NotImplemented
-
-    ACTIVE_BREATH = NotImplemented
-    ABILITY_FLAGS = NotImplemented
-    IN_GAME = NotImplemented
-    PAUSE = NotImplemented
-    LOADING = NotImplemented
+    pass
 
 
 class G5SE7D(AddressList):
     p_LOCATION_BITFIELD = 0x803d8fa8
     p_NUM_GEM_PACKS_RECEIVED = 0x803d8fd8
-    p_SKIP_CUTSCENE_BUTTON = 0x803d8fd9
-    p_ALLOW_TELEPORT_TO_HUB = 0x803d8fda
-    p_ALLOW_IMMEDIATE_REALM_ACCESS = 0x803d8fdb
-    p_PATCH_BEEN_WRITTEN_TO = 0x803d8fdc
+    p_NUM_LOCKPICKS = 0x803d8fd9
+    p_BUTTERFLY_JAR = 0x803d8fda
+    p_SKIP_CUTSCENE_BUTTON = 0x803d8fdb
+    p_ALLOW_TELEPORT_TO_HUB = 0x803d8fdc
+    p_ALLOW_IMMEDIATE_REALM_ACCESS = 0x803d8fdd
+    p_PATCH_BEEN_WRITTEN_TO = 0x803d8fde
     p_MW_SEED = 0x803d8fe0
     p_INIT = 0x803d8fe4
     p_XLS_SHOP_SHEETCOUNT_ALWAYS_1 = 0x803d8fe8
@@ -285,10 +204,12 @@ class G5SE7D(AddressList):
 
     g_LOCATION_BITFIELD = 0x80467ce4
     g_NUM_GEM_PACKS_RECEIVED = 0x80467d14
-    g_SKIP_CUTSCENE_BUTTON = 0x80467d15
-    g_ALLOW_TELEPORT_TO_HUB = 0x80467d16
-    g_ALLOW_IMMEDIATE_REALM_ACCESS = 0x80467d17
-    g_PATCH_BEEN_WRITTEN_TO = 0x80467d18
+    g_NUM_LOCKPICKS = 0x80467d15
+    g_BUTTERFLY_JAR = 0x80467d16
+    g_SKIP_CUTSCENE_BUTTON = 0x80467d17
+    g_ALLOW_TELEPORT_TO_HUB = 0x80467d18
+    g_ALLOW_IMMEDIATE_REALM_ACCESS = 0x80467d19
+    g_PATCH_BEEN_WRITTEN_TO = 0x80467d1a
     g_MW_SEED = 0x80467d1c
     g_INIT = 0x80467d20
     g_XLS_SHOP_SHEETCOUNT_ALWAYS_1 = 0x80467d24
@@ -297,12 +218,9 @@ class G5SE7D(AddressList):
     g_XLS_SHOP_ITEMS = 0x80467d30
     g_XLS_SHOP_TEXT = 0x80468730
 
-    n_AP_NOTIFICATION_COLOR = 0x80299bc0
-    n_AP_NOTIFICATION_TIMER = 0x80299bc4
-    n_AP_NOTIFICATION_TEXT_BUFFER = 0x80299bc8
-
-    game_state = NotImplemented
-    patch_state = NotImplemented
+    n_AP_NOTIFICATION_COLOR = 0x80299ccc
+    n_AP_NOTIFICATION_TIMER = 0x80299cd0
+    n_AP_NOTIFICATION_TEXT_BUFFER = 0x80299cd4
 
     OBJECTIVES = 0x80465C88
     DARK_GEM_COUNT = 0x80465BB7
@@ -311,6 +229,8 @@ class G5SE7D(AddressList):
 
     GEMS = 0x80465B68
     TOTAL_GEMS = 0x80465B6C
+
+    LOCKPICKS = 0x80465b70
 
     ACTIVE_BREATH = 0x80465B60
     ABILITY_FLAGS = 0x80465B88

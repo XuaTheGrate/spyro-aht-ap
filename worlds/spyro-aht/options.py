@@ -27,6 +27,12 @@ class RandomizeSparxMinigames(Toggle):
     default = 1
 
 
+class MiscHintMinigameRewards(Toggle):
+    """When talking to a mini game npc, hint out their rewards."""
+    display_name = "Hint Mini Game Rewards"
+    default = 1
+
+
 class RandomizeBreath(Choice):
     """Determines which starting elemental breath you have.
     
@@ -195,7 +201,7 @@ class SpyroAHTOptions(PerGameCommonOptions):
     randomize_boss_lair_doors: RandomizeBossLairDoorCosts
 
     misc_goal: MiscGoal
-
+    misc_hint_minigame_rewards: MiscHintMinigameRewards
     misc_skip_cutscenes: MiscSkipCutscenes
     misc_allow_immediate_realm_access: MiscAllowImmediateRealmAccess
 
