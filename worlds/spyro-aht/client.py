@@ -5,6 +5,7 @@ import random
 from abc import ABC, abstractmethod
 from collections import Counter
 from math import floor
+import struct
 
 import kvui
 import dolphin_memory_engine
@@ -20,6 +21,7 @@ from .pcsx2_interface import Pine
 class GenericClient(ABC):
     addresses: consts.AddressList
     ready: asyncio.Event
+    msg_queue: asyncio.Queue[str]
 
     @property
     @abstractmethod
@@ -153,6 +155,8 @@ class DolphinClient(GenericClient):
         self.ready = asyncio.Event()
         self.addresses = consts.G5SE7D()
         self._scouted_locations: set[int] = set()
+        self.msg_queue = asyncio.Queue()
+        self._notification_task = asyncio.create_task(self.notification_task())
     
     async def connect(self):
         if not dolphin_memory_engine.is_hooked():
