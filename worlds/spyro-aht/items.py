@@ -232,7 +232,7 @@ def create_all_items(world: SpyroAHTWorld) -> None:
             counts['Light Gem'] -= 1
     
     if world.options.randomize_shop_items:
-        itempool.extend(world.create_item(i) for i in ("Health Unit+", "Butterfly Jar", "Double Gems", "Horn Dive+"))
+        itempool.extend(world.create_item(i) for i in ("Health Unit+", "Butterfly Jar", "Double Gems", "Shockwave"))
         itempool.extend(world.create_item("Lockpick") for _ in range(52))
 
         itempool.extend(world.create_item(i) for i in ('Fire Bomb', 'Water Bomb', 'Electric Bomb', 'Ice Bomb') for _ in range(3))
