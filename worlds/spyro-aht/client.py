@@ -391,7 +391,7 @@ class DolphinClient(GenericClient):
 
                     colour = struct.pack(">BBBB", 0x80, 0x80, 0x80, 0x80)
                     dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_COLOR, colour)
-                    dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TIMER, (3*60).to_bytes(4))
+                    dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TIMER, (5*60).to_bytes(4))
                     dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TEXT_BUFFER, (message + "\0").encode('ascii'))
         except Exception:
             logger.error("ERROR IN NOTIFICATION_TASK", exc_info=True)
@@ -486,9 +486,29 @@ class SpyroAHTContext(CommonContext):
             case 'LocationInfo':
                 self._shop_items = [NetworkItem(*item) for item in args['locations']]
                 self._shop_items_received.set()
+            case 'PrintJSON':
+                match args.get('type', ''):
+                    case 'ItemSend':
+                        if args['receiving'] == self.slot:
+                            item = args['item']
+                            self.emu_client.msg_queue.put_nowait(f"Received {self.item_names.lookup_in_slot(item.item, self.slot)} from {self.player_names[item.player]}")
+                    case 'Hint':
+                        if args['found']: return
+                        if args['receiving'] == self.slot:
+                            item = args['item']
+                            player = "your" if item.player == self.slot else f"{self.player_names[item.player]}'s"
+                            location = self.location_names.lookup_in_slot(item.location, item.player)
+                            msg = f"[Hint] Your {self.item_names.lookup_in_slot(item.item, self.slot)} is at {player} {location}"
+                            self.emu_client.msg_queue.put_nowait(msg)
+                        elif args['item'].player == self.slot:
+                            item = args['item']
+                            location = self.location_names.lookup_in_slot(item.location, self.slot)
+                            player = self.player_names[args['receiving']]
+                            msg = f"[Hint] {player}'s {self.item_names.lookup_in_slot(args['receiving'])} is at {location}"
+
     
     def on_deathlink(self, data: dict[str, Any]) -> None:
-        self.emu_client.msg_queue.put_nowait(data.get('cause', '') or f"{data['source']} died.")
+        self.emu_client.msg_queue.put_nowait(data.get('cause', '') or f"{data['source']} died")
         self._deathlink.set()
 
 
