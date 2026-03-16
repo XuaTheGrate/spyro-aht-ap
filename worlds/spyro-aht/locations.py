@@ -4,7 +4,7 @@ from BaseClasses import Location
 from rule_builder.rules import True_, HasAny, Has, HasAll
 
 from . import items
-from .regions import REGIONS, DataLocation
+from .regions import REGIONS, DataLocation, BossLairRule
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -75,5 +75,5 @@ def create_events(world: SpyroAHTWorld) -> None:
             )
         case 3: # Mecha-Red
             reds_lab = world.get_region("Red's Laboratory")
-            reds_lab.add_event("Red's Laboratory: Defeat Mecha-Red", "Victory", location_type=SpyroAHTLocation,item_type=items.SpyroAHTItem,rule=Has("Dark Gem", 40) & HasAll("Electric Breath", "Fire Breath"))
+            reds_lab.add_event("Red's Laboratory: Defeat Mecha-Red", "Victory", location_type=SpyroAHTLocation,item_type=items.SpyroAHTItem,rule=BossLairRule(3) & HasAll("Electric Breath", "Fire Breath"))
     world.multiworld.completion_condition[world.player] = lambda state: state.has("Victory", world.player)

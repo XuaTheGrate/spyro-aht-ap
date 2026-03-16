@@ -126,15 +126,11 @@ class RandomizeLightGemDoorCosts(Choice):
     
     default: No changes to cost.
     randomized: Randomizes the cost, defined by the range in **Minimum Light Gem Door Cost** and **Maximum Light Gem Door Cost**.
-    shuffle: Shuffles the existing prices (20, 45, 70 and 95).
-    randomized_low: Randomizes the cost, with a bias towards a lower cost.
-    randomized_high: Randomizes the cost, with a bias towards a higher cost."""
+    shuffle: Shuffles the existing prices (20, 45, 70 and 95)."""
     display_name = "Randomize Light Gem Door Cost"
     option_default = 0
     option_randomized = 1
     option_shuffle = 2
-    option_randomized_low = 3
-    option_randomized_high = 4
     default = 0
 
 
@@ -172,7 +168,10 @@ class MiscSkipCutscenes(Toggle):
 
 
 class MiscAllowImmediateRealmAccess(Toggle):
-    """Enable a patch to access all realms at any time, instead of having to beat the previous realms boss first."""
+    """
+    Enable a patch to access all realms at any time, instead of having to beat the previous realms boss first.
+    IT IS RECOMMENDED TO KEEP THIS ENABLED, disabling may cause a generation failure.
+    """
     display_name = "Allow Immediate Realm Access"
     default = 1
 

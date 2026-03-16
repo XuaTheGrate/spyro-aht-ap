@@ -302,9 +302,9 @@ class DolphinClient(GenericClient):
         await self.add_item_4(self.addresses.TOTAL_GEMS, 500)
     
     async def enable_butterfly_jar(self):
-        flag = dolphin_memory_engine.read_byte(self.addresses.g_BUTTERFLY_JAR)
+        flag = dolphin_memory_engine.read_byte(self.addresses.g_INFINITE_BUTTERFLY_JAR)
         if not flag:
-            dolphin_memory_engine.write_byte(self.addresses.g_BUTTERFLY_JAR, 1)
+            dolphin_memory_engine.write_byte(self.addresses.g_INFINITE_BUTTERFLY_JAR, 1)
             await self.set_ability_flag(consts.AbilityFlags.ButterflyJar, True)
     
     async def apply_patch(self, ctx: SpyroAHTContext):
@@ -327,24 +327,9 @@ class DolphinClient(GenericClient):
         for idx, item in enumerate(items):
             player = ctx.player_names[item.player]
             name = ctx.item_names.lookup_in_slot(item.item, item.player)
-
-            n = ctx._slot_data['shop_prices_min']
-            x = ctx._slot_data['shop_prices_max']
-            rng = ctx._slot_data['randomize_shop_prices']
-            match rng:
-                case 0 | 1: # normal dist
-                    price = random.randint(n, x)
-                case 2: # lower bound dist
-                    s = list(range(n, x+1))
-                    w = list(range(x, n+1, -1))
-                    price = random.choices(s, w, k=1)[0]
-                case 3: # upper bound dist
-                    s = list(range(n, x+1))
-                    price = random.choices(s, s, k=1)[0]
-                case _:
-                    raise RuntimeError
             
             model = consts.ShopItemModel.Lockpick
+            price = ctx._slot_data['shop_prices'][idx]
 
             if item.player == ctx.slot: # self
                 match item.item:
@@ -375,14 +360,14 @@ class DolphinClient(GenericClient):
 
             offset = 0x20 * (idx + 1)
             dolphin_memory_engine.write_bytes(self.addresses.p_XLS_SHOP_ITEMS + offset, i.to_bytes('big'))
-            dolphin_memory_engine.write_bytes(self.addresses.p_XLS_SHOP_TEXT + (0x32 * idx), i.text.to_bytes('big'))
+            dolphin_memory_engine.write_bytes(self.addresses.p_SHOP_TEXT + (0x32 * idx), i.text.to_bytes('big'))
 
             await asyncio.sleep(0)
     
     async def notification_task(self):
         try:
             while True:
-                await asyncio.sleep(3.5)
+                await asyncio.sleep(5.5)
                 if await self.is_in_game() and not await self.is_paused() and not await self.is_loading():
                     message = await self.msg_queue.get()
 
@@ -559,9 +544,9 @@ async def dispatch_items(ctx: SpyroAHTContext):
                 if count < ctx.item_counts[0xA]:
                     await ctx.emu_client.add_item(ctx.emu_client.addresses.DRAGON_EGG_COUNT, 1)
             case 0x1C: # Lockpick
-                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_NUM_LOCKPICKS)
+                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_NUM_LOCKPICKS_RECEIVED)
                 if count < ctx.item_counts[0x1C]:
-                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_NUM_LOCKPICKS, 1)
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_NUM_LOCKPICKS_RECEIVED, 1)
                     await ctx.emu_client.add_item(ctx.emu_client.addresses.LOCKPICKS, 1)
             case 0xF: # Extra Health Unit
                 await ctx.emu_client.set_ability_flag(consts.AbilityFlags.SparxHealthUpgrade, True)

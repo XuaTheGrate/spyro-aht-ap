@@ -8,23 +8,41 @@ from rule_builder.rules import CanReachLocation, CanReachRegion, Has, HasAll, Ha
 
 from .options import MiscAllowImmediateRealmAccess, RandomizeShopItems
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, override
 if TYPE_CHECKING:
     from .world import SpyroAHTWorld
+
+
+@dataclass
+class BossLairRule(Rule['SpyroAHTWorld'], game="spyro-aht"):
+    index: int
+
+    @override
+    def _instantiate(self, world: 'SpyroAHTWorld') -> Rule.Resolved:
+        return Has("Dark Gem", world._boss_lairs[self.index]).resolve(world)
+
+
+@dataclass
+class LGDoorRule(Rule['SpyroAHTWorld'], game="spyro-aht"):
+    index: int
+
+    @override
+    def _instantiate(self, world: SpyroAHTWorld) -> Rule.Resolved:
+        return Has("Light Gem", world._lg_doors[self.index]).resolve(world)
 
 @dataclass
 class DataRegion:
     name: str
     connections: list[str]
     locations: list[DataLocation]
-    access_rule: Rule
+    access_rule: Rule['SpyroAHTWorld']
 
 
 @dataclass
 class DataLocation:
     name: str
     id: int # important due to the nature of archipelago
-    access_rule: Rule
+    access_rule: Rule['SpyroAHTWorld']
 
 REGIONS = {r.name: r for r in [
     DataRegion("Dragon Village", ["Dragon Village - After Elder Tomas"], [
@@ -56,7 +74,7 @@ REGIONS = {r.name: r for r in [
     DataRegion("Dragon Village - Gnasty Gnorcs Lair", [], [
         DataLocation("Dragon Village: Dragon Egg in Gnastys Lair", 16, True_()),
         DataLocation("Dragon Village: Electric Breath from Gnasty Gnorc", 17, HasAny("Fire Breath", "Charge"))
-    ], access_rule=Has("Dark Gem", 10)),
+    ], access_rule=BossLairRule(0)),
 
     # Double Jump (via Dragon Village - After Elder Tomas)
     DataRegion("Crocovile Swamp", ["Crocovile Swamp - After Elder Magnus"], [
@@ -120,7 +138,7 @@ REGIONS = {r.name: r for r in [
     DataRegion("Dragonfly Falls - 70 Light Gem Door", [], [
         DataLocation("Dragonfly Falls: Light Gem behind breakable wall beyond 70 Light Gem door", 56, True_()),
         DataLocation("Dragonfly Falls: Dragon Egg from thief beyond 70 Light Gem door", 57, True_()),
-    ], access_rule=Has("Light Gem", 70) & Has("Charge")),
+    ], access_rule=LGDoorRule(2) & Has("Charge")),
 
     DataRegion("Coastal Remains", ["Coastal Remains - Cloudy Domain Entrance", "Coastal Remains - After Otto", "Coastal Remains - 20 Light Gem Door", "Coastal Remains - After Cannon Dark Gem", "Coastal Remains - Ineptunes Lair"], [
         DataLocation("Coastal Remains: Dragon Egg from Turtle Mother", 63, Has("Charge")),
@@ -143,7 +161,7 @@ REGIONS = {r.name: r for r in [
     DataRegion("Coastal Remains - 20 Light Gem Door", [], [
         DataLocation("Coastal Remains: Dragon Egg from thief beyond 20 Light Gem door", 61, Has("Charge")),
         DataLocation("Coastal Remains: Light Gem in 20 Light Gem door", 62, True_())
-    ], access_rule=Has("Light Gem", 20)),
+    ], access_rule=LGDoorRule(0)),
 
     DataRegion("Coastal Remains - After Cannon Dark Gem", [], [
         DataLocation("Coastal Remains: Dragon Egg in cannon room", 66, True_()),
@@ -164,7 +182,7 @@ REGIONS = {r.name: r for r in [
 
     DataRegion("Coastal Remains - Ineptunes Lair", [], [
         DataLocation("Coastal Remains: Water Breath from Ineptune", 79, True_())
-    ], access_rule=Has("Dark Gem", 20) & Has("Charge")),
+    ], access_rule=BossLairRule(1) & Has("Charge")),
 
     # Double Jump & Glide (via Coastal Remains - Cloudy Domain Entrance)
     DataRegion("Cloudy Domain", ["Cloudy Domain - After Elder Titan"], [
@@ -244,7 +262,7 @@ REGIONS = {r.name: r for r in [
     DataRegion("Frostbite Village - Reds Lair", [], [
         DataLocation("Frostbite Village: Ice Breath from Red", 136, True_())
         # a breath is required to kill the dogs
-    ], access_rule=HasAny("Fire Breath", "Electric Breath", "Charge") & Has("Dark Gem", 30)),
+    ], access_rule=HasAny("Fire Breath", "Electric Breath", "Charge") & BossLairRule(2)),
 
     DataRegion("Frostbite Village - After Phils Gate", [], [
         DataLocation("Frostbite Village: Light Gem after Phils Gate", 116, HasAll("Water Breath", "Double Jump", "Glide")),
@@ -360,7 +378,7 @@ REGIONS = {r.name: r for r in [
     DataRegion("Frostbite Village - 95 Light Gem Door", [], [
         DataLocation("Frostbite Village: Locked Chest beyond 95 Light Gem Door", 133, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
         DataLocation("Frostbite Village: Light Gem beyond 95 Light Gem Door", 134, True_())
-    ], access_rule=Has("Light Gem", 95)),
+    ], access_rule=LGDoorRule(3)),
 
     DataRegion("Stormy Beach", ["Molten Mount"], [
         DataLocation("Stormy Beach: Locked Chest 1 in left cove by teleporter", 245, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
@@ -451,7 +469,7 @@ REGIONS = {r.name: r for r in [
     DataRegion("Dark Mine - 45 Light Gem Door", [], [
         DataLocation("Dark Mine: Light Gem in Acid Pool beyond 45 Light Gem Door", 204, True_()),
         DataLocation("Dark Mine: Dragon Egg in Acid Pool beyond 45 Light Gem Door", 205, True_())
-    ], access_rule=Has("Light Gem", 45) & Has("Swim")),
+    ], access_rule=LGDoorRule(1) & Has("Swim")),
 
     # Double Jump & Glide & (Water Breath | Ice Breath) via (Molten Mount)
     # Pole Spin (via Molten Mount - Pole Spin)
@@ -505,7 +523,6 @@ def connect_regions(world: SpyroAHTWorld) -> None:
             c = world.get_region(con)
             entrance = region.name.replace(' ', '') + '=>' + con.replace(' ', '')
             r.connect(c, entrance, rule=REGIONS[con].access_rule)
-            REGIONS[con].access_rule.to_dict()
     
     if world.options.misc_allow_immediate_realm_access:
         dv = world.get_region("Dragon Village")

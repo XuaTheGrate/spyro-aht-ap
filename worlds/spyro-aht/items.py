@@ -241,7 +241,7 @@ def create_all_items(world: SpyroAHTWorld) -> None:
         for _ in range(counts.get(item, 1)):
             itempool.append(world.create_item(item))
     
-    for i in range(21):
+    for i in range(22 - (12 if world.options.randomize_shop_items else 0)):
         itempool.append(world.create_item("Gem Pack"))
 
     world.multiworld.itempool.extend(itempool)
