@@ -17,7 +17,7 @@ This list is non-exhaustive and may change, and is not indicative of future plan
 - [x] Mini game rewards
   - [x] Toggle in YAML
 - [x] Charge, Swim and Glide
-- [ ] Shop Items
+- [x] Shop Items
 - [ ] Shop gem costs
 - [ ] Light Gem door costs
 - [ ] Fireworks
