@@ -19,7 +19,8 @@ This list is non-exhaustive and may change, and is not indicative of future plan
 - [x] Charge, Swim and Glide
 - [x] Shop Items
 - [ ] Shop gem costs
-- [ ] Light Gem door costs
+- [x] Light Gem door costs
+- [x] Boss Lair door costs
 - [ ] Fireworks
 - [ ] Enemies
 - [ ] Baskets/Vases
