@@ -49,9 +49,7 @@ class SpyroAHTWorld(World):
         lg_door_max = self.options.light_gem_door_cost_max.value
 
         if lg_door_min > lg_door_max:
-            m = lg_door_min
-            lg_door_min = lg_door_max
-            lg_door_max = m
+            lg_door_min, lg_door_max = lg_door_max, lg_door_min
 
         match self.options.randomize_light_gem_door_costs.value:
             case 0: pass
@@ -79,9 +77,7 @@ class SpyroAHTWorld(World):
         min_shop_price = self.options.shop_prices_min.value
         max_shop_price = self.options.shop_prices_max.value
         if min_shop_price > max_shop_price:
-            m = min_shop_price
-            min_shop_price = max_shop_price
-            max_shop_price = m
+            min_shop_price, max_shop_price = max_shop_price, min_shop_price
 
         return {
             "misc_goal": self.options.misc_goal.value,
