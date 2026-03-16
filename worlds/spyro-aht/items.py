@@ -241,8 +241,8 @@ def create_all_items(world: SpyroAHTWorld) -> None:
         for _ in range(counts.get(item, 1)):
             itempool.append(world.create_item(item))
     
-    unfilled = len(world.multiworld.get_unfilled_locations()) - len(itempool)
+    unfilled = min(255, len(world.multiworld.get_unfilled_locations()) - len(itempool))
     for i in range(unfilled):
-        itempool.append(world.create_filler())
+        itempool.append(world.create_item("Gem Pack"))
 
     world.multiworld.itempool.extend(itempool)
