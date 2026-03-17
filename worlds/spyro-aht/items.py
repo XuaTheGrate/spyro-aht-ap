@@ -236,12 +236,13 @@ def create_all_items(world: SpyroAHTWorld) -> None:
         itempool.extend(world.create_item("Lockpick") for _ in range(52))
 
         itempool.extend(world.create_item(i) for i in ('Fire Bomb', 'Water Bomb', 'Electric Bomb', 'Ice Bomb') for _ in range(3))
+        itempool.append(world.create_item("Gem Pack"))
 
     for item in DEFAULT_ITEMS:
         for _ in range(counts.get(item, 1)):
             itempool.append(world.create_item(item))
     
-    for i in range(22 - (12 if world.options.randomize_shop_items else 0)):
+    for i in range(21 - (12 if world.options.randomize_shop_items else 0)):
         itempool.append(world.create_item("Gem Pack"))
 
     world.multiworld.itempool.extend(itempool)

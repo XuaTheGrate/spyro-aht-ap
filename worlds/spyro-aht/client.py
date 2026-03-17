@@ -67,6 +67,8 @@ class GenericClient(ABC):
     async def import_deathlink(self, ctx: SpyroAHTContext): raise NotImplementedError
     @abstractmethod
     async def export_deathlink(self, ctx: SpyroAHTContext) -> bool: raise NotImplementedError
+    @abstractmethod
+    async def check_doors(self, ctx: SpyroAHTContext): raise NotImplementedError
 
 
 class PCSX2Client(GenericClient):
@@ -162,6 +164,9 @@ class DolphinClient(GenericClient):
         self._scouted_locations: set[int] = set()
         self.msg_queue = asyncio.Queue()
         self._notification_task = asyncio.create_task(self.notification_task())
+
+        self.b_doors_checked = []
+        self.l_doors_checked = []
     
     async def connect(self):
         if not dolphin_memory_engine.is_hooked():
@@ -311,6 +316,7 @@ class DolphinClient(GenericClient):
         dolphin_memory_engine.write_byte(self.addresses.p_SKIP_CUTSCENE_BUTTON, ctx._slot_data['misc_skip_cutscenes'])
         dolphin_memory_engine.write_byte(self.addresses.p_ALLOW_TELEPORT_TO_HUB, 1)
         dolphin_memory_engine.write_byte(self.addresses.p_ALLOW_IMMEDIATE_REALM_ACCESS, ctx._slot_data['misc_allow_immediate_realm_access'])
+        dolphin_memory_engine.write_byte(self.addresses.p_DISABLE_POPUPS, 1)
 
         dolphin_memory_engine.write_bytes(self.addresses.p_MW_SEED, (int(ctx._seed) & 0xffffffff).to_bytes(4, 'big'))
 
@@ -318,6 +324,12 @@ class DolphinClient(GenericClient):
             await ctx.send_msgs([{"cmd":"LocationScouts","locations":list(range(1001, 1058)),"create_as_hint":0}])
             await ctx._shop_items_received.wait()
             await self.prepare_shop_items(ctx, *ctx._shop_items)
+        
+        if ctx._slot_data['randomize_light_gem_door_costs']:
+            dolphin_memory_engine.write_bytes(self.addresses.p_LG_DOOR_COSTS, struct.pack(">BBBB", *ctx._slot_data['light_gem_door_costs']))
+        
+        if ctx._slot_data['randomize_boss_lair_doors']:
+            dolphin_memory_engine.write_bytes(self.addresses.p_BOSS_COSTS, struct.pack(">BBBB", *ctx._slot_data['boss_lair_costs']))
 
         dolphin_memory_engine.write_byte(self.addresses.p_PATCH_BEEN_WRITTEN_TO, 1)
     
@@ -329,7 +341,7 @@ class DolphinClient(GenericClient):
             name = ctx.item_names.lookup_in_slot(item.item, item.player)
             
             model = consts.ShopItemModel.Lockpick
-            price = ctx._slot_data['shop_prices'][idx]
+            price = ctx._slot_data['randomized_shop_prices'][idx]
 
             if item.player == ctx.slot: # self
                 match item.item:
@@ -368,6 +380,7 @@ class DolphinClient(GenericClient):
         try:
             while True:
                 await asyncio.sleep(5.5)
+                dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TIMER, bytes(4))
                 if await self.is_in_game() and not await self.is_paused() and not await self.is_loading():
                     message = await self.msg_queue.get()
 
@@ -376,8 +389,8 @@ class DolphinClient(GenericClient):
 
                     colour = struct.pack(">BBBB", 0x80, 0x80, 0x80, 0x80)
                     dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_COLOR, colour)
-                    dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TIMER, (5*60).to_bytes(4))
                     dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TEXT_BUFFER, (message + "\0").encode('ascii'))
+                    dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TIMER, (5*60).to_bytes(4))
         except Exception:
             logger.error("ERROR IN NOTIFICATION_TASK", exc_info=True)
     
@@ -391,6 +404,43 @@ class DolphinClient(GenericClient):
             dolphin_memory_engine.write_byte(self.addresses.g_DEATHLINK_SEND, 0)
             return True
         return False
+    
+    async def check_doors(self, ctx: SpyroAHTContext):
+        dg = dolphin_memory_engine.read_byte(self.addresses.DARK_GEM_COUNT)
+        lg = dolphin_memory_engine.read_byte(self.addresses.LIGHT_GEM_COUNT)
+        for idx, cost in enumerate(ctx._slot_data['boss_lair_costs']):
+            if idx in self.b_doors_checked: continue
+            if dg >= cost:
+                self.b_doors_checked.append(idx)
+                match idx:
+                    case 0:
+                        msg = "You can now access Gnasty's Cave!"
+                    case 1:
+                        msg = "You can now access Ineptune's Lair!"
+                    case 2:
+                        msg = "You can now access Red's Lair!"
+                    case 3:
+                        msg = "You can now access Mecha-Red's Lair!"
+                    case _:
+                        msg = "THIS IS AN ERROR REPORT THIS TO THE THREAD"
+                self.msg_queue.put_nowait(msg)
+
+        for idx, cost in enumerate(ctx._slot_data['light_gem_door_costs']):
+            if idx in self.l_doors_checked: continue
+            if lg >= cost:
+                self.l_doors_checked.append(idx)
+                match idx:
+                    case 0:
+                        msg = "You can now access the Light Gem door in Dragonfly Falls!"
+                    case 1:
+                        msg = "You can now access the Light Gem door in Coastal Remains!"
+                    case 2:
+                        msg = "You can now access the Light Gem door in Frostbite Village!"
+                    case 3:
+                        msg = "You can now access the Light Gem door in Dark Mine!"
+                    case _:
+                        msg = "THIS IS AN ERROR REPORT THIS TO THE THREAD"
+                self.msg_queue.put_nowait(msg)
 
 
 class SpyroAHTCommandProcessor(ClientCommandProcessor):
@@ -620,6 +670,7 @@ async def emu_loop(ctx: SpyroAHTContext):
 
                 await dispatch_items(ctx)
                 await ctx.emu_client.scout_location(ctx)
+                await ctx.emu_client.check_doors(ctx)
                 await dispatch_locations(ctx)
                 await ctx.emu_client.check_goal(ctx)
     except Exception:

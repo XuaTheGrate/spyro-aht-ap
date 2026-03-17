@@ -107,7 +107,7 @@ class ShopPricesMax(Range):
 
 
 class RandomizeBossLairDoorCosts(Choice):
-    """Sets the Dark Gem requirement of the Boss Lairs. <CURRENTLY DOES NOTHING>
+    """Sets the Dark Gem requirement of the Boss Lairs.
     Note: The door to your goal boss will always be the most expensive of the 4.
 
     default: No changes to cost.
@@ -122,7 +122,7 @@ class RandomizeBossLairDoorCosts(Choice):
 
 
 class RandomizeLightGemDoorCosts(Choice):
-    """Sets the cost of light gem doors. <CURRENTLY DOES NOTHING>
+    """Sets the cost of light gem doors.
     
     default: No changes to cost.
     randomized: Randomizes the cost, defined by the range in **Minimum Light Gem Door Cost** and **Maximum Light Gem Door Cost**.
@@ -135,7 +135,7 @@ class RandomizeLightGemDoorCosts(Choice):
 
 
 class LightGemDoorCostMin(Range):
-    """Sets the minimum cost for light gem doors. <CURRENTLY DOES NOTHING>"""
+    """Sets the minimum cost for light gem doors."""
     display_name = "Minimum Light Gem Door Cost"
     range_start = 1
     range_end = 100
@@ -143,7 +143,7 @@ class LightGemDoorCostMin(Range):
 
 
 class LightGemDoorCostMax(Range):
-    """Sets the maximum cost for light gem doors. <CURRENTLY DOES NOTHING>"""
+    """Sets the maximum cost for light gem doors."""
     display_name = "Maximum Light Gem Door Cost"
     range_start = 1
     range_end = 100
@@ -177,7 +177,7 @@ class MiscAllowImmediateRealmAccess(Toggle):
 
 
 class MiscDeathLink(Toggle):
-    """Enable Death Linking."""
+    """Enable Death Linking. <CURRENTLY DOES NOTHING>"""
     display_name = "Death Link"
     default = 0
 

@@ -59,17 +59,17 @@ def create_regular_locations(world: SpyroAHTWorld):
 def create_events(world: SpyroAHTWorld) -> None:
     match world.options.misc_goal:
         case 0: # Gnasty Gnorc
-            world.get_region("Dragon Village - Gnasty Gnorcs Lair").add_event(
+            world.get_region("Dragon Village - Gnasty's Cave").add_event(
                 "Dragon Village: Defeat Gnasty Gnorc (Goal)", "Victory", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,
                 rule=HasAny("Fire Breath", "Charge")
             )
         case 1: # Ineptune
-            world.get_region("Coastal Remains - Ineptunes Lair").add_event(
+            world.get_region("Coastal Remains - Watery Tomb").add_event(
                 "Coastal Remains: Defeat Ineptune (Goal)", "Victory", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,
                 rule=True_()
             )
         case 2: # Red
-            world.get_region("Frostbite Village - Reds Lair").add_event(
+            world.get_region("Frostbite Village - Red's Chamber").add_event(
                 "Frostbite Village - Defeat Red (Goal)", "Victory", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,
                 rule=True_()
             )

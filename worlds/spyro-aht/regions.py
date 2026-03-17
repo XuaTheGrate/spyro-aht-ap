@@ -53,7 +53,7 @@ REGIONS = {r.name: r for r in [
         DataLocation("Dragon Village: Double Jump from Elder Tomas", 1, True_())
     ], access_rule=True_()),
 
-    DataRegion("Dragon Village - After Elder Tomas", ["Dragon Village - Gnasty Gnorcs Lair", "Crocovile Swamp", "Dragonfly Falls"], [
+    DataRegion("Dragon Village - After Elder Tomas", ["Dragon Village - Gnasty's Cave", "Crocovile Swamp", "Dragonfly Falls"], [
         DataLocation("Dragon Village: Dark Gem by Ember", 2, True_()),
         DataLocation("Dragon Village: Dark Gem by Elder Tomas", 3, True_()),
         DataLocation("Dragon Village: Dragon Egg after Hunter", 4, Has("Glide")),
@@ -71,14 +71,14 @@ REGIONS = {r.name: r for r in [
     ], access_rule=Has("Double Jump")),
 
     # Double Jump (via Dragon Village - After Elder Tomas)
-    DataRegion("Dragon Village - Gnasty Gnorcs Lair", [], [
-        DataLocation("Dragon Village: Dragon Egg in Gnastys Lair", 16, True_()),
+    DataRegion("Dragon Village - Gnasty's Cave", [], [
+        DataLocation("Dragon Village: Dragon Egg in Gnasty's Cave", 16, True_()),
         DataLocation("Dragon Village: Electric Breath from Gnasty Gnorc", 17, HasAny("Fire Breath", "Charge"))
     ], access_rule=BossLairRule(0)),
 
     # Double Jump (via Dragon Village - After Elder Tomas)
     DataRegion("Crocovile Swamp", ["Crocovile Swamp - After Elder Magnus"], [
-        DataLocation("Crocovile Swamp: Dark Gem by Moneybags Pad", 18, True_()),
+        DataLocation("Crocovile Swamp: Dark Gem by Moneybags' Pad", 18, True_()),
         DataLocation("Crocovile Swamp: Locked Chest behind breakable wall", 19, Has("Charge") & Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
         DataLocation("Crocovile Swamp: Dragon Egg across platforms in mud", 20, True_()),
         DataLocation("Crocovile Swamp: Light Gem behind reinforced door", 21, Has("Charge") & Has("Light Gem", 40)),
@@ -127,7 +127,7 @@ REGIONS = {r.name: r for r in [
         DataLocation("Dragonfly Falls: Dragon Egg behind breakable wall above wall kick", 50, Has("Charge") & HasAny("Wall Kick", "Glide")),
         DataLocation("Dragonfly Falls: Light Gem in Piranha Pool", 51, True_()),
         DataLocation("Dragonfly Falls: Locked Chest in Piranha Pool", 52, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
-        DataLocation("Dragonfly Falls: Dragon Egg in vultures nest (Hunter)", 53, True_()),
+        DataLocation("Dragonfly Falls: Dragon Egg in vulture's nest (Hunter)", 53, True_()),
         DataLocation("Dragonfly Falls: Complete Hunters trial", 54, True_()),
         DataLocation("Dragonfly Falls: Dark Gem at end of zone", 55, True_()),
         DataLocation("Dragonfly Falls: Light Gem glide from wall kick", 58, HasAll("Wall Kick", "Glide"))
@@ -138,9 +138,9 @@ REGIONS = {r.name: r for r in [
     DataRegion("Dragonfly Falls - 70 Light Gem Door", [], [
         DataLocation("Dragonfly Falls: Light Gem behind breakable wall beyond 70 Light Gem door", 56, True_()),
         DataLocation("Dragonfly Falls: Dragon Egg from thief beyond 70 Light Gem door", 57, True_()),
-    ], access_rule=LGDoorRule(2) & Has("Charge")),
+    ], access_rule=LGDoorRule(0) & Has("Charge")),
 
-    DataRegion("Coastal Remains", ["Coastal Remains - Cloudy Domain Entrance", "Coastal Remains - After Otto", "Coastal Remains - 20 Light Gem Door", "Coastal Remains - After Cannon Dark Gem", "Coastal Remains - Ineptunes Lair"], [
+    DataRegion("Coastal Remains", ["Coastal Remains - Cloudy Domain Entrance", "Coastal Remains - After Otto", "Coastal Remains - 20 Light Gem Door", "Coastal Remains - After Cannon Dark Gem", "Coastal Remains - Watery Tomb"], [
         DataLocation("Coastal Remains: Dragon Egg from Turtle Mother", 63, Has("Charge")),
         DataLocation("Coastal Remains: Light Gem from Turtle Mother", 64, Has("Charge")),
         DataLocation("Coastal Remains: Dark Gem in cannon room", 65, HasAll("Glide", "Double Jump")),
@@ -150,7 +150,7 @@ REGIONS = {r.name: r for r in [
         DataLocation("Coastal Remains: Locked Chest hidden on beach", 235, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)])))
     ], access_rule=(
         True_(options=[OptionFilter(MiscAllowImmediateRealmAccess, 1)])) |
-        CanReachRegion("Dragon Village - Gnasty Gnorcs Lair", options=[OptionFilter(MiscAllowImmediateRealmAccess, 0)])
+        CanReachRegion("Dragon Village - Gnasty's Cave", options=[OptionFilter(MiscAllowImmediateRealmAccess, 0)])
     ),
 
     DataRegion("Coastal Remains - Cloudy Domain Entrance", ["Cloudy Domain"], [
@@ -161,7 +161,7 @@ REGIONS = {r.name: r for r in [
     DataRegion("Coastal Remains - 20 Light Gem Door", [], [
         DataLocation("Coastal Remains: Dragon Egg from thief beyond 20 Light Gem door", 61, Has("Charge")),
         DataLocation("Coastal Remains: Light Gem in 20 Light Gem door", 62, True_())
-    ], access_rule=LGDoorRule(0)),
+    ], access_rule=LGDoorRule(1)),
 
     DataRegion("Coastal Remains - After Cannon Dark Gem", [], [
         DataLocation("Coastal Remains: Dragon Egg in cannon room", 66, True_()),
@@ -180,7 +180,7 @@ REGIONS = {r.name: r for r in [
         DataLocation("Coastal Remains: Light Gem before Sunken Ruins", 77, True_()),
     ], access_rule=HasAll("Pole Spin", "Double Jump")),
 
-    DataRegion("Coastal Remains - Ineptunes Lair", [], [
+    DataRegion("Coastal Remains - Watery Tomb", [], [
         DataLocation("Coastal Remains: Water Breath from Ineptune", 79, True_())
     ], access_rule=BossLairRule(1) & Has("Charge")),
 
@@ -245,10 +245,10 @@ REGIONS = {r.name: r for r in [
         DataLocation("Sunken Ruins: Locked Chest after Acid Pool Dark Gem", 115, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)])))
     ], access_rule=HasAll("Electric Breath", "Glide") & Has("Light Gem", 24)),
 
-    DataRegion("Frostbite Village", ["Frostbite Village - After Phils Gate", "Frostbite Village - After Horn Dive Switch", "Frostbite Village - Reds Lair"], [
+    DataRegion("Frostbite Village", ["Frostbite Village - After Phil's Gate", "Frostbite Village - After Horn Dive Switch", "Frostbite Village - Red's Chamber"], [
     ], access_rule=(
         True_(options=[OptionFilter(MiscAllowImmediateRealmAccess, 1)]) |
-        CanReachRegion("Coastal Remains - Ineptunes Lair", options=[OptionFilter(MiscAllowImmediateRealmAccess, 0)])
+        CanReachRegion("Coastal Remains - Watery Tomb", options=[OptionFilter(MiscAllowImmediateRealmAccess, 0)])
     )),
 
     DataRegion("Frostbite Village - After Horn Dive Switch", ["Frostbite Village - Before Gloomy Glacier"], [
@@ -259,13 +259,13 @@ REGIONS = {r.name: r for r in [
         DataLocation("Frostbite Village: Light Gem from Blink", 125, True_()),
     ], access_rule=Has("Double Jump")),
 
-    DataRegion("Frostbite Village - Reds Lair", [], [
+    DataRegion("Frostbite Village - Red's Chamber", [], [
         DataLocation("Frostbite Village: Ice Breath from Red", 136, True_())
         # a breath is required to kill the dogs
     ], access_rule=HasAny("Fire Breath", "Electric Breath", "Charge") & BossLairRule(2)),
 
-    DataRegion("Frostbite Village - After Phils Gate", [], [
-        DataLocation("Frostbite Village: Light Gem after Phils Gate", 116, HasAll("Water Breath", "Double Jump", "Glide")),
+    DataRegion("Frostbite Village - After Phil's Gate", [], [
+        DataLocation("Frostbite Village: Light Gem after Phil's Gate", 116, HasAll("Water Breath", "Double Jump", "Glide")),
         DataLocation("Frostbite Village: Dragon Egg from Peggy", 117, True_()),
         DataLocation("Frostbite Village: Light Gem from Peggy", 118, True_()),
         DataLocation("Frostbite Village: Dark Gem near Peggy", 119, Has("Double Jump")),
@@ -288,8 +288,8 @@ REGIONS = {r.name: r for r in [
     # Double Jump (via Frostbite Village - After Horn Dive Switch)
     # Glide (via Frostbite Village - Before Gloomy Glacier)
     DataRegion("Gloomy Glacier", ["Ice Citadel"], [
-        DataLocation("Gloomy Glacier: Locked Chest in Bentleys Living Room", 239, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
-        DataLocation("Gloomy Glacier: Locked Chest in Bentleys Bedroom", 137, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
+        DataLocation("Gloomy Glacier: Locked Chest in Bentley's Living Room", 239, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
+        DataLocation("Gloomy Glacier: Locked Chest in Bentley's Bedroom", 137, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
         DataLocation("Gloomy Glacier: Reward from Bentley", 138, True_()),
         DataLocation("Gloomy Glacier: Light Gem in Ambush room", 139, True_()),
         DataLocation("Gloomy Glacier: Locked Chest after Ambush room", 140, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
@@ -378,7 +378,7 @@ REGIONS = {r.name: r for r in [
     DataRegion("Frostbite Village - 95 Light Gem Door", [], [
         DataLocation("Frostbite Village: Locked Chest beyond 95 Light Gem Door", 133, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
         DataLocation("Frostbite Village: Light Gem beyond 95 Light Gem Door", 134, True_())
-    ], access_rule=LGDoorRule(3)),
+    ], access_rule=LGDoorRule(2)),
 
     DataRegion("Stormy Beach", ["Molten Mount"], [
         DataLocation("Stormy Beach: Locked Chest 1 in left cove by teleporter", 245, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
@@ -393,7 +393,7 @@ REGIONS = {r.name: r for r in [
         DataLocation("Stormy Beach: Dark Gem at entrance to volcano", 177, Has("Double Jump"))
     ], access_rule=(
         True_(options=[OptionFilter(MiscAllowImmediateRealmAccess, 1)]) |
-        CanReachRegion("Frostbite Village - Reds Lair", options=[OptionFilter(MiscAllowImmediateRealmAccess, 0)])
+        CanReachRegion("Frostbite Village - Red's Chamber", options=[OptionFilter(MiscAllowImmediateRealmAccess, 0)])
     )),
 
     DataRegion("Molten Mount", ["Molten Mount - Pole Spin"], [
@@ -469,7 +469,7 @@ REGIONS = {r.name: r for r in [
     DataRegion("Dark Mine - 45 Light Gem Door", [], [
         DataLocation("Dark Mine: Light Gem in Acid Pool beyond 45 Light Gem Door", 204, True_()),
         DataLocation("Dark Mine: Dragon Egg in Acid Pool beyond 45 Light Gem Door", 205, True_())
-    ], access_rule=LGDoorRule(1) & Has("Swim")),
+    ], access_rule=LGDoorRule(3) & Has("Swim")),
 
     # Double Jump & Glide & (Water Breath | Ice Breath) via (Molten Mount)
     # Pole Spin (via Molten Mount - Pole Spin)
@@ -530,6 +530,6 @@ def connect_regions(world: SpyroAHTWorld) -> None:
         dv.connect(world.get_region("Frostbite Village"), "DragonVillage=>FrostbiteVillage")
         dv.connect(world.get_region("Stormy Beach"), "DragonVillage=>StormyBeach")
     else:
-        world.get_region("Dragon Village - Gnasty Gnorcs Lair").connect(world.get_region("Coastal Remains"), "DragonVillage-GnastyGnorcsLair=>CoastalRemains")
-        world.get_region("Coastal Remains - Ineptunes Lair").connect(world.get_region("Frostbite Village"), "CoastalRemains-IneptunesLair=>FrostbiteVillage")
-        world.get_region("Frostbite Village - Reds Lair").connect(world.get_region("Stormy Beach"), "FrostbiteVillage-RedsLair=>StormyBeach")
+        world.get_region("Dragon Village - Gnasty's Cave").connect(world.get_region("Coastal Remains"), "DragonVillage-Gnasty'sCave=>CoastalRemains")
+        world.get_region("Coastal Remains - Watery Tomb").connect(world.get_region("Frostbite Village"), "CoastalRemains-WateryTomb=>FrostbiteVillage")
+        world.get_region("Frostbite Village - Red's Chamber").connect(world.get_region("Stormy Beach"), "FrostbiteVillage-Red'sChamber=>StormyBeach")
