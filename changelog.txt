@@ -1,0 +1,56 @@
+GameCuba Alpha 6 (0.3.1)
+- Fixed shop randomization when the setting is not enabled
+
+GameCube Alpha 5 (0.3.0)
+- Added randomization of Moneybag's store
+  - This adds Shockwave, Butterfly Jar, Sparx HP Upgrade, Double Gems and 52 Lockpicks to the item pool
+  - Butterfly Jar will be re-added to the player on death
+  - Double Gems is now permanent
+- Added randomization of Boss Lair door requirement costs
+  - Your goal boss will always be the most expensive of the 4 doors
+  - Going up to the door will show how much it costs
+  - A notification will be dispatched when you acquire enough dark gems to open the door
+- Added randomization of the Light Gem door costs
+  - Going up to the door will show how much it costs
+  - A notification will be disatched when you acquire enough light gems to open the door
+- All locked chests now logically require 52 lockpicks to open
+  - They can still be opened without them, just they are less likely to have something useful inside
+- Added 3 of every bomb type to the filler item pool if shop randomization is enabled
+- Added YAML option to toggle mini game hinting
+- Notifications now appear in-game for received items or death links
+- Shop item costs now generate during generation instead of client-side
+- Fixed Hunter disappearing from Dragon Village after encountering the Mammoth
+- Renamed Lightning Breath to Electric Breath
+- Renamed Extra Health Unit to Health Unit+
+- Renamed Crocoville Swamp to Crocovile Swamp
+- Removed filling in Gem Packs for other games
+
+GameCube Alpha 4 (0.2.1)
+- Overhauled logic using RuleBuilder API
+  - __Minimum version to run is now 0.6.7__
+- Fixed several logic errors
+- Fix item sync (hopefully)
+
+GameCube Alpha 3 (0.2.0):
+- Added randomization of the Elders abilities
+- Added YAML options to randomize ``Swim``, ``Charge`` and ``Glide``
+  - ``Swim`` refers to being able to swim underwater, paddling on the surface is not affected
+- Added starting breath YAML option
+  - ``default`` grants Fire Breath, ``random`` grants a random one of the 4 breaths, and ``none`` removes your starting breath
+- Added randomization of Junk chests (locked chests that contain gems or power ups)
+- Added YAML option to enable all realm teleportation
+  - Enabling this completely changes the logic in many regions (specifically about Double Jump)
+- Added YAML option to enable the Skip Cutscene button
+  - Has some minor visual glitches with the dialogue boxes, but works
+- Added YAML option for alternate goal conditions for all 4 bosses
+- Talking to a mini game NPC will now hint their item rewards
+
+GameCube Alpha 2 (0.1.1):
+- Fixed goaling not working correctly
+- Added options to toggle randomization of mini game rewards
+- Added a debug command to manually release a location
+  - This is due to a bug in the game that very rarely not updates a collectible trigger in some mini games. Only use the command when necessary
+
+GameCube Alpha 1 (0.1.0):
+- Randomized Light Gems, Dark Gems and Dragon Eggs (including Locked Chests and Egg Thieves),
+- Boss lairs now require 10 generic dark gems, opposed to the 10 realm specific gems
