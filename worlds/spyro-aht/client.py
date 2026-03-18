@@ -344,11 +344,13 @@ class DolphinClient(GenericClient):
         for idx, item in enumerate(items):
             player = ctx.player_names[item.player]
             name = ctx.item_names.lookup_in_slot(item.item, item.player)
+
+            game = ctx.slot_info[item.player]
             
             model = consts.ShopItemModel.Lockpick
             price = ctx._slot_data['randomized_shop_prices'][idx]
 
-            if item.player == ctx.slot: # self
+            if game.game == "Spyro: A Hero's Tail":
                 match item.item:
                     case 0x1A | 0x1D: # double gems or gem pack
                         price = 1
@@ -370,6 +372,8 @@ class DolphinClient(GenericClient):
                         model = consts.ShopItemModel.Keychain
                     case 0x19:
                         model = consts.ShopItemModel.ButterflyJar
+                    case 0x1A:
+                        model = consts.ShopItemModel.DoubleGems
                     case 0x1B:
                         model = consts.ShopItemModel.Shockwave
             
