@@ -379,9 +379,10 @@ class DolphinClient(GenericClient):
     async def notification_task(self):
         try:
             while True:
-                await asyncio.sleep(5.5)
-                dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TIMER, bytes(4))
+                await asyncio.sleep(0.5)
                 if await self.is_in_game() and not await self.is_paused() and not await self.is_loading():
+                    await asyncio.sleep(5)
+                    dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TIMER, bytes(4))
                     message = await self.msg_queue.get()
 
                     if len(message) > 255:
