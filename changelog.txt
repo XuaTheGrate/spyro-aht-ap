@@ -1,3 +1,21 @@
+GameCube Alpha 7 (0.3.2)
+- Added YAML options for min and max dark gems
+- Fixed obtaining breaths from killing bosses
+- Fixed Trina showing up at spin poles and swim spots
+- Fixed notification showing wrong light gem door
+- Adjusted placement of notification text during mini games
+- Elevators to Sunken Ruins, Cloudy Domain and Magma Falls are now instant
+- Added an item group for breaths
+- Renamed Light Gem door locations to remove gem count
+- Fixed Light Gem from boilers location names
+- Fixed incorrect Light Gem door costs and notifications
+- Fixed notifications being skipped
+- Fixed the Gloomy Glacier entrance gate not opening when skipping the button cutscene
+- Dropped lockpick items no longer function
+- Gem Packs now grant 1000 gems if Double Gems is active
+- Gem Packs for other players are now correctly priced
+- Fixed Shop Item 57 missing from the shop
+
 GameCuba Alpha 6 (0.3.1)
 - Fixed shop randomization when the setting is not enabled
 

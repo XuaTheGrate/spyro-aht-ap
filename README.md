@@ -18,6 +18,8 @@ This list is non-exhaustive and may change, and is not indicative of future plan
   - [x] Toggle in YAML
 - [x] Charge, Swim and Glide
 - [x] Shop Items
+  - [x] Lockpicks
+    - [ ] Region Key Rings
 - [ ] Shop gem costs
 - [x] Light Gem door costs
 - [x] Boss Lair door costs
