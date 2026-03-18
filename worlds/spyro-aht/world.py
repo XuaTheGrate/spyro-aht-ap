@@ -28,7 +28,7 @@ class SpyroAHTWorld(World):
         super().__init__(multiworld, player)
 
         self._boss_lairs = [10, 20, 30, 40]
-        self._lg_doors = [20, 45, 70, 95]
+        self._lg_doors = [70, 20, 95, 45]
     
     def generate_early(self) -> None:
         match self.options.randomize_boss_lair_doors.value:
