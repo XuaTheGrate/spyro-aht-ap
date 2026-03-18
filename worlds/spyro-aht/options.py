@@ -121,6 +121,22 @@ class RandomizeBossLairDoorCosts(Choice):
     default = 0
 
 
+class BossLairDoorCostMin(Range):
+    """Sets the minimum cost for the boss lairs."""
+    display_name = "Boss Lair Door Cost Minimum"
+    range_start = 1
+    range_end = 40
+    default = 1
+
+
+class BossLairDoorCostMax(Range):
+    """Sets the maximum cost for the boss lairs."""
+    display_name = "Boss Lair Door Cost Maximum"
+    range_start = 1
+    range_end = 40
+    default = 40
+
+
 class RandomizeLightGemDoorCosts(Choice):
     """Sets the cost of light gem doors.
     
@@ -204,6 +220,8 @@ class SpyroAHTOptions(PerGameCommonOptions):
     light_gem_door_cost_max: LightGemDoorCostMax
 
     randomize_boss_lair_doors: RandomizeBossLairDoorCosts
+    boss_lair_door_cost_min: BossLairDoorCostMin
+    boss_lair_door_cost_max: BossLairDoorCostMax
 
     misc_goal: MiscGoal
     misc_hint_minigame_rewards: MiscHintMinigameRewards

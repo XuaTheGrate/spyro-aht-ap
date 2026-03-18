@@ -36,12 +36,17 @@ class SpyroAHTWorld(World):
         self._lg_doors = [70, 20, 95, 45]
     
     def generate_early(self) -> None:
+        bl_min = self.options.boss_lair_door_cost_min.value
+        bl_max = self.options.boss_lair_door_cost_max.value
+        if bl_min > bl_max:
+            bl_min, bl_max = bl_max, bl_min
+
         match self.options.randomize_boss_lair_doors.value:
             case 0: pass
             case 2: # shuffle
                 self.random.shuffle(self._boss_lairs)
             case 1: # random
-                self._boss_lairs = [self.random.randint(1, 40) for _ in range(4)]
+                self._boss_lairs = [self.random.randint(bl_min, bl_max) for _ in range(4)]
         
         highest = functools.reduce(max, self._boss_lairs)
         self._boss_lairs.remove(highest)
