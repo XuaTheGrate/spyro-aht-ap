@@ -334,7 +334,7 @@ class DolphinClient(GenericClient):
         dolphin_memory_engine.write_byte(self.addresses.p_PATCH_BEEN_WRITTEN_TO, 1)
     
     async def prepare_shop_items(self, ctx: SpyroAHTContext, *items: NetworkItem):
-        dolphin_memory_engine.write_bytes(self.addresses.p_XLS_SHOP_ROWCOUNT, (57).to_bytes(4, 'big'))
+        dolphin_memory_engine.write_bytes(self.addresses.p_XLS_SHOP_ROWCOUNT, (58).to_bytes(4, 'big'))
 
         for idx, item in enumerate(items):
             player = ctx.player_names[item.player]

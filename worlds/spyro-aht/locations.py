@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 LOCATION_NAME_TO_ID: dict[str, int] = {}
 
 SHOP_ITEMS = [
-    DataLocation("Moneybags: Shop item 1", 1001, True_()), # Extra Health Unit
+    DataLocation("Moneybags: Shop Item 1", 1001, True_()), # Extra Health Unit
     DataLocation("Moneybags: Shop Item 2", 1002, True_()), # Keychain
     DataLocation("Moneybags: Shop Item 3", 1003, True_()), # Butterfly Jar
     DataLocation("Moneybags: Shop Item 4", 1004, True_()), # Double Gems
