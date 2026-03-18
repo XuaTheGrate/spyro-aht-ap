@@ -303,8 +303,13 @@ class DolphinClient(GenericClient):
 
     async def add_gem_pack(self):
         await self.add_item(self.addresses.g_NUM_GEM_PACKS_RECEIVED, 1)
-        await self.add_item_4(self.addresses.GEMS, 500)
-        await self.add_item_4(self.addresses.TOTAL_GEMS, 500)
+
+        if int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.ABILITY_FLAGS, 4), 'big') & consts.AbilityFlags.DoubleGems:
+            await self.add_item_4(self.addresses.GEMS, 1000)
+            await self.add_item_4(self.addresses.TOTAL_GEMS, 1000)
+        else:
+            await self.add_item_4(self.addresses.GEMS, 500)
+            await self.add_item_4(self.addresses.TOTAL_GEMS, 500)
     
     async def enable_butterfly_jar(self):
         flag = dolphin_memory_engine.read_byte(self.addresses.g_INFINITE_BUTTERFLY_JAR)
