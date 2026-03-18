@@ -117,7 +117,7 @@ REGIONS = {r.name: r for r in [
 
     # Double Jump (via Dragon Village - After Elder Tomas)
     # Light Gem x8 & Glide (via Dragonfly Falls)
-    DataRegion("Dragonfly Falls - Vulture Dark Gem", ["Dragonfly Falls - 70 Light Gem Door"], [
+    DataRegion("Dragonfly Falls - Vulture Dark Gem", ["Dragonfly Falls - Light Gem Door"], [
         DataLocation("Dragonfly Falls: Dark Gem near vultures", 44, True_()),
         DataLocation("Dragonfly Falls: Dragon Egg in vulture's nest", 45, True_()),
         DataLocation("Dragonfly Falls: Dark Gem before large pool", 46, True_()),
@@ -135,12 +135,12 @@ REGIONS = {r.name: r for r in [
 
     # Double Jump (via Dragon Village - After Elder Tomas)
     # Light Gem x8 & Glide (via Dragonfly Falls)
-    DataRegion("Dragonfly Falls - 70 Light Gem Door", [], [
-        DataLocation("Dragonfly Falls: Light Gem behind breakable wall beyond 70 Light Gem door", 56, True_()),
-        DataLocation("Dragonfly Falls: Dragon Egg from thief beyond 70 Light Gem door", 57, True_()),
+    DataRegion("Dragonfly Falls - Light Gem Door", [], [
+        DataLocation("Dragonfly Falls: Light Gem behind breakable wall beyond Light Gem door", 56, True_()),
+        DataLocation("Dragonfly Falls: Dragon Egg from thief beyond Light Gem door", 57, True_()),
     ], access_rule=LGDoorRule(0) & Has("Charge")),
 
-    DataRegion("Coastal Remains", ["Coastal Remains - Cloudy Domain Entrance", "Coastal Remains - After Otto", "Coastal Remains - 20 Light Gem Door", "Coastal Remains - After Cannon Dark Gem", "Coastal Remains - Watery Tomb"], [
+    DataRegion("Coastal Remains", ["Coastal Remains - Cloudy Domain Entrance", "Coastal Remains - After Otto", "Coastal Remains - Light Gem Door", "Coastal Remains - After Cannon Dark Gem", "Coastal Remains - Watery Tomb"], [
         DataLocation("Coastal Remains: Dragon Egg from Turtle Mother", 63, Has("Charge")),
         DataLocation("Coastal Remains: Light Gem from Turtle Mother", 64, Has("Charge")),
         DataLocation("Coastal Remains: Dark Gem in cannon room", 65, HasAll("Glide", "Double Jump")),
@@ -158,9 +158,9 @@ REGIONS = {r.name: r for r in [
         DataLocation("Coastal Remains: Light Gem beyond moving platform", 60, Has("Electric Breath")),
     ], access_rule=HasAll("Glide", "Double Jump")),
 
-    DataRegion("Coastal Remains - 20 Light Gem Door", [], [
-        DataLocation("Coastal Remains: Dragon Egg from thief beyond 20 Light Gem door", 61, Has("Charge")),
-        DataLocation("Coastal Remains: Light Gem in 20 Light Gem door", 62, True_())
+    DataRegion("Coastal Remains - Light Gem Door", [], [
+        DataLocation("Coastal Remains: Dragon Egg from thief beyond Light Gem door", 61, Has("Charge")),
+        DataLocation("Coastal Remains: Light Gem in Light Gem door", 62, True_())
     ], access_rule=LGDoorRule(1)),
 
     DataRegion("Coastal Remains - After Cannon Dark Gem", [], [
@@ -360,7 +360,7 @@ REGIONS = {r.name: r for r in [
     # Water Breath (via Ice Citadel - Inner)
     # (Fire Breath | Electric Breath | Ice Breath) & Charge via (Ice Citadel - Above Elder Astor)
     # Wall Kick (via Ice Citadel - After Elder Astor)
-    DataRegion("Frostbite Village - Reinforced Door", ["Frostbite Village - 95 Light Gem Door"], [
+    DataRegion("Frostbite Village - Reinforced Door", ["Frostbite Village - Light Gem Door"], [
         DataLocation("Frostbite Village: Light Gem through reinforced door to Frostbite Village", 172, True_()),
         DataLocation("Frostbite Village: Dark Gem after reinforced door", 126, True_()),
         DataLocation("Frostbite Village: Dark Gem after falling icicles", 127, True_()),
@@ -375,9 +375,9 @@ REGIONS = {r.name: r for r in [
     # (Fire Breath | Electric Breath | Ice Breath) & Charge via (Ice Citadel - Above Elder Astor)
     # Wall Kick (via Ice Citadel - After Elder Astor)
     # Light Gem x40 (via Frostbite Village - Reinforced Door)
-    DataRegion("Frostbite Village - 95 Light Gem Door", [], [
-        DataLocation("Frostbite Village: Locked Chest beyond 95 Light Gem Door", 133, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
-        DataLocation("Frostbite Village: Light Gem beyond 95 Light Gem Door", 134, True_())
+    DataRegion("Frostbite Village - Light Gem Door", [], [
+        DataLocation("Frostbite Village: Locked Chest beyond Light Gem Door", 133, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
+        DataLocation("Frostbite Village: Light Gem beyond Light Gem Door", 134, True_())
     ], access_rule=LGDoorRule(2)),
 
     DataRegion("Stormy Beach", ["Molten Mount"], [
@@ -451,7 +451,7 @@ REGIONS = {r.name: r for r in [
     # Double Jump & Glide & (Water Breath | Ice Breath) via (Molten Mount)
     # Pole Spin (via Molten Mount - Pole Spin)
     # Wall Kick (via Magma Falls Top)
-    DataRegion("Dark Mine", ["Dark Mine - 45 Light Gem Door", "Dark Mine - Steam Vents"], [
+    DataRegion("Dark Mine", ["Dark Mine - Light Gem Door", "Dark Mine - Steam Vents"], [
         DataLocation("Dark Mine: Locked Chest at entrance", 252, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
         DataLocation("Dark Mine: Locked Chest by bear traps", 206, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
         DataLocation("Dark Mine: Locked Chest glide from Green Robo-Gnorc", 207, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
@@ -466,9 +466,9 @@ REGIONS = {r.name: r for r in [
     # Pole Spin (via Molten Mount - Pole Spin)
     # Wall Kick (via Magma Falls Top)
     # (Ice Breath & Charge) | Electric Breath (via Dark Mine)
-    DataRegion("Dark Mine - 45 Light Gem Door", [], [
-        DataLocation("Dark Mine: Light Gem in Acid Pool beyond 45 Light Gem Door", 204, True_()),
-        DataLocation("Dark Mine: Dragon Egg in Acid Pool beyond 45 Light Gem Door", 205, True_())
+    DataRegion("Dark Mine - Light Gem Door", [], [
+        DataLocation("Dark Mine: Light Gem in Acid Pool beyond Light Gem Door", 204, True_()),
+        DataLocation("Dark Mine: Dragon Egg in Acid Pool beyond Light Gem Door", 205, True_())
     ], access_rule=LGDoorRule(3) & Has("Swim")),
 
     # Double Jump & Glide & (Water Breath | Ice Breath) via (Molten Mount)
