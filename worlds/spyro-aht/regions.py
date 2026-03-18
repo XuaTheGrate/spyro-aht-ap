@@ -310,7 +310,7 @@ REGIONS = {r.name: r for r in [
     # Glide (via Frostbite Village - Before Gloomy Glacier)
     DataRegion("Ice Citadel", ["Ice Citadel - Inner"], [
         DataLocation("Ice Citadel: Locked Chest in entrance", 240, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
-        DataLocation("Ice Citadel: Reward for lighting 1 boiler", 151, Has("Fire Breath")),
+        DataLocation("Ice Citadel: Light the boiler guarded by Armored Pink Gnorc", 151, Has("Fire Breath")),
         DataLocation("Ice Citadel: Light Gem above moving platform", 152, True_())
     ], access_rule=True_()),
 
@@ -342,14 +342,14 @@ REGIONS = {r.name: r for r in [
         DataLocation("Ice Citadel: Dragon Egg beind reinforced wall", 159, Has("Light Gem", 40)),
         DataLocation("Ice Citadel: Dragon Egg from Sgt. Byrd", 160, True_()),
         DataLocation("Ice Citadel: Light Gem from Sgt. Byrd", 161, True_()),
-        DataLocation("Ice Citadel: Reward for lighting 3 boilers", 162, Has("Fire Breath")),
+        DataLocation("Ice Citadel: Light the boiler in Blue Gnorc ambush room 1", 162, Has("Fire Breath")),
         DataLocation("Ice Citadel: Locked Chest by Ice Princess", 243, Or(True_(options=[OptionFilter(RandomizeShopItems, 0)]), Has("Lockpick", 52, options=[OptionFilter(RandomizeShopItems, 1)]))),
         DataLocation("Ice Citadel: Dark Gem after Ice Princess", 163, True_()),
         DataLocation("Ice Citadel: Dragon Egg after pole spin after Yetis", 164, Has("Pole Spin")),
         DataLocation("Ice Citadel: Dark Gem after Yetis", 165, HasAll("Electric Breath", "Pole Spin")),
         DataLocation("Ice Citadel: Dragon Egg beind cannon reinforced wall", 166, True_()),
         DataLocation("Ice Citadel: Light Gem beind cannon reinforced wall", 167, True_()),
-        DataLocation("Ice Citadel: Reward for lighting 5 boilers", 168, Has("Fire Breath")),
+        DataLocation("Ice Citadel: Light the boiler in Blue Gnorc ambush room 2", 168, Has("Fire Breath")),
         DataLocation("Ice Citadel: Reward for lighting all boilers from Ice Princess", 169, Has("Fire Breath")),
         DataLocation("Ice Citadel: Dark Gem above slippery slope", 170, Has("Light Gem", 40)),
         DataLocation("Ice Citadel: Dragon Egg from thief after Dark Gem", 171, Has("Light Gem", 40)),
