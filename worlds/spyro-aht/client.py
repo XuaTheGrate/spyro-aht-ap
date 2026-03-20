@@ -440,9 +440,9 @@ class DolphinClient(GenericClient):
             if lg >= cost:
                 self.l_doors_checked.append(idx)
                 match idx:
-                    case 1:
-                        msg = "You can now access the Light Gem door in Dragonfly Falls!"
                     case 0:
+                        msg = "You can now access the Light Gem door in Dragonfly Falls!"
+                    case 1:
                         msg = "You can now access the Light Gem door in Coastal Remains!"
                     case 2:
                         msg = "You can now access the Light Gem door in Frostbite Village!"
