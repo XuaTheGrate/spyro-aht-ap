@@ -26,7 +26,7 @@ class SpyroAHTWorld(World):
 
     item_name_groups = {
         "Breath": {"Fire Breath", "Ice Breath", "Water Breath", "Electric Breath"},
-        "Keychains": set()  # TODO
+        #"Keychains": set()  # TODO
     }
 
     def __init__(self, multiworld: MultiWorld, player: int):

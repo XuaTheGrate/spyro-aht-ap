@@ -486,6 +486,13 @@ class SpyroAHTCommandProcessor(ClientCommandProcessor):
         Utils.async_start(self.ctx.emu_client.connect())
         return True
 
+    def _cmd_deathlink(self) -> bool:
+        """
+        Toggle the DeathLink status
+        """
+        Utils.async_start(self.ctx.update_death_link(not self.ctx._dl_enabled))
+        return True
+
 
 class SpyroAHTContext(CommonContext):
     command_processor = SpyroAHTCommandProcessor
@@ -496,7 +503,7 @@ class SpyroAHTContext(CommonContext):
         super().__init__(server_address, password)
 
         self.emu_client: GenericClient
-        self.emu_loop: asyncio.Task | None = None
+        self.emu_loop: asyncio.Task[None] | None = None
         self.synced_items: set[NetworkItem] = set()
         self.auth_ready = asyncio.Event()
         self.item_counts = Counter()
@@ -506,6 +513,9 @@ class SpyroAHTContext(CommonContext):
         self._shop_items: list[NetworkItem] = []
 
         self._deathlink = asyncio.Event()
+        self._dl_enabled = False
+        self._dl_importer: asyncio.Task[None] | None = None
+        self._dl_exporter: asyncio.Task[None] | None = None
 
     def make_gui(self) -> type[kvui.GameManager]:
         ui = super().make_gui()
@@ -555,6 +565,24 @@ class SpyroAHTContext(CommonContext):
     def on_deathlink(self, data: dict[str, Any]) -> None:
         self.emu_client.msg_queue.put_nowait(data.get('cause', '') or f"{data['source']} died")
         self._deathlink.set()
+    
+    async def update_death_link(self, death_link: bool):
+        self._dl_enabled = death_link
+        await super().update_death_link(death_link)
+
+        self.end_deathlink_tasks()
+
+        if death_link:
+            self._dl_importer = asyncio.create_task(deathlink_importer(self))
+            self._dl_exporter = asyncio.create_task(deathlink_exporter(self))
+    
+    def end_deathlink_tasks(self):
+        if self._dl_importer:
+            self._dl_importer.cancel()
+            self._dl_importer = None
+        if self._dl_exporter:
+            self._dl_exporter.cancel()
+            self._dl_exporter = None
 
 
 async def dispatch_items(ctx: SpyroAHTContext):
@@ -620,6 +648,26 @@ async def dispatch_items(ctx: SpyroAHTContext):
                 count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_NUM_GEM_PACKS_RECEIVED)
                 if count < ctx.item_counts[0x1D]:
                     await ctx.emu_client.add_gem_pack()
+            case 0x1E: # Fire Bomb
+                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_TOTAL_FIRE_BOMB)
+                if count < ctx.item_counts[0x1E]:
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_TOTAL_FIRE_BOMB, 1)
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.FIRE_BOMBS, 1)
+            case 0x1F: # Electric Bomb
+                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_TOTAL_ELECTRIC_BOMB)
+                if count < ctx.item_counts[0x1F]:
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_TOTAL_ELECTRIC_BOMB, 1)
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.ELECTRIC_BOMBS, 1)
+            case 0x20: # Water Bomb
+                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_TOTAL_WATER_BOMB)
+                if count < ctx.item_counts[0x20]:
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_TOTAL_WATER_BOMB, 1)
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.WATER_BOMBS, 1)
+            case 0x21: # Ice Bomb
+                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_TOTAL_ICE_BOMB)
+                if count < ctx.item_counts[0x21]:
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_TOTAL_ICE_BOMB, 1)
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.ICE_BOMBS, 1)
 
 
 starter_checks = {229, 230, 231, 232}
@@ -662,9 +710,7 @@ async def emu_loop(ctx: SpyroAHTContext):
         await ctx.emu_client.ready.wait()
 
         if ctx._slot_data['death_link']:
-            await ctx.update_death_link(True)        
-            t1 = asyncio.create_task(deathlink_importer(ctx))
-            t2 = asyncio.create_task(deathlink_exporter(ctx))
+            await ctx.update_death_link(True)
 
         await ctx.emu_client.apply_patch(ctx)
 
@@ -686,10 +732,7 @@ async def emu_loop(ctx: SpyroAHTContext):
     except Exception:
         logger.error("ERROR IN EMULATOR LOOP, PLEASE REPORT IN THREAD", exc_info=True)
     finally:
-        if t1:
-            t1.cancel()
-        if t2:
-            t2.cancel()
+        ctx.end_deathlink_tasks()
         await ctx.emu_client.disconnect()
 
 
@@ -724,3 +767,4 @@ def main(*args: str):
 if __name__ == '__main__':
     import sys
     main(*sys.argv[1:])
+
