@@ -1,6 +1,7 @@
 GameCuba Alpha 8 (0.3.3)
 - Added YAML option to toggle elevators being instant to Cloudy Domain, Sunken Ruins and Magma Falls
 - Dropped lockpick items no longer function
+- Gem Packs now have a randomized value
 
 GameCube Alpha 7 (0.3.2)
 - Added YAML options for min and max dark gems
