@@ -1,5 +1,5 @@
 GameCuba Alpha 8 (0.3.3)
-- Elevators to Sunken Ruins, Cloudy Domain and Magma Falls are now instant
+- Added YAML option to toggle elevators being instant to Cloudy Domain, Sunken Ruins and Magma Falls
 - Dropped lockpick items no longer function
 
 GameCube Alpha 7 (0.3.2)
