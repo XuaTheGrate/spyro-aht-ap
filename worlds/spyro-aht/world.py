@@ -94,6 +94,7 @@ class SpyroAHTWorld(World):
             "misc_skip_cutscenes": self.options.misc_skip_cutscenes.value,
             "misc_allow_immediate_realm_access": self.options.misc_allow_immediate_realm_access.value,
             "misc_hint_minigame_rewards": self.options.misc_hint_minigame_rewards.value,
+            "misc_skip_elevators": self.options.misc_skip_elevators,
 
             "randomize_shop_items": self.options.randomize_shop_items.value,
             "randomized_shop_prices": [self.random.randrange(min_shop_price, max_shop_price) for _ in range(0 if not self.options.randomize_shop_items.value else 57)],

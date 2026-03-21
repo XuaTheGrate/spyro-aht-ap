@@ -182,13 +182,18 @@ class MiscSkipCutscenes(Toggle):
     default = 0
 
 
-
 class MiscAllowImmediateRealmAccess(Toggle):
     """
     Enable a patch to access all realms at any time, instead of having to beat the previous realms boss first.
     IT IS RECOMMENDED TO KEEP THIS ENABLED, disabling may cause a generation failure.
     """
     display_name = "Allow Immediate Realm Access"
+    default = 1
+
+
+class MiscSkipElevators(Toggle):
+    """Enable a patch to skip the long elevator waits to Cloudy Domain, Sunken Ruins and Magma Falls"""
+    display_name = "Skip Elevators"
     default = 1
 
 
@@ -227,6 +232,7 @@ class SpyroAHTOptions(PerGameCommonOptions):
     misc_hint_minigame_rewards: MiscHintMinigameRewards
     misc_skip_cutscenes: MiscSkipCutscenes
     misc_allow_immediate_realm_access: MiscAllowImmediateRealmAccess
+    misc_skip_elevators: MiscSkipElevators
 
     death_link: MiscDeathLink
 

@@ -233,7 +233,7 @@ class DolphinClient(GenericClient):
             for i in range(57):
                 await asyncio.sleep(0)
 
-                purchase_flag = dolphin_memory_engine.read_byte(self.addresses.g_XLS_SHOP_TEXT + (0x32 * i))
+                purchase_flag = dolphin_memory_engine.read_byte(self.addresses.g_SHOP_TEXT + (0x32 * i))
                 if purchase_flag:
                     result.add(1001 + i)
 
@@ -322,6 +322,7 @@ class DolphinClient(GenericClient):
         dolphin_memory_engine.write_byte(self.addresses.p_ALLOW_TELEPORT_TO_HUB, 1)
         dolphin_memory_engine.write_byte(self.addresses.p_ALLOW_IMMEDIATE_REALM_ACCESS, ctx._slot_data['misc_allow_immediate_realm_access'])
         dolphin_memory_engine.write_byte(self.addresses.p_DISABLE_POPUPS, 1)
+        dolphin_memory_engine.write_byte(self.addresses.p_INSTANT_ELEVATORS, ctx._slot_data['misc_skip_elevators'])
 
         dolphin_memory_engine.write_bytes(self.addresses.p_MW_SEED, (int(ctx._seed) & 0xffffffff).to_bytes(4, 'big'))
 
@@ -405,13 +406,13 @@ class DolphinClient(GenericClient):
             logger.error("ERROR IN NOTIFICATION_TASK", exc_info=True)
     
     async def import_deathlink(self, ctx: SpyroAHTContext):
-        dolphin_memory_engine.write_byte(self.addresses.g_DEATHLINK_RECV, 1)
+        dolphin_memory_engine.write_byte(self.addresses.g_DEATHLINK_INGOING, 1)
         ctx._deathlink.clear()
     
     async def export_deathlink(self, ctx: SpyroAHTContext) -> bool:
-        b = dolphin_memory_engine.read_byte(self.addresses.g_DEATHLINK_SEND)
+        b = dolphin_memory_engine.read_byte(self.addresses.g_DEATHLINK_OUTGOING)
         if b:
-            dolphin_memory_engine.write_byte(self.addresses.g_DEATHLINK_SEND, 0)
+            dolphin_memory_engine.write_byte(self.addresses.g_DEATHLINK_OUTGOING, 0)
             return True
         return False
     
@@ -632,9 +633,9 @@ async def dispatch_items(ctx: SpyroAHTContext):
                 if count < ctx.item_counts[0xA]:
                     await ctx.emu_client.add_item(ctx.emu_client.addresses.DRAGON_EGG_COUNT, 1)
             case 0x1C: # Lockpick
-                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_NUM_LOCKPICKS_RECEIVED)
+                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_NUM_LOCK_PICKS_RECEIVED)
                 if count < ctx.item_counts[0x1C]:
-                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_NUM_LOCKPICKS_RECEIVED, 1)
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_NUM_LOCK_PICKS_RECEIVED, 1)
                     await ctx.emu_client.add_item(ctx.emu_client.addresses.LOCKPICKS, 1)
             case 0xF: # Extra Health Unit
                 await ctx.emu_client.set_ability_flag(consts.AbilityFlags.SparxHealthUpgrade, True)
@@ -649,24 +650,24 @@ async def dispatch_items(ctx: SpyroAHTContext):
                 if count < ctx.item_counts[0x1D]:
                     await ctx.emu_client.add_gem_pack()
             case 0x1E: # Fire Bomb
-                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_TOTAL_FIRE_BOMB)
+                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_NUM_FIRE_AMMO_RECEIVED)
                 if count < ctx.item_counts[0x1E]:
-                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_TOTAL_FIRE_BOMB, 1)
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_NUM_FIRE_AMMO_RECEIVED, 1)
                     await ctx.emu_client.add_item(ctx.emu_client.addresses.FIRE_BOMBS, 1)
             case 0x1F: # Electric Bomb
-                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_TOTAL_ELECTRIC_BOMB)
+                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_NUM_ELECTRIC_AMMO_RECEIVED)
                 if count < ctx.item_counts[0x1F]:
-                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_TOTAL_ELECTRIC_BOMB, 1)
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_NUM_ELECTRIC_AMMO_RECEIVED, 1)
                     await ctx.emu_client.add_item(ctx.emu_client.addresses.ELECTRIC_BOMBS, 1)
             case 0x20: # Water Bomb
-                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_TOTAL_WATER_BOMB)
+                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_NUM_WATER_AMMO_RECEIVED)
                 if count < ctx.item_counts[0x20]:
-                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_TOTAL_WATER_BOMB, 1)
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_NUM_WATER_AMMO_RECEIVED, 1)
                     await ctx.emu_client.add_item(ctx.emu_client.addresses.WATER_BOMBS, 1)
             case 0x21: # Ice Bomb
-                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_TOTAL_ICE_BOMB)
+                count = await ctx.emu_client.get_item_count(ctx.emu_client.addresses.g_NUM_ICE_AMMO_RECEIVED)
                 if count < ctx.item_counts[0x21]:
-                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_TOTAL_ICE_BOMB, 1)
+                    await ctx.emu_client.add_item(ctx.emu_client.addresses.g_NUM_ICE_AMMO_RECEIVED, 1)
                     await ctx.emu_client.add_item(ctx.emu_client.addresses.ICE_BOMBS, 1)
 
 
