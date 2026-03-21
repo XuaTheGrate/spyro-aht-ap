@@ -95,7 +95,7 @@ class ShopPricesMin(Range):
     display_name = "Minimum Shop Price"
     range_start = 1
     range_end = 10000
-    default = 1
+    default = 500
 
 
 class ShopPricesMax(Range):
@@ -103,7 +103,7 @@ class ShopPricesMax(Range):
     display_name = "Maximum Shop Price"
     range_start = 1
     range_end = 10000
-    default = 500
+    default = 5000
 
 
 class RandomizeBossLairDoorCosts(Choice):
