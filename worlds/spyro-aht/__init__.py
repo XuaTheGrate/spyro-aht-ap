@@ -9,4 +9,4 @@ def run_client():
     Process(target=main,name="SpyroAHTClient").start()
 
 
-components.append(Component("Spyro AHT Client", func=run_client))
+components.append(Component("Spyro AHT Client", func=run_client, icon='spyro-aht'))

@@ -1,8 +1,12 @@
-GameCuba Alpha 8 (0.3.3)
+GameCube Alpha 8 (0.3.3)
+- Added DeathLink support
 - Added YAML option to toggle elevators being instant to Cloudy Domain, Sunken Ruins and Magma Falls
+- Added YAML option to scout boss rewards
 - Dropped lockpick items no longer function
+- Locked Chests that originally contained junk items are now empty
 - Gem Packs now have a randomized value
-- Increased default shop prices
+- Increased default shop prices to 500-5000
+- Added icon to launcher
 
 GameCube Alpha 7 (0.3.2)
 - Added YAML options for min and max dark gems

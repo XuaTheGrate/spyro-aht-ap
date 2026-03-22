@@ -33,6 +33,12 @@ class MiscHintMinigameRewards(Toggle):
     default = 1
 
 
+class MiscHintBossRewards(Toggle):
+    """Hint out the item for beating a boss."""
+    display_name = "Hint Boss Rewards"
+    default = 0
+
+
 class RandomizeBreath(Choice):
     """Determines which starting elemental breath you have.
     
@@ -173,6 +179,7 @@ class MiscGoal(Choice):
     option_ineptune = 1
     option_red = 2
     option_mechared = 3
+    option_all = 4
     default = 3
 
 
@@ -197,9 +204,17 @@ class MiscSkipElevators(Toggle):
     default = 1
 
 
-class MiscDeathLink(Toggle):
-    """Enable Death Linking. <CURRENTLY DOES NOTHING>"""
-    display_name = "Death Link"
+class MiscDeathLink(Choice):
+    """Enable DeathLinking.
+
+    disabled: Disabled.
+    Shielded: The Butterfly Jar will protect you from a DeathLink, if you have it.
+    Enabled: Enabled.
+    """
+    display_name = "DeathLink"
+    option_disabled = 0
+    option_shielded = 1
+    option_enabled = 2
     default = 0
 
 
@@ -230,6 +245,7 @@ class SpyroAHTOptions(PerGameCommonOptions):
 
     misc_goal: MiscGoal
     misc_hint_minigame_rewards: MiscHintMinigameRewards
+    misc_hint_boss_rewards: MiscHintBossRewards
     misc_skip_cutscenes: MiscSkipCutscenes
     misc_allow_immediate_realm_access: MiscAllowImmediateRealmAccess
     misc_skip_elevators: MiscSkipElevators

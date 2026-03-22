@@ -59,21 +59,21 @@ def create_regular_locations(world: SpyroAHTWorld):
 def create_events(world: SpyroAHTWorld) -> None:
     match world.options.misc_goal:
         case 0: # Gnasty Gnorc
-            world.get_region("Dragon Village - Gnasty's Cave").add_event(
-                "Dragon Village: Defeat Gnasty Gnorc (Goal)", "Victory", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,
-                rule=HasAny("Fire Breath", "Charge")
-            )
+            world.get_region("Dragon Village - Gnasty's Cave").add_event("Dragon Village: Defeat Gnasty Gnorc (Goal)", "Victory", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,rule=HasAny("Fire Breath", "Charge"))
         case 1: # Ineptune
-            world.get_region("Coastal Remains - Watery Tomb").add_event(
-                "Coastal Remains: Defeat Ineptune (Goal)", "Victory", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,
-                rule=True_()
-            )
+            world.get_region("Coastal Remains - Watery Tomb").add_event("Coastal Remains: Defeat Ineptune (Goal)", "Victory", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,rule=True_())
         case 2: # Red
-            world.get_region("Frostbite Village - Red's Chamber").add_event(
-                "Frostbite Village - Defeat Red (Goal)", "Victory", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,
-                rule=True_()
-            )
+            world.get_region("Frostbite Village - Red's Chamber").add_event("Frostbite Village - Defeat Red (Goal)", "Victory", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,rule=True_())
         case 3: # Mecha-Red
             reds_lab = world.get_region("Red's Laboratory")
             reds_lab.add_event("Red's Laboratory: Defeat Mecha-Red", "Victory", location_type=SpyroAHTLocation,item_type=items.SpyroAHTItem,rule=BossLairRule(3) & HasAll("Electric Breath", "Fire Breath"))
-    world.multiworld.completion_condition[world.player] = lambda state: state.has("Victory", world.player)
+        case 4: # All
+            world.get_region("Dragon Village - Gnasty's Cave").add_event("Dragon Village: Defeat Gnasty Gnorc (Goal)", "VictoryCon1", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,rule=HasAny("Fire Breath", "Charge"))
+            world.get_region("Coastal Remains - Watery Tomb").add_event("Coastal Remains: Defeat Ineptune (Goal)", "VictoryCon2", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,rule=True_())
+            world.get_region("Frostbite Village - Red's Chamber").add_event("Frostbite Village - Defeat Red (Goal)", "VictoryCon3", location_type=SpyroAHTLocation, item_type=items.SpyroAHTItem,rule=True_())
+            world.get_region("Red's Laboratory").add_event("Red's Laboratory: Defeat Mecha-Red", "VictoryCon4", location_type=SpyroAHTLocation,item_type=items.SpyroAHTItem,rule=BossLairRule(3) & HasAll("Electric Breath", "Fire Breath"))
+    
+    if world.options.misc_goal == 4:
+        world.multiworld.completion_condition[world.player] = lambda state: state.has_all(("VictoryCon1", "VictoryCon2", "VictoryCon3", "VictoryCon4"), world.player)
+    else:
+        world.multiworld.completion_condition[world.player] = lambda state: state.has("Victory", world.player)

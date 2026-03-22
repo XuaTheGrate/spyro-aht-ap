@@ -6,6 +6,9 @@ from BaseClasses import MultiWorld
 from worlds.AutoWorld import World
 
 from . import items, locations, options as ahtoptions, regions, rules, web_world
+from worlds.LauncherComponents import icon_paths
+
+icon_paths['spyro-aht'] = f'ap:{__name__}/icon.png'
 
 class SpyroAHTWorld(World):
     """
@@ -92,9 +95,10 @@ class SpyroAHTWorld(World):
         return {
             "misc_goal": self.options.misc_goal.value,
             "misc_skip_cutscenes": self.options.misc_skip_cutscenes.value,
+            "misc_hint_boss_rewards": self.options.misc_hint_boss_rewards.value,
             "misc_allow_immediate_realm_access": self.options.misc_allow_immediate_realm_access.value,
             "misc_hint_minigame_rewards": self.options.misc_hint_minigame_rewards.value,
-            "misc_skip_elevators": self.options.misc_skip_elevators,
+            "misc_skip_elevators": self.options.misc_skip_elevators.value,
 
             "randomize_shop_items": self.options.randomize_shop_items.value,
             "randomized_shop_prices": [self.random.randrange(min_shop_price, max_shop_price) for _ in range(0 if not self.options.randomize_shop_items.value else 57)],

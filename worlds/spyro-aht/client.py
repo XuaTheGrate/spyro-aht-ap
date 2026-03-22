@@ -19,10 +19,14 @@ from . import consts
 from .pcsx2_interface import Pine
 
 
+WHITE = (0x80, 0x80, 0x80, 0x80)
+RED = (0x80, 0x20, 0x20, 0x80)
+
+
 class GenericClient(ABC):
     addresses: consts.AddressList
     ready: asyncio.Event
-    msg_queue: asyncio.Queue[str]
+    msg_queue: asyncio.Queue[tuple[tuple[int, int, int, int], str]]
 
     @property
     @abstractmethod
@@ -48,7 +52,7 @@ class GenericClient(ABC):
     @abstractmethod
     async def force_set_breath(self, breath_id: int): raise NotImplementedError
     @abstractmethod
-    async def check_goal(self, ctx: SpyroAHTContext): raise NotImplementedError
+    async def check_goal(self, ctx: SpyroAHTContext) -> bool: raise NotImplementedError
     @abstractmethod
     async def scout_location(self, ctx: SpyroAHTContext): raise NotImplementedError
     @abstractmethod
@@ -174,7 +178,7 @@ class DolphinClient(GenericClient):
             game_id: bytes = dolphin_memory_engine.read_bytes(0x80000000, 6)
             if game_id != b'G5SE7D':
                 dolphin_memory_engine.un_hook()
-                logger.error(f"Unsupported game ID {game_id.decode()}")
+                logger.error(f"Unsupported game ID {game_id.decode()!r}")
                 return
         logger.info("Successfully hooked into Dolphin")
         self.ready.set()
@@ -267,32 +271,57 @@ class DolphinClient(GenericClient):
     async def force_set_breath(self, breath_id: int):
         dolphin_memory_engine.write_bytes(self.addresses.ACTIVE_BREATH, breath_id.to_bytes(4))
     
-    async def check_goal(self, ctx: SpyroAHTContext):
-        obj = consts.GOALS[ctx._slot_data['misc_goal']]
+    async def check_goal(self, ctx: SpyroAHTContext) -> bool:
+        if ctx._slot_data['misc_goal'] < 4:
+            obj = consts.GOALS[ctx._slot_data['misc_goal']]
 
-        index = (obj & 0xFFFF) - 1
-        uint = floor(index / 32)
-        bit = index % 32
-        data = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.OBJECTIVES + (uint * 4), 4), 'big')
-        flag = data & (1 << bit)
-        if flag:
-            await ctx.send_msgs([{"cmd":"StatusUpdate","status":ClientStatus.CLIENT_GOAL}])
-    
-    async def scout_location(self, ctx: SpyroAHTContext):
-        if not ctx._slot_data['misc_hint_minigame_rewards']:
-            return
-        
-        locations: set[int] = set()
-        for obj, loc in consts.SCOUT_OBJECTIVES.items():
             index = (obj & 0xFFFF) - 1
             uint = floor(index / 32)
             bit = index % 32
             data = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.OBJECTIVES + (uint * 4), 4), 'big')
             flag = data & (1 << bit)
             if flag:
-                locations.update(loc)
-        locations.difference_update(self._scouted_locations)
+                await ctx.send_msgs([{"cmd":"StatusUpdate","status":ClientStatus.CLIENT_GOAL}])
+                return True
+        else:
+            c = 0
+            for obj in consts.GOALS:
+                index = (obj & 0xFFFF) - 1
+                uint = floor(index / 32)
+                bit = index % 32
+                data = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.OBJECTIVES + (uint * 4), 4), 'big')
+                flag = data & (1 << bit)
+                if flag:
+                    c += 1
+            if c == 4:
+                await ctx.send_msgs([{"cmd":"StatusUpdate","status":ClientStatus.CLIENT_GOAL}])
+                return True
+        return False
+
+    async def scout_location(self, ctx: SpyroAHTContext):
+        locations: set[int] = set()
+        if ctx._slot_data['misc_hint_minigame_rewards']:
+            for obj, loc in consts.MINIGAME_OBJECTIVES.items():
+                index = (obj & 0xFFFF) - 1
+                uint = floor(index / 32)
+                bit = index % 32
+                data = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.OBJECTIVES + (uint * 4), 4), 'big')
+                flag = data & (1 << bit)
+                if flag:
+                    locations.update(loc)
+            locations.difference_update(self._scouted_locations)
         
+        if ctx._slot_data['misc_hint_boss_rewards']:
+            for obj, loc in consts.BOSS_OBJECTIVES.items():
+                index = (obj & 0xFFFF) - 1
+                uint = floor(index / 32)
+                bit = index % 32
+                data = int.from_bytes(dolphin_memory_engine.read_bytes(self.addresses.OBJECTIVES + (uint * 4), 4), 'big')
+                flag = data & (1 << bit)
+                if flag:
+                    locations.add(loc)
+            locations.difference_update(self._scouted_locations)
+            
         if locations:
             self._scouted_locations.update(locations)
             await ctx.send_msgs([{"cmd":"LocationScouts","locations":locations,"create_as_hint":2}])
@@ -395,12 +424,12 @@ class DolphinClient(GenericClient):
                 if await self.is_in_game() and not await self.is_paused() and not await self.is_loading():
                     await asyncio.sleep(5)
                     dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TIMER, bytes(4))
-                    message = await self.msg_queue.get()
+                    col, message = await self.msg_queue.get()
 
                     if len(message) > 255:
                         message = message[:255]
 
-                    colour = struct.pack(">BBBB", 0x80, 0x80, 0x80, 0x80)
+                    colour = struct.pack(">BBBB", *col)
                     dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_COLOR, colour)
                     dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TEXT_BUFFER, (message + "\0").encode('ascii'))
                     dolphin_memory_engine.write_bytes(self.addresses.n_AP_NOTIFICATION_TIMER, (5*60).to_bytes(4))
@@ -408,7 +437,7 @@ class DolphinClient(GenericClient):
             logger.error("ERROR IN NOTIFICATION_TASK", exc_info=True)
     
     async def import_deathlink(self, ctx: SpyroAHTContext):
-        dolphin_memory_engine.write_byte(self.addresses.g_DEATHLINK_INGOING, 1)
+        dolphin_memory_engine.write_byte(self.addresses.g_DEATHLINK_INGOING, ctx._slot_data['death_link'])
         ctx._deathlink.clear()
     
     async def export_deathlink(self, ctx: SpyroAHTContext) -> bool:
@@ -427,15 +456,15 @@ class DolphinClient(GenericClient):
                 self.b_doors_checked.append(idx)
                 match idx:
                     case 0:
-                        msg = "You can now access Gnasty's Cave!"
+                        msg = WHITE, "You can now access Gnasty's Cave!"
                     case 1:
-                        msg = "You can now access Ineptune's Lair!"
+                        msg = WHITE, "You can now access Ineptune's Lair!"
                     case 2:
-                        msg = "You can now access Red's Lair!"
+                        msg = WHITE, "You can now access Red's Lair!"
                     case 3:
-                        msg = "You can now access Mecha-Red's Lair!"
+                        msg = WHITE, "You can now access Mecha-Red's Lair!"
                     case _:
-                        msg = "THIS IS AN ERROR REPORT THIS TO THE THREAD"
+                        msg = RED, "THIS IS AN ERROR REPORT THIS TO THE THREAD"
                 self.msg_queue.put_nowait(msg)
 
         for idx, cost in enumerate(ctx._slot_data['light_gem_door_costs']):
@@ -444,15 +473,15 @@ class DolphinClient(GenericClient):
                 self.l_doors_checked.append(idx)
                 match idx:
                     case 0:
-                        msg = "You can now access the Light Gem door in Dragonfly Falls!"
+                        msg = WHITE, "You can now access the Light Gem door in Dragonfly Falls!"
                     case 1:
-                        msg = "You can now access the Light Gem door in Coastal Remains!"
+                        msg = WHITE, "You can now access the Light Gem door in Coastal Remains!"
                     case 2:
-                        msg = "You can now access the Light Gem door in Frostbite Village!"
+                        msg = WHITE, "You can now access the Light Gem door in Frostbite Village!"
                     case 3:
-                        msg = "You can now access the Light Gem door in Dark Mine!"
+                        msg = WHITE, "You can now access the Light Gem door in Dark Mine!"
                     case _:
-                        msg = "THIS IS AN ERROR REPORT THIS TO THE THREAD"
+                        msg = RED, "THIS IS AN ERROR REPORT THIS TO THE THREAD"
                 self.msg_queue.put_nowait(msg)
 
 
@@ -549,7 +578,7 @@ class SpyroAHTContext(CommonContext):
                     case 'ItemSend':
                         if args['receiving'] == self.slot:
                             item = args['item']
-                            self.emu_client.msg_queue.put_nowait(f"Received {self.item_names.lookup_in_slot(item.item, self.slot)} from {self.player_names[item.player]}")
+                            self.emu_client.msg_queue.put_nowait((WHITE, f"Received {self.item_names.lookup_in_slot(item.item, self.slot)} from {self.player_names[item.player]}"))
                     case 'Hint':
                         if args['found']: return
                         if args['receiving'] == self.slot:
@@ -557,7 +586,7 @@ class SpyroAHTContext(CommonContext):
                             player = "your" if item.player == self.slot else f"{self.player_names[item.player]}'s"
                             location = self.location_names.lookup_in_slot(item.location, item.player)
                             msg = f"[Hint] Your {self.item_names.lookup_in_slot(item.item, self.slot)} is at {player} {location}"
-                            self.emu_client.msg_queue.put_nowait(msg)
+                            self.emu_client.msg_queue.put_nowait((WHITE, msg))
                         elif args['item'].player == self.slot:
                             item = args['item']
                             location = self.location_names.lookup_in_slot(item.location, self.slot)
@@ -566,7 +595,7 @@ class SpyroAHTContext(CommonContext):
 
     
     def on_deathlink(self, data: dict[str, Any]) -> None:
-        self.emu_client.msg_queue.put_nowait(data.get('cause', '') or f"{data['source']} died")
+        self.emu_client.msg_queue.put_nowait((RED, data.get('cause', '') or f"{data['source']} died"))
         self._deathlink.set()
     
     async def update_death_link(self, death_link: bool):
@@ -708,6 +737,8 @@ async def deathlink_exporter(ctx: SpyroAHTContext):
 async def emu_loop(ctx: SpyroAHTContext):
     t1: asyncio.Task | None = None
     t2: asyncio.Task | None = None
+
+    has_goaled = False
     try:
         await ctx.auth_ready.wait()
         await ctx.emu_client.ready.wait()
@@ -731,7 +762,8 @@ async def emu_loop(ctx: SpyroAHTContext):
                 await ctx.emu_client.scout_location(ctx)
                 await ctx.emu_client.check_doors(ctx)
                 await dispatch_locations(ctx)
-                await ctx.emu_client.check_goal(ctx)
+                if not has_goaled:
+                    has_goaled = await ctx.emu_client.check_goal(ctx)
     except Exception:
         logger.error("ERROR IN EMULATOR LOOP, PLEASE REPORT IN THREAD", exc_info=True)
     finally:

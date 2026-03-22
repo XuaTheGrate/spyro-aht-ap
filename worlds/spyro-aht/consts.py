@@ -77,7 +77,7 @@ LOCATIONS_OBJECTIVE: dict[int, int] = {
 }
 
 
-SCOUT_OBJECTIVES: dict[int, tuple[int, int]] = {
+MINIGAME_OBJECTIVES: dict[int, tuple[int, int]] = {
     0x44000017: (13, 14),
     0x44000013: (30, 31),
     0x4400000c: (37, 38),
@@ -97,6 +97,12 @@ SCOUT_OBJECTIVES: dict[int, tuple[int, int]] = {
     0x440000d1: (181, 182),
     0x440000bb: (202, 203),
     0x440000b6: (210, 211),
+}
+
+BOSS_OBJECTIVES = {
+    0x44000111: 17,
+    0x44000112: 79,
+    0x44000113: 136
 }
 
 
